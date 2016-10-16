@@ -1,3 +1,3 @@
 # Scripnix
-Handy macOS and *NIX shell scripts, written in bash and static-typed Python 3.
-Replaces the old Scripnix0 project which wasn't fully macOS-friendly.
+Useful Python3 and bash shell scripts for macOS/BSD and *NIX. Useful to me, at any rate. YMMV.
+Replaces the old Scripnix0 project which was very crufty and not macOS-friendly.
