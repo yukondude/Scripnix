@@ -1,6 +1,7 @@
 """ Setuptools configuration.
     This file is part of Scripnix. See LICENSE for details.
 """
+
 from setuptools import setup
 import scripnix
 
