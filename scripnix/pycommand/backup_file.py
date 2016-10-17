@@ -45,7 +45,7 @@ def main(file, dry_run):
         duplicate_n = 0
         backup_path = base_backup_path = "{}.{}".format(os.path.join(dir_path, file_name), modification_date)
 
-        while os.path.exists(backup_path):
+        while os.path.isfile(backup_path):
             duplicate_n += 1
             backup_path = "{}.{}".format(base_backup_path, duplicate_n)
 
