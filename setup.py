@@ -34,10 +34,11 @@ setup(
         "Topic :: Utilities",
     ],
     description=scripnix.__doc__,
-    # entry_points={
-    #     'console_scripts': [
-    #     ],
-    # },
+    entry_points={
+        'console_scripts': [
+            'backup-file=scripnix.pycommand.backup_file:main',
+        ],
+    },
     include_package_data=True,
     install_requires=REQUIREMENTS,
     license="GPLv3",
