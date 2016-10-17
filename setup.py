@@ -43,6 +43,6 @@ setup(
     name="Scripnix",
     packages=['scripnix'],
     platforms=["MacOS", "Linux"],
-    url="https://github.com/yukondude/Scripnix/",
+    url="https://yukondude.github.io/Scripnix/",
     version=scripnix.__version__
 )
