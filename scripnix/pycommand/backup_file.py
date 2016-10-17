@@ -10,27 +10,16 @@ from datetime import datetime
 import os
 import shutil
 import stat
+from .command import HELP_SWITCHES, default_command_options
 
 
-CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 Operation = namedtuple("Operation", "from_path to_path is_exec_or_suid")
 
 
-# noinspection PyUnusedLocal
-def show_version(ctx, param, value):
-    if not value or ctx.resilient_parsing:
-        return
-    from scripnix import __version__
-    click.echo("{} version {}".format(__doc__.strip(), __version__))
-    click.echo("Copyright 2016 Dave Rogers. Licensed under the GPLv3. See LICENSE.")
-    ctx.exit()
-
-
-@click.command(context_settings=CONTEXT_SETTINGS)
-@click.option('--dry-run', '-D', is_flag=True, help="Show what would happen without actually doing it.")
-@click.option('--version', '-V', is_flag=True, callback=show_version, expose_value=False, is_eager=True, help="Show version and exit.")
+@click.command(context_settings=HELP_SWITCHES)
+@default_command_options
 @click.argument('file', nargs=-1, type=click.Path(exists=True, file_okay=True, dir_okay=False))
-def main(file, dry_run):
+def main(file, debug):
     """ Backup the given file(s) by making a copy of each with an appended modification date (yyyymmdd). Append a number if the backup file name already exists.
         Remove any SUID or executable permissions from the backup file.
     """
@@ -52,7 +41,7 @@ def main(file, dry_run):
         is_exec_or_suid = os.access(source_path, os.X_OK) or os.stat(source_path).st_mode & stat.S_ISUID > 0
         operations.append(Operation(from_path=source_path, to_path=backup_path, is_exec_or_suid=is_exec_or_suid))
 
-    if dry_run:
+    if debug:
         click.echo("backup-file would do the following:")
 
         for operation in operations:
