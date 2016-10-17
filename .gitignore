@@ -14,3 +14,4 @@ coverage.xml
 # PyCharm dev-specific settings
 .idea/workspace.xml
 .idea/tasks.xml
+.idea/dictionaries/
