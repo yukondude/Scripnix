@@ -36,18 +36,18 @@ def main(file, dry_run):
     """
     operations = []
 
-    for path in file:
-        source_path = os.path.abspath(path)
-        dir_path = os.path.abspath(os.path.dirname(path))
-        file_name = os.path.basename(path)
-        modification_date = datetime.fromtimestamp(os.path.getmtime(path)).strftime("%Y%m%d")
+    for file_path in file:
+        source_path = os.path.abspath(file_path)
+        dir_path = os.path.abspath(os.path.dirname(file_path))
+        file_name = os.path.basename(file_path)
+        modification_date = datetime.fromtimestamp(os.path.getmtime(file_path)).strftime("%Y%m%d")
 
-        duplicate_n = 0
+        duplicate_no = 0
         backup_path = base_backup_path = "{}.{}".format(os.path.join(dir_path, file_name), modification_date)
 
         while os.path.isfile(backup_path):
-            duplicate_n += 1
-            backup_path = "{}.{}".format(base_backup_path, duplicate_n)
+            duplicate_no += 1
+            backup_path = "{}.{}".format(base_backup_path, duplicate_no)
 
         is_exec_or_suid = os.access(source_path, os.X_OK) or os.stat(source_path).st_mode & stat.S_ISUID > 0
         operations.append(Operation(from_path=source_path, to_path=backup_path, is_exec_or_suid=is_exec_or_suid))
