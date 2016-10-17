@@ -2,8 +2,14 @@
     This file is part of Scripnix. See LICENSE for details.
 """
 
+import os
 from setuptools import setup
 import scripnix
+
+
+HERE = os.path.abspath(os.path.dirname(__file__))
+
+REQUIREMENTS = [pkg.strip() for pkg in open(os.path.join(HERE, "requirements.txt"), 'r').readlines()]
 
 
 setup(
@@ -31,9 +37,7 @@ setup(
 #        ],
 #    },
     include_package_data=True,
-    install_requires=[
-        "click>=6.6",  # TODO: read from requirements.txt
-    ],
+    install_requires=REQUIREMENTS,
     license="GPLv3",
     long_description="See README.md.",
     name="Scripnix",
