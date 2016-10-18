@@ -25,7 +25,8 @@ def common_command_and_options(command_name):
             click.echo("Copyright 2016 Dave Rogers. Licensed under the GPLv3. See LICENSE.")
             ctx.exit()
 
-        return click.option('--version', '-V', is_flag=True, callback=show_version, expose_value=False, is_eager=True, help="Show version and exit.")(fn)
+        return click.option('--version', '-V', is_flag=True, callback=show_version, expose_value=False, is_eager=True,
+                            help="Show version and exit.")(fn)
 
     def command_and_options(fn):
         return version_option(dry_run_option(command_with_help_switches(fn)))

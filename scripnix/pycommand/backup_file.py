@@ -20,8 +20,8 @@ Operation = namedtuple("Operation", "from_path to_path is_exec_or_suid")
 @common_command_and_options(command_name=COMMAND_NAME)
 @click.argument('file', nargs=-1, type=click.Path(exists=True, file_okay=True, dir_okay=False))
 def main(file, dry_run):
-    """ Backup the given file(s) by making a copy of each with an appended modification date (yyyymmdd). Append a number if the backup file name already exists.
-        Remove any SUID or executable permissions from the backup file.
+    """ Backup the given file(s) by making a copy of each with an appended modification date (yyyymmdd). Append a number if the backup file
+        name already exists. Remove any SUID or executable permissions from the backup file.
 
         The backup-file command is part of Scripnix.
     """
