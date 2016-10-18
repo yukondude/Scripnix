@@ -10,7 +10,7 @@ from datetime import datetime
 import os
 import shutil
 import stat
-from .command import common_command_and_options
+from .command import common_command_and_options, join_exceptions
 
 
 COMMAND_NAME = "backup-file"
@@ -56,22 +56,29 @@ def echo_dry_run_backups(backups):
 
 
 def execute_backups(backups):
-    """ Execute the given list of Backup namedtuple operations on the filesystem. Raise a ClickException and halt if there are any I/O
-        glitches.
+    """ Execute the given list of Backup namedtuple operations on the filesystem. Ignore I/O errors until complete and then raise them all
+        at once as a single ClickException.
     """
+    exceptions = []
+
     for backup in backups:
         try:
             shutil.copy2(backup.from_path, backup.to_path)
         except IOError:
-            raise click.ClickException("Unable to copy {} to {}.".format(backup.from_path, backup.to_path))
+            exceptions.append("Unable to copy {} to {}.".format(backup.from_path, backup.to_path))
+            continue
 
         try:
             # Ignore Backup.is_exec_or_suid and strip out any SUID or executable bits regardless, just to be on the safe side.
-            mode = os.stat(backup.to_path).st_mode
+            mode = os.stat(backup.to_path+"FOOP").st_mode
             mode &= 0o7777 ^ (stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH | stat.S_ISUID)
             os.chmod(backup[1], mode)
         except IOError:
-            raise click.ClickException("Unable to set permissions for {}.".format(backup.to_path))
+            exceptions.append("Unable to set permissions for {}.".format(backup.to_path))
+            continue
+
+    if exceptions:
+        raise click.ClickException(join_exceptions(exceptions))
 
 
 @common_command_and_options(command_name=COMMAND_NAME)

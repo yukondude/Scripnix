@@ -4,7 +4,6 @@
 # This file is part of Scripnix. Copyright 2016 Dave Rogers <info@yukondude.com>. Licensed under the GNU General Public License, version 3.
 # Refer to the attached LICENSE file or see <http://www.gnu.org/licenses/> for details.
 
-
 import click
 
 
@@ -48,3 +47,13 @@ def common_command_and_options(command_name, add_dry_run=True):
             return version_option(command_with_help_switches(fn))
 
     return command_and_options
+
+
+EXCEPTION_INDENT = len("Error: ")
+
+
+def join_exceptions(exceptions):
+    """ Join the given list of exception messages into a single multi-line string, indented to line up under Click's normal error reporting
+        format.
+    """
+    return ("\n" + " " * EXCEPTION_INDENT).join(exceptions)
