@@ -67,7 +67,7 @@ def execute_backups(backups):
         try:
             shutil.copy2(backup.from_path, backup.to_path)
         except IOError:
-            exceptions.append("Unable to copy {} to {}.".format(backup.from_path, backup.to_path))
+            exceptions.append("Unable to copy '{}' to '{}'.".format(backup.from_path, backup.to_path))
             continue
 
         if backup.is_exec_or_suid:
@@ -76,7 +76,7 @@ def execute_backups(backups):
                 mode &= 0o7777 ^ (stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH | stat.S_ISUID)
                 os.chmod(backup[1], mode)
             except IOError:
-                exceptions.append("Unable to set permissions for {}.".format(backup.to_path))
+                exceptions.append("Unable to set permissions for '{}'.".format(backup.to_path))
                 continue
 
     if exceptions:
