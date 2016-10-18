@@ -8,8 +8,11 @@
 import click
 
 
-def common_command_and_options(command_name):
-    """ Decorator that applies all of the common Click command and options in one step.
+def common_command_and_options(command_name, add_dry_run=True):
+    """ Decorator that applies all of the common Click command and options in one step:
+            - command with short and long help option switches
+            - dry-run option switch (enabled by default)
+            - version option switch
     """
     def command_with_help_switches(fn):
         """ Specify both the short and long help option switches.
@@ -39,6 +42,9 @@ def common_command_and_options(command_name):
     def command_and_options(fn):
         """ Combine the common command and options into a single function decorator.
         """
-        return version_option(dry_run_option(command_with_help_switches(fn)))
+        if add_dry_run:
+            return version_option(dry_run_option(command_with_help_switches(fn)))
+        else:
+            return version_option(command_with_help_switches(fn))
 
     return command_and_options
