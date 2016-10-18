@@ -11,7 +11,30 @@ import scripnix
 
 HERE = os.path.abspath(os.path.dirname(__file__))
 
-REQUIREMENTS = [pkg.strip() for pkg in open(os.path.join(HERE, "requirements.txt"), 'r').readlines()]
+
+def gather_console_scripts():
+    """ Return the list of the project's console script entry points.
+    """
+    console_scripts = []
+    command_path = 'scripnix/pycommand'
+    full_command_path = os.path.join(HERE, command_path)
+    package_path = command_path.replace('/', '.')
+
+    for file_name in [f for f in os.listdir(full_command_path) if os.path.isfile(os.path.join(full_command_path, f))]:
+        if file_name in ('__init__.py', 'command.py'):
+            continue
+
+        command_module = os.path.splitext(file_name)[0]
+        command_name = command_module.replace('_', '-')
+        console_scripts.append("{}={}.{}:main".format(command_name, package_path, command_module))
+
+    return console_scripts
+
+
+def gather_requirements():
+    """ Return the list of required packages and versions from requirements.txt.
+    """
+    return [pkg.strip() for pkg in open(os.path.join(HERE, "requirements.txt"), 'r').readlines()]
 
 
 setup(
@@ -35,12 +58,10 @@ setup(
     ],
     description=scripnix.__doc__,
     entry_points={
-        'console_scripts': [
-            'backup-file=scripnix.pycommand.backup_file:main',
-        ],
+        'console_scripts': gather_console_scripts(),
     },
     include_package_data=True,
-    install_requires=REQUIREMENTS,
+    install_requires=gather_requirements(),
     license="GPLv3",
     long_description="See README.md.",
     name="Scripnix",
