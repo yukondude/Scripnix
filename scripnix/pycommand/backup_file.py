@@ -1,4 +1,4 @@
-""" Scripnix: backup-file
+""" backup-file
 """
 
 # This file is part of Scripnix. Copyright 2016 Dave Rogers <info@yukondude.com>. Licensed under the GNU General Public
@@ -10,16 +10,15 @@ from datetime import datetime
 import os
 import shutil
 import stat
-from .command import HELP_SWITCHES, default_command_options
+from .command import common_command_and_options
 
 
 Operation = namedtuple("Operation", "from_path to_path is_exec_or_suid")
 
 
-@click.command(context_settings=HELP_SWITCHES)
-@default_command_options
+@common_command_and_options(command_name=__doc__)
 @click.argument('file', nargs=-1, type=click.Path(exists=True, file_okay=True, dir_okay=False))
-def main(file, debug):
+def main(file, dry_run):
     """ Backup the given file(s) by making a copy of each with an appended modification date (yyyymmdd). Append a number if the backup file name already exists.
         Remove any SUID or executable permissions from the backup file.
     """
@@ -41,8 +40,8 @@ def main(file, debug):
         is_exec_or_suid = os.access(source_path, os.X_OK) or os.stat(source_path).st_mode & stat.S_ISUID > 0
         operations.append(Operation(from_path=source_path, to_path=backup_path, is_exec_or_suid=is_exec_or_suid))
 
-    if debug:
-        click.echo("backup-file would do the following:")
+    if dry_run:
+        click.echo("{} would do the following:".format(__doc__.strip()))
 
         for operation in operations:
             click.echo("cp {} {}".format(operation.from_path, operation.to_path))
