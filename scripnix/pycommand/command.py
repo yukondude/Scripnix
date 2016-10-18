@@ -9,13 +9,21 @@ import click
 
 
 def common_command_and_options(command_name):
+    """ Decorator that applies all of the common Click command and options in one step.
+    """
     def command_with_help_switches(fn):
+        """ Specify both the short and long help option switches.
+        """
         return click.command(context_settings=dict(help_option_names=['-h', '--help']))(fn)
 
     def dry_run_option(fn):
+        """ Add the dry-run option switch.
+        """
         return click.option('--dry-run', '-D', is_flag=True, help="Show what would happen without actually doing it.")(fn)
 
     def version_option(fn):
+        """ Add the display version option switch.
+        """
         # noinspection PyUnusedLocal
         def show_version(ctx, param, value):
             if not value or ctx.resilient_parsing:
@@ -29,6 +37,8 @@ def common_command_and_options(command_name):
                             help="Show version and exit.")(fn)
 
     def command_and_options(fn):
+        """ Combine the common command and options into a single function decorator.
+        """
         return version_option(dry_run_option(command_with_help_switches(fn)))
 
     return command_and_options
