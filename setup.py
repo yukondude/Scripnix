@@ -1,4 +1,4 @@
-""" Setuptools configuration.
+""" Scripnix setuptools configuration.
 """
 
 # This file is part of Scripnix. Copyright 2016 Dave Rogers <info@yukondude.com>. Licensed under the GNU General Public

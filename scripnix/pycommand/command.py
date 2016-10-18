@@ -1,4 +1,4 @@
-""" Shared command processing
+""" Scripnix shared command processing
 """
 
 # This file is part of Scripnix. Copyright 2016 Dave Rogers <info@yukondude.com>. Licensed under the GNU General Public
@@ -21,7 +21,7 @@ def common_command_and_options(command_name):
             if not value or ctx.resilient_parsing:
                 return
             from scripnix import __version__
-            click.echo("{} version {}".format(command_name.strip(), __version__))
+            click.echo("The {} command is part of Scripnix version {}.".format(command_name, __version__))
             click.echo("Copyright 2016 Dave Rogers. Licensed under the GPLv3. See LICENSE.")
             ctx.exit()
 
