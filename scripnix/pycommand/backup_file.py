@@ -14,7 +14,64 @@ from .command import common_command_and_options
 
 
 COMMAND_NAME = "backup-file"
-BackupOperation = namedtuple("BackupOperation", "from_path to_path is_exec_or_suid")
+BACKUP_DATE_FORMAT = "%Y%m%d"
+Backup = namedtuple("Backup", "from_path to_path is_exec_or_suid")
+
+
+def collect_backups(file_paths):
+    """ For each of the given file paths, find the appropriate backup file name and also whether any executable or SUID bits are set.
+        Return the results as a list of Backup namedtuples.
+    """
+    backups = []
+
+    for file_path in file_paths:
+        source_path = os.path.abspath(file_path)
+        dir_path = os.path.abspath(os.path.dirname(file_path))
+        file_name = os.path.basename(file_path)
+        modification_date = datetime.fromtimestamp(os.path.getmtime(file_path)).strftime(BACKUP_DATE_FORMAT)
+
+        duplicate_no = 0
+        backup_path = base_backup_path = "{}.{}".format(os.path.join(dir_path, file_name), modification_date)
+
+        while os.path.exists(backup_path):
+            duplicate_no += 1
+            backup_path = "{}.{}".format(base_backup_path, duplicate_no)
+
+        is_exec_or_suid = os.access(source_path, os.X_OK) or (os.stat(source_path).st_mode & stat.S_ISUID > 0)
+        backups.append(Backup(from_path=source_path, to_path=backup_path, is_exec_or_suid=is_exec_or_suid))
+
+    return backups
+
+
+def echo_dry_run_backups(backups):
+    """ Echo the equivalent command-line operations that would be performed for the given list of Backup namedtuples.
+    """
+    click.echo("{} would do the following:".format(COMMAND_NAME))
+
+    for backup in backups:
+        click.echo("cp {} {}".format(backup.from_path, backup.to_path))
+
+        if backup.is_exec_or_suid:
+            click.echo("chmod -x,u-s {}".format(backup.to_path))
+
+
+def execute_backups(backups):
+    """ Execute the given list of Backup namedtuple operations on the filesystem. Raise a ClickException and halt if there are any I/O
+        glitches.
+    """
+    for backup in backups:
+        try:
+            shutil.copy2(backup.from_path, backup.to_path)
+        except IOError:
+            raise click.ClickException("Unable to copy {} to {}.".format(backup.from_path, backup.to_path))
+
+        try:
+            # Ignore Backup.is_exec_or_suid and strip out any SUID or executable bits regardless, just to be on the safe side.
+            mode = os.stat(backup.to_path).st_mode
+            mode &= 0o7777 ^ (stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH | stat.S_ISUID)
+            os.chmod(backup[1], mode)
+        except IOError:
+            raise click.ClickException("Unable to set permissions for {}.".format(backup.to_path))
 
 
 @common_command_and_options(command_name=COMMAND_NAME)
@@ -25,46 +82,12 @@ def main(file, dry_run):
 
         The backup-file command is part of Scripnix.
     """
-    operations = []
-
-    for file_path in file:
-        source_path = os.path.abspath(file_path)
-        dir_path = os.path.abspath(os.path.dirname(file_path))
-        file_name = os.path.basename(file_path)
-        modification_date = datetime.fromtimestamp(os.path.getmtime(file_path)).strftime("%Y%m%d")
-
-        duplicate_no = 0
-        backup_path = base_backup_path = "{}.{}".format(os.path.join(dir_path, file_name), modification_date)
-
-        while os.path.isfile(backup_path):
-            duplicate_no += 1
-            backup_path = "{}.{}".format(base_backup_path, duplicate_no)
-
-        is_exec_or_suid = os.access(source_path, os.X_OK) or os.stat(source_path).st_mode & stat.S_ISUID > 0
-        operations.append(BackupOperation(from_path=source_path, to_path=backup_path, is_exec_or_suid=is_exec_or_suid))
+    backups = collect_backups(file_paths=file)
 
     if dry_run:
-        click.echo("{} would do the following:".format(COMMAND_NAME))
-
-        for operation in operations:
-            click.echo("cp {} {}".format(operation.from_path, operation.to_path))
-
-            if operation.is_exec_or_suid:
-                click.echo("chmod -x,u-s {}".format(operation.to_path))
+        echo_dry_run_backups(backups)
     else:
-        for operation in operations:
-            try:
-                shutil.copy2(operation.from_path, operation.to_path)
-            except IOError:
-                raise click.ClickException("Unable to copy {} to {}.".format(operation.from_path, operation.to_path))
-
-            try:
-                # Ignore operation.is_exec_or_suid and strip out any SUID or executable bits.
-                mode = os.stat(operation.to_path).st_mode
-                mode &= 0o7777 ^ (stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH | stat.S_ISUID)
-                os.chmod(operation[1], mode)
-            except IOError:
-                raise click.ClickException("Unable to set permissions for {}.".format(operation.to_path))
+        execute_backups(backups)
 
 
 if __name__ == '__main__':
