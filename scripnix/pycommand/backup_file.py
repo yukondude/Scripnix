@@ -14,7 +14,7 @@ from .command import common_command_and_options
 
 
 COMMAND_NAME = "backup-file"
-Operation = namedtuple("Operation", "from_path to_path is_exec_or_suid")
+BackupOperation = namedtuple("BackupOperation", "from_path to_path is_exec_or_suid")
 
 
 @common_command_and_options(command_name=COMMAND_NAME)
@@ -41,7 +41,7 @@ def main(file, dry_run):
             backup_path = "{}.{}".format(base_backup_path, duplicate_no)
 
         is_exec_or_suid = os.access(source_path, os.X_OK) or os.stat(source_path).st_mode & stat.S_ISUID > 0
-        operations.append(Operation(from_path=source_path, to_path=backup_path, is_exec_or_suid=is_exec_or_suid))
+        operations.append(BackupOperation(from_path=source_path, to_path=backup_path, is_exec_or_suid=is_exec_or_suid))
 
     if dry_run:
         click.echo("{} would do the following:".format(COMMAND_NAME))
