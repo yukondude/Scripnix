@@ -18,6 +18,20 @@ BACKUP_DATE_FORMAT = "%Y%m%d"
 Backup = namedtuple("Backup", "from_path to_path is_exec_or_suid")
 
 
+def assemble_dry_run_message(backups):
+    """ Return a message showing the equivalent command-line operations that would be performed for the given list of Backup namedtuples.
+    """
+    message_lines = ["{} would do the following:".format(COMMAND_NAME)]
+
+    for backup in backups:
+        message_lines.append("cp {} {}".format(backup.from_path, backup.to_path))
+
+        if backup.is_exec_or_suid:
+            message_lines.append("chmod -x,u-s {}".format(backup.to_path))
+
+    return "\n".join(message_lines)
+
+
 def collect_backups(file_paths):
     """ For each of the given file paths, find the appropriate backup file name and also whether any executable or SUID bits are set.
         Return the results as a list of Backup namedtuples.
@@ -41,18 +55,6 @@ def collect_backups(file_paths):
         backups.append(Backup(from_path=source_path, to_path=backup_path, is_exec_or_suid=is_exec_or_suid))
 
     return backups
-
-
-def echo_dry_run_backups(backups):
-    """ Echo the equivalent command-line operations that would be performed for the given list of Backup namedtuples.
-    """
-    click.echo("{} would do the following:".format(COMMAND_NAME))
-
-    for backup in backups:
-        click.echo("cp {} {}".format(backup.from_path, backup.to_path))
-
-        if backup.is_exec_or_suid:
-            click.echo("chmod -x,u-s {}".format(backup.to_path))
 
 
 def execute_backups(backups):
@@ -91,10 +93,11 @@ def main(file, dry_run):
     """
     backups = collect_backups(file_paths=file)
 
-    if dry_run:
-        echo_dry_run_backups(backups)
-    else:
-        execute_backups(backups)
+    if backups:
+        if dry_run:
+            click.echo(assemble_dry_run_message(backups))
+        else:
+            execute_backups(backups)
 
 
 if __name__ == '__main__':
