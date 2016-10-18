@@ -72,7 +72,7 @@ def execute_backups(backups):
 
         try:
             # Ignore Backup.is_exec_or_suid and strip out any SUID or executable bits regardless, just to be on the safe side.
-            mode = os.stat(backup.to_path+"FOOP").st_mode
+            mode = os.stat(backup.to_path).st_mode
             mode &= 0o7777 ^ (stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH | stat.S_ISUID)
             os.chmod(backup[1], mode)
         except IOError:
