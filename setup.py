@@ -6,6 +6,8 @@
 
 import os
 from setuptools import setup
+from setuptools.command.test import test as TestCommand
+import sys
 import scripnix
 
 
@@ -37,6 +39,20 @@ def gather_requirements():
     return [pkg.strip() for pkg in open(os.path.join(HERE, "requirements.txt"), 'r').readlines()]
 
 
+# noinspection PyAttributeOutsideInit
+class PyTest(TestCommand):
+    def finalize_options(self):
+        TestCommand.finalize_options(self)
+        self.test_args = []
+        self.test_suite = True
+
+    def run_tests(self):
+        # noinspection PyPackageRequirements
+        import pytest
+        errcode = pytest.main(self.test_args)
+        sys.exit(errcode)
+
+
 setup(
     author="Dave Rogers",
     author_email="thedude@yukondude.com",
@@ -56,9 +72,13 @@ setup(
         "Topic :: System :: Systems Administration",
         "Topic :: Utilities",
     ],
+    cmdclass={'test': PyTest},
     description=scripnix.__doc__,
     entry_points={
         'console_scripts': gather_console_scripts(),
+    },
+    extras_require={
+        'testing': ["pytest"],
     },
     include_package_data=True,
     install_requires=gather_requirements(),
@@ -67,6 +87,8 @@ setup(
     name="Scripnix",
     packages=['scripnix'],
     platforms=["MacOS", "Linux"],
+    test_suite="test.test_scripnix",
+    tests_require=["pytest"],
     url="https://yukondude.github.io/Scripnix/",
     version=scripnix.__version__
 )
