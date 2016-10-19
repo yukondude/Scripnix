@@ -4,7 +4,7 @@
 # This file is part of Scripnix. Copyright 2016 Dave Rogers <info@yukondude.com>. Licensed under the GNU General Public License, version 3.
 # Refer to the attached LICENSE file or see <http://www.gnu.org/licenses/> for details.
 
-
+from click.testing import CliRunner
 # noinspection PyPackageRequirements
 import pytest
 from scripnix.pycommand.hyphenate import COMMAND_NAME, hyphenate, main
@@ -33,6 +33,30 @@ def test_hyphenate_help_option():
 ])
 def test_hyphenate_hyphenate(lines, delimiter, expected):
     assert hyphenate(lines=lines, delimiter=delimiter) == expected
+
+
+@pytest.mark.parametrize('arguments,expected', [
+    ([], ""),
+    (["foo"], "foo\n"),
+    (["foo bar", "   bar    baz   ", "baz___bat", "  _quux_  "], "foo-bar\nbar-baz\nbaz___bat\n_quux_\n"),
+])
+def test_hyphenate_main_arguments(arguments, expected):
+    runner = CliRunner()
+    result = runner.invoke(main, arguments)
+    assert result.exit_code == 0
+    assert result.output == expected
+
+
+@pytest.mark.parametrize('stdin,expected', [
+    ("", ""),
+    ("foo", "foo\n"),
+    ("foo bar\n   bar    baz   \nbaz___bat\n  _quux_  ", "foo-bar\nbar-baz\nbaz___bat\n_quux_\n"),
+])
+def test_hyphenate_main_stdin(stdin, expected):
+    runner = CliRunner()
+    result = runner.invoke(main, input=stdin)
+    assert result.exit_code == 0
+    assert result.output == expected
 
 
 def test_hyphenate_version_option():
