@@ -43,7 +43,7 @@ def gather_requirements():
 class PyTest(TestCommand):
     def finalize_options(self):
         TestCommand.finalize_options(self)
-        self.test_args = []
+        self.test_args = ["--cov=scripnix.pycommand", "--cov-report=term-missing"]
         self.test_suite = True
 
     def run_tests(self):
@@ -85,10 +85,9 @@ setup(
     license="GPLv3",
     long_description="See README.md.",
     name="Scripnix",
-    packages=['scripnix'],
+    packages=["scripnix"],
     platforms=["MacOS", "Linux"],
-    test_suite="test.test_scripnix",
-    tests_require=["pytest"],
+    tests_require=["pytest", "pytest-cov"],
     url="https://yukondude.github.io/Scripnix/",
     version=scripnix.__version__
 )
