@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """ Scripnix setuptools configuration.
 """
 
