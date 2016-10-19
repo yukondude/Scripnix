@@ -23,7 +23,7 @@ def hyphenate(lines, delimiter):
     return [delimiter.join(w for w in NON_WORD_REGEX.split(l) if w) for l in lines]
 
 
-@common_command_and_options(command_name=COMMAND_NAME, add_dry_run=False)
+@common_command_and_options(command_name=COMMAND_NAME)
 @click.option('--delimiter', '-d', default='-', show_default=True, help="Word delimiter character(s).")
 def main(delimiter):
     """ Translate the given input (via STDIN) into its equivalent, filesystem-safe, hyphenated version.

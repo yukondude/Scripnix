@@ -83,7 +83,7 @@ def execute_backups(backups):
         raise click.ClickException(join_exceptions(exceptions))
 
 
-@common_command_and_options(command_name=COMMAND_NAME)
+@common_command_and_options(command_name=COMMAND_NAME, add_dry_run=True)
 @click.argument('file', nargs=-1, type=click.Path(exists=True, file_okay=True, dir_okay=False))
 def main(file, dry_run):
     """ Backup the given file(s) by making a copy of each with an appended modification date (yyyymmdd). Append a number if the backup file

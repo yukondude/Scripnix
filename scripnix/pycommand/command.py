@@ -7,7 +7,7 @@
 import click
 
 
-def common_command_and_options(command_name, add_dry_run=True):
+def common_command_and_options(command_name, add_dry_run=False):
     """ Decorator that applies all of the common Click command and options in one step:
             - command with short and long help option switches
             - dry-run option switch (enabled by default)
