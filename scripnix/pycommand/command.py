@@ -29,7 +29,7 @@ def common_command_and_options(command_name, add_dry_run=False):
         # noinspection PyUnusedLocal
         def show_version(ctx, param, value):
             if not value or ctx.resilient_parsing:
-                return
+                return  # pragma: no cover
             from scripnix import __version__
             click.echo("The {} command is part of Scripnix version {}.".format(command_name, __version__))
             click.echo("Copyright 2016 Dave Rogers. Licensed under the GPLv3. See LICENSE.")
