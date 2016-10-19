@@ -39,7 +39,3 @@ def main(delimiter, text):
 
     for line in hyphenate(lines=lines, delimiter=delimiter):
         click.echo(line.strip())
-
-
-if __name__ == '__main__':
-    main()

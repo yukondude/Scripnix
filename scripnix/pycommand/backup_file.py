@@ -98,7 +98,3 @@ def main(file, dry_run):
             click.echo(assemble_dry_run_message(backups))
         else:
             execute_backups(backups)
-
-
-if __name__ == '__main__':
-    main()
