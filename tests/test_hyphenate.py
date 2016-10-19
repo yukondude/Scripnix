@@ -8,7 +8,11 @@
 # noinspection PyPackageRequirements
 import pytest
 from scripnix.pycommand.hyphenate import COMMAND_NAME, hyphenate, main
-from .common_options import common_version_option
+from .common_options import common_help_option, common_version_option
+
+
+def test_hyphenate_help_option():
+    common_help_option(command_entry=main, command_name=COMMAND_NAME)
 
 
 @pytest.mark.parametrize('lines,delimiter,expected', [

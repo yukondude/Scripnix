@@ -7,10 +7,14 @@
 # noinspection PyPackageRequirements
 import pytest
 from scripnix.pycommand.backup_file import assemble_dry_run_message, COMMAND_NAME, Backup, main
-from .common_options import common_version_option
+from .common_options import common_help_option, common_version_option
 
 
 DRY_RUN_PREFIX = "{} would do the following:".format(COMMAND_NAME)
+
+
+def test_backup_file_help_option():
+    common_help_option(command_entry=main, command_name=COMMAND_NAME)
 
 
 @pytest.mark.parametrize('backups,expected', [
