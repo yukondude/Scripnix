@@ -10,7 +10,7 @@ import os
 # noinspection PyPackageRequirements
 import pytest
 import time
-from scripnix.pycommand.backup_file import assemble_dry_run_message, collect_backups, COMMAND_NAME, Backup, main
+from scripnix.pycommand.backup_file import assemble_dry_run_message, Backup, collect_backups, COMMAND_NAME, execute_backups, main
 from .common_options import common_help_option, common_version_option
 
 
@@ -61,3 +61,29 @@ def test_backup_file_collect_backups(file_name_permissions, expected):
             assert backup.from_path == os.path.join(test_path, expected[i].from_path)
             assert backup.to_path == os.path.join(test_path, expected[i].to_path)
             assert backup.is_exec_or_suid == expected[i].is_exec_or_suid
+
+
+@pytest.mark.parametrize('file_name_permissions,expected', [
+    ([], []),
+    ([("test.tst", 0o0644)], [("test.tst", 0o100644), ("test.tst.20120616", 0o100644)]),
+    ([("test.exe", 0o0755)], [("test.exe", 0o100755), ("test.exe.20120616", 0o100644)]),
+    ([("test.suid", 0o4644)], [("test.suid", 0o104644), ("test.suid.20120616", 0o100644)]),
+    ([("test.suid", 0o4750)], [("test.suid", 0o104750), ("test.suid.20120616", 0o100640)]),
+])
+def test_backup_file_execute_backups_success(file_name_permissions, expected):
+    with CliRunner().isolated_filesystem():
+        for file_name, mode in file_name_permissions:
+            with open(file_name, "a"):
+                os.utime(file_name, (time.time(), datetime.datetime(2012, 6, 16, 0, 0).timestamp()))
+            os.chmod(file_name, mode)
+
+        backups = collect_backups([f[0] for f in file_name_permissions])
+        execute_backups(backups)
+
+        # Make sure unexpected files weren't somehow created.
+        assert len(os.listdir(".")) == len(expected)
+
+        for file_name, mode in expected:
+            assert os.path.isfile(file_name)
+            assert os.stat(file_name).st_mode == mode
+
