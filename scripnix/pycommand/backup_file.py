@@ -72,9 +72,10 @@ def execute_backups(backups):
 
         if backup.is_exec_or_suid:
             try:
+                # Reset any SUID or executable bits.
+                mode_mask = 0o7777 ^ (stat.S_ISUID | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
                 mode = os.stat(backup.to_path).st_mode
-                mode &= 0o7777 ^ (stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH | stat.S_ISUID)
-                os.chmod(backup[1], mode)
+                os.chmod(backup[1], mode & mode_mask)
             except IOError:
                 exceptions.append("Unable to set permissions for '{}'.".format(backup.to_path))
                 continue
