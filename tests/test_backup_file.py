@@ -14,11 +14,11 @@ from scripnix.pycommand.backup_file import assemble_dry_run_message, Backup, col
 from .common_options import common_help_option, common_version_option
 
 
-DRY_RUN_PREFIX = "{} would do the following:".format(COMMAND_NAME)
-
-
 def test_backup_file_help_option():
     common_help_option(command_entry=main, command_name=COMMAND_NAME)
+
+
+DRY_RUN_PREFIX = "{} would do the following:".format(COMMAND_NAME)
 
 
 @pytest.mark.parametrize('backups,expected', [
@@ -35,6 +35,20 @@ def test_backup_file_version_option():
     common_version_option(command_entry=main, command_name=COMMAND_NAME)
 
 
+def _create_files(file_name_permissions, modification_ts):
+    """ For each (file_name, permissions_mode) tuple, create the file and assign its permissions. Change the modification date to the given
+        timestamp. Return a tuple of the collected backups and the absolute path of the test directory.
+    """
+    for file_name, mode in file_name_permissions:
+        with open(file_name, "a"):
+            os.utime(file_name, (time.time(), modification_ts))
+        os.chmod(file_name, mode)
+
+    backups = collect_backups([f[0] for f in file_name_permissions])
+    test_path = os.path.abspath(".")
+    return backups, test_path
+
+
 @pytest.mark.parametrize('file_name_permissions,expected', [
     ([], []),
     ([("test.tst", 0o0644)], [Backup("test.tst", "test.tst.20140702", False)]),
@@ -47,14 +61,7 @@ def test_backup_file_version_option():
 ])
 def test_backup_file_collect_backups(file_name_permissions, expected):
     with CliRunner().isolated_filesystem():
-        for file_name, mode in file_name_permissions:
-            with open(file_name, "a"):
-                os.utime(file_name, (time.time(), datetime.datetime(2014, 7, 2, 0, 0).timestamp()))
-            os.chmod(file_name, mode)
-
-        test_path = os.path.abspath(".")
-
-        backups = collect_backups([f[0] for f in file_name_permissions])
+        backups, test_path = _create_files(file_name_permissions, datetime.datetime(2014, 7, 2, 0, 0).timestamp())
         assert len(backups) == len(expected)
 
         for i, backup in enumerate(backups):
@@ -72,18 +79,12 @@ def test_backup_file_collect_backups(file_name_permissions, expected):
 ])
 def test_backup_file_execute_backups_success(file_name_permissions, expected):
     with CliRunner().isolated_filesystem():
-        for file_name, mode in file_name_permissions:
-            with open(file_name, "a"):
-                os.utime(file_name, (time.time(), datetime.datetime(2012, 6, 16, 0, 0).timestamp()))
-            os.chmod(file_name, mode)
-
-        backups = collect_backups([f[0] for f in file_name_permissions])
+        backups, test_path = _create_files(file_name_permissions, datetime.datetime(2012, 6, 16, 0, 0).timestamp())
         execute_backups(backups)
 
         # Make sure unexpected files weren't somehow created.
-        assert len(os.listdir(".")) == len(expected)
+        assert len(os.listdir(test_path)) == len(expected)
 
         for file_name, mode in expected:
             assert os.path.isfile(file_name)
             assert os.stat(file_name).st_mode == mode
-
