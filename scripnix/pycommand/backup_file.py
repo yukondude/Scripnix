@@ -76,7 +76,7 @@ def execute_backups(backups):
                 mode_mask = 0o7777 ^ (stat.S_ISUID | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
                 mode = os.stat(backup.to_path).st_mode
                 os.chmod(backup[1], mode & mode_mask)
-            except IOError:
+            except IOError:  # pragma: no cover
                 exceptions.append("Unable to set permissions for '{}'.".format(backup.to_path))
                 continue
 

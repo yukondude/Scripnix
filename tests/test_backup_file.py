@@ -4,6 +4,7 @@
 # This file is part of Scripnix. Copyright 2016 Dave Rogers <info@yukondude.com>. Licensed under the GNU General Public License, version 3.
 # Refer to the attached LICENSE file or see <http://www.gnu.org/licenses/> for details.
 
+from click import ClickException
 from click.testing import CliRunner
 import datetime
 import os
@@ -68,6 +69,31 @@ def test_backup_file_collect_backups(file_name_permissions, expected):
             assert backup.from_path == os.path.join(test_path, expected[i].from_path)
             assert backup.to_path == os.path.join(test_path, expected[i].to_path)
             assert backup.is_exec_or_suid == expected[i].is_exec_or_suid
+
+
+@pytest.mark.parametrize('file_name_permissions,expected', [
+    ([("test.tst", 0o0644)], [("test.tst", 0o100644)]),
+    ([("test.tst", 0o0644), ("test.exe", 0o0755)], [("test.tst", 0o100644), ("test.exe", 0o100755)]),
+])
+def test_backup_file_execute_backups_failure(file_name_permissions, expected):
+    with CliRunner().isolated_filesystem():
+        backups, test_path = _create_files(file_name_permissions, datetime.datetime(2013, 8, 31, 0, 0).timestamp())
+
+        monkeyed_backups = [Backup(b.from_path + '.bad', b.to_path, b.is_exec_or_suid) for b in backups]
+
+        with pytest.raises(ClickException) as excinfo:
+            execute_backups(monkeyed_backups)
+
+        message = str(excinfo.value)
+        assert len(message.split("\n")) == len(monkeyed_backups)
+        assert message.startswith("Unable to copy")
+
+        # Make sure unexpected files weren't somehow created.
+        assert len(os.listdir(test_path)) == len(expected)
+
+        for file_name, mode in expected:
+            assert os.path.isfile(file_name)
+            assert os.stat(file_name).st_mode == mode
 
 
 @pytest.mark.parametrize('file_name_permissions,expected', [
