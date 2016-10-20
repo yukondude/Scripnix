@@ -5,6 +5,6 @@ install:
 - "pip install -r requirements.txt"
 - "pip install pytest coveralls"
 script:
-  coverage run --source=scripnix setup.py test
+  py.test --cov=scripnix/pycommand --cov=tests --cov-report=term-missing --cov-fail-under=80
 after_success:
   coveralls
