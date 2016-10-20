@@ -5,6 +5,14 @@
 # Refer to the attached LICENSE file or see <http://www.gnu.org/licenses/> for details.
 
 import click
+import os
+
+
+def check_root_user(command_name):
+    """ Raise a ClickException if the current user is not root.
+    """
+    if os.getuid() != 0:
+        raise click.ClickException("You must be root to execute this command. Try running it as: sudo '{}'.".format(command_name))
 
 
 def common_command_and_options(command_name, add_dry_run=False):
