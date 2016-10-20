@@ -10,6 +10,7 @@ import datetime
 import os
 # noinspection PyPackageRequirements
 import pytest
+import re
 import time
 from scripnix.pycommand.backup_file import assemble_dry_run_message, Backup, collect_backups, COMMAND_NAME, execute_backups, main
 from .common_options import common_help_option, common_version_option
@@ -26,7 +27,8 @@ DRY_RUN_PREFIX = "{} would do the following:".format(COMMAND_NAME)
     ([], DRY_RUN_PREFIX),
     ([Backup('foo', 'foo.1', False)], "\n".join([DRY_RUN_PREFIX, "cp foo foo.1"])),
     ([Backup('bar', 'bar.1', True)], "\n".join([DRY_RUN_PREFIX, "cp bar bar.1", "chmod -x,u-s bar.1"])),
-    ([Backup('foo', 'foo.1', False), Backup('bar', 'bar.1', True)], "\n".join([DRY_RUN_PREFIX, "cp foo foo.1", "cp bar bar.1", "chmod -x,u-s bar.1"])),
+    ([Backup('foo', 'foo.1', False), Backup('bar', 'bar.1', True)],
+     "\n".join([DRY_RUN_PREFIX, "cp foo foo.1", "cp bar bar.1", "chmod -x,u-s bar.1"])),
 ])
 def test_backup_file_assemble_dry_run_message(backups, expected):
     assert assemble_dry_run_message(backups=backups) == expected
@@ -112,5 +114,30 @@ def test_backup_file_execute_backups_success(file_name_permissions, expected):
         assert len(os.listdir(test_path)) == len(expected)
 
         for file_name, mode in expected:
+            assert os.path.isfile(file_name)
+            assert os.stat(file_name).st_mode == mode
+
+
+@pytest.mark.parametrize('file_name_permissions,arguments,expected', [
+    ([], [], ([], "")),
+    ([], ["--dry-run"], ([], "")),
+    ([("test.tst", 0o0644)], [], ([("test.tst", 0o100644)], "")),
+    ([("test.tst", 0o0644)], ["test.tst"], ([("test.tst", 0o100644), ("test.tst.20150314", 0o100644)], "")),
+    ([("test.tst", 0o0644)], ["--dry-run", "test.tst"],
+     ([("test.tst", 0o100644)], DRY_RUN_PREFIX + r"\ncp .+/test\.tst .+/test\.tst\.20150314\n$")),
+])
+def test_backup_file_main(file_name_permissions, arguments, expected):
+    runner = CliRunner()
+
+    with CliRunner().isolated_filesystem():
+        backups, test_path = _create_files(file_name_permissions, datetime.datetime(2015, 3, 14, 0, 0).timestamp())
+        result = runner.invoke(main, arguments)
+
+        expected_file_name_permissions, expected_output_re = expected
+        assert len(os.listdir(test_path)) == len(expected_file_name_permissions)
+        assert result.exit_code == 0
+        assert re.match(expected_output_re, result.output) is not None
+
+        for file_name, mode in expected_file_name_permissions:
             assert os.path.isfile(file_name)
             assert os.stat(file_name).st_mode == mode
