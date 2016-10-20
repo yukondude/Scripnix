@@ -4,6 +4,7 @@ __pycache__/
 
 # Distribution / packaging
 *.egg-info/
+.eggs/
 
 # Unit test / coverage reports
 .coverage
