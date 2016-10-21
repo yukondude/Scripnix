@@ -12,12 +12,9 @@ from scripnix.pycommand.install_scripnix import install_global
 
 
 def test_install_scripnix_install_global():
-    echo_log = []
-
     def execute(fn, *args, echo):
-        """ Call the function with its arguments and gather the echo-ed output in echo_log."""
         fn(*args)
-        echo_log.append(echo)
+        _ = echo
 
     with CliRunner().isolated_filesystem():
         install_global(execute, "./test")
