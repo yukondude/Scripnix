@@ -5,9 +5,8 @@
 # Refer to the attached LICENSE file or see <http://www.gnu.org/licenses/> for details.
 
 import click
-from .command import common_command_and_options, is_root_user, USER_CONFIG_DIR, ROOT_CONFIG_DIR
+from .command import common_command_and_options, hostname, is_root_user, USER_CONFIG_DIR, ROOT_CONFIG_DIR
 import os
-import socket
 import stat
 from scripnix import __version__
 
@@ -63,13 +62,12 @@ def install_global(execute, config_path):
 
     # Create /etc/scripnix/sconf.bash
     sconf_bash_path = os.path.join(config_path, "sconf.bash")
-    hostname = socket.gethostname().split('.')[0].lower()
 
     if not os.path.isfile(sconf_bash_path):
         content = "# Global configuration setting overrides for sconf.bash.\n"
         content += "# Root- or sudoer-specific setting overrides can be made in {}/sconf.bash.\n".format(USER_CONFIG_DIR)
-        content += "MYSQL_DUMP_FILE='{}-pgsql-dump.tar'\n".format(hostname)
-        content += "PGSQL_DUMP_FILE='{}-pgsql-dump.tar'\n".format(hostname)
+        content += "MYSQL_DUMP_FILE='{}-pgsql-dump.tar'\n".format(hostname())
+        content += "PGSQL_DUMP_FILE='{}-pgsql-dump.tar'\n".format(hostname())
         execute(write_file, sconf_bash_path, content, echo="#create# {}".format(sconf_bash_path))
 
     execute(os.chmod, sconf_bash_path, stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP, echo="chmod u=rw,g=r,o= {}".format(sconf_bash_path))
@@ -95,7 +93,7 @@ def install_global(execute, config_path):
 
     # ln -s /*/ /etc/scripnix/archive-paths/#host#-*
     for symlink_dir in ("etc", "home", "root", "Users", "var/log", "var/mail", "var/spool", "var/www"):
-        archive_symlink_path = os.path.join(archive_paths_path, "{}-{}".format(hostname, symlink_dir.replace("/", "-")))
+        archive_symlink_path = os.path.join(archive_paths_path, "{}-{}".format(hostname(), symlink_dir.replace("/", "-")))
         symlink_dir_path = "/{}/".format(symlink_dir)
 
         if os.path.isdir(symlink_dir_path) and not os.path.islink(archive_symlink_path):

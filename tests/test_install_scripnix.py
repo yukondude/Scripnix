@@ -6,8 +6,8 @@
 
 from click.testing import CliRunner
 import os
-import socket
 from scripnix import __version__
+from scripnix.pycommand.command import hostname
 from scripnix.pycommand.install_scripnix import install_global
 
 
@@ -36,9 +36,8 @@ def test_install_scripnix_install_global():
         for name_mode in expected:
             assert name_mode in tree_attributes
 
-        hostname = socket.gethostname().split('.')[0].lower()
         archive_paths_path = "./test/archive-paths"
 
         for name in os.listdir(archive_paths_path):
-            assert name.startswith(hostname)
+            assert name.startswith(hostname())
             assert os.path.islink(os.path.join(archive_paths_path, name))

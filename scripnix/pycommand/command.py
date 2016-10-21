@@ -6,6 +6,7 @@
 
 import click
 import os
+import socket
 
 
 # Scripnix configuration directory locations.
@@ -16,7 +17,7 @@ USER_CONFIG_DIR = "~/.scripnix"
 def check_root_user(command_name):
     """ Raise a ClickException if the current user is not root.
     """
-    if is_root_user():
+    if not is_root_user():
         raise click.ClickException("You must be root to execute this command. Try running it as: sudo '{}'.".format(command_name))
 
 
@@ -62,13 +63,19 @@ def common_command_and_options(command_name, add_dry_run=False):
     return command_and_options
 
 
-EXCEPTION_INDENT = len("Error: ")
+def hostname():
+    """ Return the lowercase computer host name.
+    """
+    return socket.gethostname().split('.')[0].lower()
 
 
 def is_root_user():
     """ Return True if the current user is root.
     """
     return os.getuid() == 0
+
+
+EXCEPTION_INDENT = len("Error: ")
 
 
 def join_exceptions(exceptions):
