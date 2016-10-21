@@ -8,6 +8,11 @@ import click
 import os
 
 
+# Scripnix configuration directory locations.
+ROOT_CONFIG_DIR = "/etc/scripnix"
+USER_CONFIG_DIR = "~/.scripnix"
+
+
 def check_root_user(command_name):
     """ Raise a ClickException if the current user is not root.
     """
@@ -24,12 +29,12 @@ def common_command_and_options(command_name, add_dry_run=False):
     def command_with_help_switches(fn):
         """ Specify both the short and long help option switches.
         """
-        return click.command(context_settings=dict(help_option_names=['-h', '--help']))(fn)
+        return click.command(context_settings=dict(help_option_names=["-h", "--help"]))(fn)
 
     def dry_run_option(fn):
         """ Add the dry-run option switch.
         """
-        return click.option('--dry-run', '-D', is_flag=True, help="Show what would happen without actually doing it.")(fn)
+        return click.option("--dry-run", "-D", is_flag=True, help="Show what would happen without actually doing it.")(fn)
 
     def version_option(fn):
         """ Add the display version option switch.
@@ -43,7 +48,7 @@ def common_command_and_options(command_name, add_dry_run=False):
             click.echo("Copyright 2016 Dave Rogers. Licensed under the GPLv3. See LICENSE.")
             ctx.exit()
 
-        return click.option('--version', '-V', is_flag=True, callback=show_version, expose_value=False, is_eager=True,
+        return click.option("--version", "-V", is_flag=True, callback=show_version, expose_value=False, is_eager=True,
                             help="Show version and exit.")(fn)
 
     def command_and_options(fn):
