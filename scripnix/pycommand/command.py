@@ -16,7 +16,7 @@ USER_CONFIG_DIR = "~/.scripnix"
 def check_root_user(command_name):
     """ Raise a ClickException if the current user is not root.
     """
-    if os.getuid() != 0:
+    if is_root_user():
         raise click.ClickException("You must be root to execute this command. Try running it as: sudo '{}'.".format(command_name))
 
 
@@ -63,6 +63,12 @@ def common_command_and_options(command_name, add_dry_run=False):
 
 
 EXCEPTION_INDENT = len("Error: ")
+
+
+def is_root_user():
+    """ Return True if the current user is root.
+    """
+    return os.getuid() == 0
 
 
 def join_exceptions(exceptions):
