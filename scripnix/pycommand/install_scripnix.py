@@ -15,14 +15,12 @@ from scripnix import __version__
 COMMAND_NAME = "install-scripnix"
 
 
-def install_global(execute):  # pragma: no cover
+def install_global(execute, config_path):
     """ Install global Scripnix configuration settings.
     """
-    if not is_root_user():
-        return
 
     # mkdir /etc/scripnix
-    config_path = os.path.abspath(ROOT_CONFIG_DIR)
+    config_path = os.path.abspath(config_path)
 
     if not os.path.isdir(config_path):
         execute(os.mkdir, config_path, echo="mkdir {}".format(config_path))
@@ -108,7 +106,7 @@ def install_global(execute):  # pragma: no cover
             echo="chmod u=rwx,g=rxs,o= {}".format(archive_paths_path))
 
     # ln -s /*/ /etc/scripnix/archive-paths/#host#-*
-    for symlink_dir in ("etc", "home", "root", "var/log", "var/mail", "var/spool", "var/www"):
+    for symlink_dir in ("etc", "home", "root", "Users", "var/log", "var/mail", "var/spool", "var/www"):
         archive_symlink_path = os.path.join(archive_paths_path, "{}-{}".format(hostname, symlink_dir.replace("/", "-")))
         symlink_dir_path = "/{}/".format(symlink_dir)
 
@@ -149,5 +147,7 @@ def main(dry_run, verbose):
     elif verbose:
         click.echo("{} is performing the following:".format(COMMAND_NAME))
 
-    install_global(execute)
-    # install_per_user(execute)
+    if is_root_user():
+        install_global(execute, ROOT_CONFIG_DIR)
+
+    # install_per_user(execute, USER_CONFIG_DIR)
