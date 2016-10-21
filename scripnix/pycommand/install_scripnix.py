@@ -15,7 +15,7 @@ from scripnix import __version__
 COMMAND_NAME = "install-scripnix"
 
 
-def install_global(execute):
+def install_global(execute):  # pragma: no cover
     """ Install global Scripnix configuration settings.
     """
     if not is_root_user():
