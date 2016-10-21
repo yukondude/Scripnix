@@ -12,4 +12,10 @@ COMMAND_NAME = "gather-cron-jobs"
 
 @common_command_and_options(command_name=COMMAND_NAME)
 def main():
+    """ Gather all of the system and user crontab schedules and display them in a consolidated tab-delimited table:
+
+        mi hr dm mo dw user command
+
+        The gather-cron-jobs command is part of Scripnix.
+    """
     check_root_user(command_name=COMMAND_NAME)
