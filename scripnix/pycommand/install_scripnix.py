@@ -85,6 +85,38 @@ def install_global(execute):
 
     execute(os.chmod, sconf_bash_path, stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP, echo="chmod u=rw,g=r,o= {}".format(sconf_bash_path))
 
+    # Create /etc/scripnix/archive-exclusions
+    archive_exclusions_path = os.path.join(config_path, "archive-exclusions")
+
+    def write_archive_exclusions():
+        with open(archive_exclusions_path, "w", encoding="utf-8") as f:
+            f.write("/var/archive\n")
+
+    if not os.path.isfile(archive_exclusions_path):
+        execute(write_archive_exclusions, echo="#create# {}".format(archive_exclusions_path))
+
+    execute(os.chmod, archive_exclusions_path, stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP,
+            echo="chmod u=rw,g=r,o= {}".format(archive_exclusions_path))
+
+    # mkdir /etc/scripnix/archive-paths
+    archive_paths_path = os.path.join(config_path, "archive-paths")
+
+    if not os.path.isdir(archive_paths_path):
+        execute(os.mkdir, archive_paths_path, echo="mkdir {}".format(archive_paths_path))
+
+    execute(os.chmod, archive_paths_path, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR | stat.S_IRGRP | stat.S_IXGRP | stat.S_ISGID,
+            echo="chmod u=rwx,g=rxs,o= {}".format(archive_paths_path))
+
+    # ln -s /*/ /etc/scripnix/archive-paths/#host#-*
+    for symlink_dir in ("etc", "home", "root", "var/log", "var/mail", "var/spool", "var/www"):
+        archive_symlink_path = os.path.join(archive_paths_path, "{}-{}".format(hostname, symlink_dir.replace("/", "-")))
+        symlink_dir_path = "/{}/".format(symlink_dir)
+
+        if os.path.isdir(symlink_dir_path) and not os.path.islink(archive_symlink_path):
+            execute(os.symlink, symlink_dir_path, archive_symlink_path, True,
+                    echo="ln -s {} {}".format(symlink_dir_path, archive_symlink_path))
+
+
 # def install_per_user(execute):
 #     """ Install per-user Scripnix configuration settings.
 #     """
