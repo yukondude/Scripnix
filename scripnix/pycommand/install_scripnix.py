@@ -9,6 +9,7 @@ from .command import common_command_and_options, is_root_user, USER_CONFIG_DIR, 
 import os
 import socket
 import stat
+from scripnix import __version__
 
 
 COMMAND_NAME = "install-scripnix"
@@ -20,7 +21,7 @@ def install_global(execute):
     if not is_root_user():
         return
 
-    hostname = socket.gethostname().split('.')[0].lower()
+    # mkdir /etc/scripnix
     config_path = os.path.abspath(ROOT_CONFIG_DIR)
 
     if not os.path.isdir(config_path):
@@ -28,8 +29,61 @@ def install_global(execute):
 
     execute(os.chmod, config_path,
             stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR | stat.S_IRGRP | stat.S_IXGRP | stat.S_ISGID | stat.S_IROTH | stat.S_IXOTH,
-            echo="chmod a=rwx,g=rxs,o=rx {}".format(config_path))
+            echo="chmod u=rwx,g=rxs,o=rx {}".format(config_path))
 
+    # Create /etc/scripnix/README
+    readme_path = os.path.join(config_path, "README")
+
+    def write_readme():
+        with open(readme_path, "w", encoding="utf-8") as f:
+            f.write("Global Scripnix configuration settings.\n")
+            f.write("[https://github.com/yukondude/Scripnix]\n")
+
+    if not os.path.isfile(readme_path):
+        execute(write_readme, echo="#create# {}".format(readme_path))
+
+    execute(os.chmod, readme_path, stat.S_IRUSR | stat.S_IRGRP | stat.S_IROTH, echo="chmod ugo=r {}".format(readme_path))
+
+    # touch /etc/scripnix/scripnix-#version#
+    version_path = os.path.join(config_path, "scripnix-{}".format(__version__))
+
+    def touch_version():
+        open(version_path, "w").close()
+
+    if not os.path.isfile(version_path):
+        execute(touch_version, echo="touch {}".format(version_path))
+
+    execute(os.chmod, version_path, 0, echo="chmod ugo= {}".format(version_path))
+
+    # Create /etc/scripnix/conf.bash
+    conf_bash_path = os.path.join(config_path, "conf.bash")
+
+    def write_conf_bash():
+        with open(conf_bash_path, "w", encoding="utf-8") as f:
+            f.write("# Global configuration setting overrides for conf.bash.\n")
+            f.write("# User-specific setting overrides can be made in {}/conf.bash.\n".format(USER_CONFIG_DIR))
+
+    if not os.path.isfile(conf_bash_path):
+        execute(write_conf_bash, echo="#create# {}".format(conf_bash_path))
+
+    execute(os.chmod, conf_bash_path, stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IROTH,
+            echo="chmod u=rw,go=r {}".format(conf_bash_path))
+
+    # Create /etc/scripnix/sconf.bash
+    sconf_bash_path = os.path.join(config_path, "sconf.bash")
+    hostname = socket.gethostname().split('.')[0].lower()
+
+    def write_sconf_bash():
+        with open(sconf_bash_path, "w", encoding="utf-8") as f:
+            f.write("# Global configuration setting overrides for sconf.bash.\n")
+            f.write("# Root- or sudoer-specific setting overrides can be made in {}/sconf.bash.\n".format(USER_CONFIG_DIR))
+            f.write("MYSQL_DUMP_FILE='{}-pgsql-dump.tar'\n".format(hostname))
+            f.write("PGSQL_DUMP_FILE='{}-pgsql-dump.tar'\n".format(hostname))
+
+    if not os.path.isfile(sconf_bash_path):
+        execute(write_sconf_bash, echo="#create# {}".format(sconf_bash_path))
+
+    execute(os.chmod, sconf_bash_path, stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP, echo="chmod u=rw,g=r,o= {}".format(sconf_bash_path))
 
 # def install_per_user(execute):
 #     """ Install per-user Scripnix configuration settings.
