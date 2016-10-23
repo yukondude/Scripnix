@@ -81,7 +81,7 @@ setup(
         'console_scripts': gather_console_scripts(),
     },
     extras_require={
-        'testing': ["pytest"],
+        'testing': ["pytest", "pytest-cov"],
     },
     include_package_data=True,
     install_requires=gather_requirements(),
