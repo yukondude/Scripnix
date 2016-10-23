@@ -6,6 +6,7 @@
 
 from click.testing import CliRunner
 import os
+import re
 from scripnix import __version__
 from scripnix.pycommand.command import hostname, operating_system
 from scripnix.pycommand.install_scripnix import install_global
@@ -18,6 +19,8 @@ def test_install_scripnix_install_global():
 
     with CliRunner().isolated_filesystem():
         install_global(execute, config_path="./test", os_name=operating_system())
+
+        # Test for installed files and permissions.
         tree = []
 
         for path, dir_names, file_names in os.walk("."):
@@ -36,8 +39,20 @@ def test_install_scripnix_install_global():
         for name_mode in expected:
             assert name_mode in tree_attributes
 
+        # Test for presence of archive-paths/ symlinks.
         archive_paths_path = "./test/archive-paths"
 
         for name in os.listdir(archive_paths_path):
             assert name.startswith(hostname())
             assert os.path.islink(os.path.join(archive_paths_path, name))
+
+        # Test for selected file contents (mostly that they're not empty).
+        expected = (("./test/archive-exclusions", r"^\/var\/archive$"),
+                    ("./test/conf.bash", r"^# Global configuration setting overrides for conf\.bash\.$"),
+                    ("./test/README", r"^Global Scripnix configuration settings\.$"),
+                    ("./test/sconf.bash", r"^# Global configuration setting overrides for sconf\.bash\.$"))
+
+        for path, regex in expected:
+            with open(path, "r") as f:
+                whole_file = f.read()
+                assert re.match(regex, whole_file, re.MULTILINE)
