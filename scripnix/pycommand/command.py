@@ -19,7 +19,7 @@ def check_root_user(command_name):
     """ Raise a ClickException if the current user is not root.
     """
     if not is_root_user():
-        raise click.ClickException("You must be root to execute this command. Try running it as: sudo '{}'.".format(command_name))
+        raise click.ClickException("You must be root to execute this command. Try running it as: sudo {}".format(command_name))
 
 
 def common_command_and_options(command_name, add_dry_run=False):
