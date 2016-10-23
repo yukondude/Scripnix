@@ -7,7 +7,7 @@
 from click.testing import CliRunner
 import os
 from scripnix import __version__
-from scripnix.pycommand.command import hostname
+from scripnix.pycommand.command import hostname, operating_system
 from scripnix.pycommand.install_scripnix import install_global
 
 
@@ -17,7 +17,7 @@ def test_install_scripnix_install_global():
         _ = echo
 
     with CliRunner().isolated_filesystem():
-        install_global(execute, "./test")
+        install_global(execute, config_path="./test", os_name=operating_system())
         tree = []
 
         for path, dir_names, file_names in os.walk("."):

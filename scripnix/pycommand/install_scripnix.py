@@ -5,7 +5,7 @@
 # Refer to the attached LICENSE file or see <http://www.gnu.org/licenses/> for details.
 
 import click
-from .command import common_command_and_options, hostname, is_root_user, USER_CONFIG_DIR, ROOT_CONFIG_DIR
+from .command import common_command_and_options, hostname, is_root_user, operating_system, USER_CONFIG_DIR, ROOT_CONFIG_DIR
 import os
 import stat
 from scripnix import __version__
@@ -14,7 +14,7 @@ from scripnix import __version__
 COMMAND_NAME = "install-scripnix"
 
 
-def install_global(execute, config_path):
+def install_global(execute, config_path, os_name):
     """ Install global Scripnix configuration settings.
     """
 
@@ -92,7 +92,14 @@ def install_global(execute, config_path):
             echo="chmod u=rwx,g=rxs,o= {}".format(archive_paths_path))
 
     # ln -s /*/ /etc/scripnix/archive-paths/#host#-*
-    for symlink_dir in ("etc", "home", "root", "Users", "var/log", "var/mail", "var/spool", "var/www"):
+    backup_paths = ["etc", "root", "var/log", "var/mail", "var/spool", "var/www"]
+
+    if os_name == "macos":
+        backup_paths.append("Users")
+    else:
+        backup_paths.append("home")
+
+    for symlink_dir in backup_paths:
         archive_symlink_path = os.path.join(archive_paths_path, "{}-{}".format(hostname(), symlink_dir.replace("/", "-")))
         symlink_dir_path = "/{}/".format(symlink_dir)
 
@@ -134,7 +141,7 @@ def main(dry_run, verbose):
         click.echo("{} is performing the following:".format(COMMAND_NAME))
 
     if is_root_user():
-        install_global(execute, ROOT_CONFIG_DIR)
+        install_global(execute, config_path=ROOT_CONFIG_DIR, os_name=operating_system())
 
     # install_per_user(execute, USER_CONFIG_DIR)
 

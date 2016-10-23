@@ -5,6 +5,7 @@
 # Refer to the attached LICENSE file or see <http://www.gnu.org/licenses/> for details.
 
 import click
+import platform
 import os
 import socket
 
@@ -83,3 +84,10 @@ def join_exceptions(exceptions):
         format.
     """
     return ("\n" + " " * EXCEPTION_INDENT).join(exceptions)
+
+
+def operating_system():
+    """ Return the operating system platform name (e.g., linux, macos, windows).
+    """
+    os_name = platform.system().lower()
+    return "macos" if os_name == "darwin" else os_name
