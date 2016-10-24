@@ -16,7 +16,7 @@ COMMAND_NAME = "describe-scripnix"
 def collect_help_text(command):
     """ Return the output from the given command executed with the --help option switch.
     """
-    return subprocess.check_output("{} --help".format(command), shell=True).decode("utf-8")
+    return subprocess.check_output([command, "--help"]).decode("utf-8")
 
 
 def format_command_help_text(command, help_text):
