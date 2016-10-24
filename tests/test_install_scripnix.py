@@ -41,6 +41,7 @@ def test_install_scripnix_install_global():
 
         # Test for presence of archive-paths/ symlinks.
         archive_paths_path = "./test/archive-paths"
+        assert len(os.listdir(archive_paths_path)) >= 6
 
         for name in os.listdir(archive_paths_path):
             assert name.startswith(hostname())
