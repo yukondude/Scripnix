@@ -1,4 +1,4 @@
-""" Scripnix backup-file command
+""" Scripnix backup-file command. See the main() function's docstring for details.
 """
 
 # This file is part of Scripnix. Copyright 2016 Dave Rogers <info@yukondude.com>. Licensed under the GNU General Public License, version 3.

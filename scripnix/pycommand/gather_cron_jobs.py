@@ -1,4 +1,4 @@
-""" Scripnix gather-cron-jobs command
+""" Scripnix gather-cron-jobs command. See the main() function's docstring for details.
 """
 
 # This file is part of Scripnix. Copyright 2016 Dave Rogers <info@yukondude.com>. Licensed under the GNU General Public License, version 3.
