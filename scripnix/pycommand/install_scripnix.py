@@ -107,9 +107,18 @@ def install_global(execute, config_path, os_name):
                     echo="ln -s {} {}".format(symlink_dir_path, archive_symlink_path))
 
 
-def install_per_user(execute, execute_chown, config_path):
+def install_per_user(execute, config_path):
     """ Install per-user Scripnix configuration settings.
     """
+    def execute_chown(path):
+        """ If installed via sudo, reset the owner of ~/.scripnix and its contents to the normal non-root user. If installed as the
+            root user, this won't have any effect.
+        """
+        if is_root_user():
+            stat_info = os.stat(os.path.join(path, ".."))
+            execute(os.chown, path, stat_info.st_uid, stat_info.st_gid,
+                    echo="chown {}:{} {}".format(pwd.getpwuid(stat_info.st_uid)[0], grp.getgrgid(stat_info.st_gid)[0], path))
+
     # mkdir ~/.scripnix
     if not os.path.isdir(config_path):
         execute(os.mkdir, config_path, echo="mkdir {}".format(config_path))
@@ -153,16 +162,6 @@ def main(dry_run, verbose):
         if dry_run or verbose:
             click.echo(echo)
 
-    def execute_chown(path):
-        """ If installed via sudo, have to reset the owner of ~/.scripnix and its contents to the normal non-root user. If installed as the
-            root user, this won't have any effect.
-        """
-        if is_root_user():
-            stat_info = os.stat(os.path.join(path, ".."))
-            user = pwd.getpwuid(stat_info.st_uid)[0]
-            group = grp.getgrgid(stat_info.st_gid)[0]
-            execute(os.chown, path, stat_info.st_uid, stat_info.st_gid, echo="chown {}:{} {}".format(user, group, path))
-
     if dry_run:
         click.echo("{} would do the following:".format(COMMAND_NAME))
     elif verbose:
@@ -171,7 +170,7 @@ def main(dry_run, verbose):
     if is_root_user():
         install_global(execute, config_path=ROOT_CONFIG_DIR, os_name=operating_system())
 
-    install_per_user(execute, execute_chown, config_path=USER_CONFIG_DIR)
+    install_per_user(execute, config_path=USER_CONFIG_DIR)
 
 
 def write_file(path, content):
