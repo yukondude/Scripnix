@@ -49,7 +49,6 @@ def test_install_scripnix_install_global():
     with CliRunner().isolated_filesystem():
         install_global(execute, config_path="./test", os_name=operating_system())
 
-        #
         _check_exists_with_mode(("./test", 0o42755),
                                 ("./test/archive-paths", 0o42750),
                                 ("./test/archive-exclusions", 0o100640),
@@ -84,6 +83,16 @@ def test_install_scripnix_install_per_user():
                                 ("./.test/README", 0o100440))
 
         _check_file_contents(("./.test/README", r"^User Scripnix configuration settings\.$"))
+
+
+def test_install_scripnix_main_dry_run():
+    runner = CliRunner()
+
+    with CliRunner().isolated_filesystem():
+        result = runner.invoke(main, ["--yes", "--dry-run"])
+        assert result.exit_code == 0
+        assert re.match(r"^{} would do the following:$".format(COMMAND_NAME), result.output, re.MULTILINE) is not None
+        assert len(result.output.split("\n")) >= 3
 
 
 def test_install_scripnix_version_option():
