@@ -76,6 +76,9 @@ setup(
         "Topic :: Utilities",
     ],
     cmdclass={'test': PyTest},
+    data_files=[
+        ('', ["README.md", "LICENSE"]),
+    ],
     description=scripnix.__doc__,
     entry_points={
         'console_scripts': gather_console_scripts(),
@@ -83,7 +86,6 @@ setup(
     extras_require={
         'testing': ["pytest", "pytest-cov"],
     },
-    include_package_data=True,
     install_requires=gather_requirements(),
     license="GPLv3",
     long_description="See README.md.",
