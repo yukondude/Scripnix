@@ -6,7 +6,9 @@
 
 import click
 from .command import common_command_and_options, hostname, is_root_user, operating_system, USER_CONFIG_DIR, ROOT_CONFIG_DIR
+import grp
 import os
+import pwd
 import stat
 from scripnix import __version__
 
@@ -17,10 +19,7 @@ COMMAND_NAME = "install-scripnix"
 def install_global(execute, config_path, os_name):
     """ Install global Scripnix configuration settings.
     """
-
     # mkdir /etc/scripnix
-    config_path = os.path.abspath(config_path)
-
     if not os.path.isdir(config_path):
         execute(os.mkdir, config_path, echo="mkdir {}".format(config_path))
 
@@ -92,12 +91,12 @@ def install_global(execute, config_path, os_name):
             echo="chmod u=rwx,g=rxs,o= {}".format(archive_paths_path))
 
     # ln -s /*/ /etc/scripnix/archive-paths/#host#-*
-    backup_paths = ["etc", "root", "var/log", "var/mail", "var/spool", "var/www"]
+    backup_paths = ["etc", "var/log", "var/mail", "var/spool", "var/www"]
 
     if os_name == "macos":
-        backup_paths.append("Users")
+        backup_paths.extend(["Users", "var/root"])
     else:
-        backup_paths.append("home")
+        backup_paths.extend(["home", "root"])
 
     for symlink_dir in backup_paths:
         archive_symlink_path = os.path.join(archive_paths_path, "{}-{}".format(hostname(), symlink_dir.replace("/", "-")))
@@ -108,10 +107,29 @@ def install_global(execute, config_path, os_name):
                     echo="ln -s {} {}".format(symlink_dir_path, archive_symlink_path))
 
 
-# def install_per_user(execute):
-#     """ Install per-user Scripnix configuration settings.
-#     """
-#     config_path = os.path.abspath(USER_CONFIG_DIR)
+def install_per_user(execute, execute_chown, config_path):
+    """ Install per-user Scripnix configuration settings.
+    """
+    # mkdir ~/.scripnix
+    if not os.path.isdir(config_path):
+        execute(os.mkdir, config_path, echo="mkdir {}".format(config_path))
+
+    execute_chown(config_path)
+    execute(os.chmod, config_path,
+            stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR | stat.S_IRGRP | stat.S_IXGRP | stat.S_ISGID,
+            echo="chmod u=rwx,g=rxs,o= {}".format(config_path))
+
+    # Create ~/.scripnix/README
+    readme_path = os.path.join(config_path, "README")
+
+    if not os.path.isfile(readme_path):
+        content = "User Scripnix configuration settings.\n"
+        content += "[https://github.com/yukondude/Scripnix]\n"
+        content += "Override the global Scripnix ({}/*.conf) settings here.\n".format(ROOT_CONFIG_DIR)
+        execute(write_file, readme_path, content, echo="#create# {}".format(readme_path))
+
+    execute_chown(readme_path)
+    execute(os.chmod, readme_path, stat.S_IRUSR | stat.S_IRGRP, echo="chmod ug=r,o= {}".format(readme_path))
 
 
 @common_command_and_options(command_name=COMMAND_NAME, add_dry_run=True)
@@ -135,6 +153,16 @@ def main(dry_run, verbose):
         if dry_run or verbose:
             click.echo(echo)
 
+    def execute_chown(path):
+        """ If installed via sudo, have to reset the owner of ~/.scripnix and its contents to the normal non-root user. If installed as the
+            root user, this won't have any effect.
+        """
+        if is_root_user():
+            stat_info = os.stat(os.path.join(path, ".."))
+            user = pwd.getpwuid(stat_info.st_uid)[0]
+            group = grp.getgrgid(stat_info.st_gid)[0]
+            execute(os.chown, path, stat_info.st_uid, stat_info.st_gid, echo="chown {}:{} {}".format(user, group, path))
+
     if dry_run:
         click.echo("{} would do the following:".format(COMMAND_NAME))
     elif verbose:
@@ -143,7 +171,7 @@ def main(dry_run, verbose):
     if is_root_user():
         install_global(execute, config_path=ROOT_CONFIG_DIR, os_name=operating_system())
 
-    # install_per_user(execute, USER_CONFIG_DIR)
+    install_per_user(execute, execute_chown, config_path=USER_CONFIG_DIR)
 
 
 def write_file(path, content):
