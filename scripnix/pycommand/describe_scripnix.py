@@ -22,7 +22,7 @@ def collect_help_text(command):
 def format_command_help_text(command, help_text):
     """ Return the given command and help text formatted as GitHub-flavoured Markdown.
     """
-    return "\n".join(["### `{}`".format(command), "```", help_text, "```"])
+    return "\n".join(["### `{}`".format(command), "```", help_text.rstrip("\n"), "```"])
 
 
 def format_commands(path, exclusions):
