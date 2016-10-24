@@ -12,7 +12,7 @@ import socket
 
 # Scripnix configuration directory locations.
 ROOT_CONFIG_DIR = "/etc/scripnix"
-USER_CONFIG_DIR = "~/.scripnix"
+USER_CONFIG_DIR = os.path.expanduser("~/.scripnix")
 
 
 def check_root_user(command_name):
