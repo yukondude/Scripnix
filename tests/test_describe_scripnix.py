@@ -18,6 +18,7 @@ def test_help_option():
 def test_main():
     result = CliRunner().invoke(main)
     help_text = result.output
+    assert len(help_text) > 0
 
     here = os.path.abspath(os.path.dirname(__file__))
     path = os.path.abspath(os.path.join(here, "../scripnix/pycommand"))
