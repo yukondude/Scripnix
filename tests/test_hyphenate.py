@@ -11,7 +11,7 @@ from scripnix.pycommand.hyphenate import COMMAND_NAME, hyphenate, main
 from .common_options import common_help_option, common_version_option
 
 
-def test_hyphenate_help_option():
+def test_help_option():
     common_help_option(command_entry=main, command_name=COMMAND_NAME)
 
 
@@ -31,7 +31,7 @@ def test_hyphenate_help_option():
     (["foo    bar****baz))))bat####quux"], '-', ["foo-bar-baz-bat-quux"]),
     (["foo bar", "   bar    baz   ", "baz___bat", "  _quux_  "], '-', ["foo-bar", "bar-baz", "baz___bat", "_quux_"]),
 ])
-def test_hyphenate_hyphenate(lines, delimiter, expected):
+def test_hyphenate(lines, delimiter, expected):
     assert hyphenate(lines=lines, delimiter=delimiter) == expected
 
 
@@ -40,7 +40,7 @@ def test_hyphenate_hyphenate(lines, delimiter, expected):
     (["foo"], "foo\n"),
     (["foo bar", "   bar    baz   ", "baz___bat", "  _quux_  "], "foo-bar\nbar-baz\nbaz___bat\n_quux_\n"),
 ])
-def test_hyphenate_main_arguments(arguments, expected):
+def test_main_arguments(arguments, expected):
     runner = CliRunner()
     result = runner.invoke(main, arguments)
     assert result.exit_code == 0
@@ -52,12 +52,12 @@ def test_hyphenate_main_arguments(arguments, expected):
     ("foo", "foo\n"),
     ("foo bar\n   bar    baz   \nbaz___bat\n  _quux_  ", "foo-bar\nbar-baz\nbaz___bat\n_quux_\n"),
 ])
-def test_hyphenate_main_stdin(stdin, expected):
+def test_main_stdin(stdin, expected):
     runner = CliRunner()
     result = runner.invoke(main, input=stdin)
     assert result.exit_code == 0
     assert result.output == expected
 
 
-def test_hyphenate_version_option():
+def test_version_option():
     common_version_option(command_entry=main, command_name=COMMAND_NAME)

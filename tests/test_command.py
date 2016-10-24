@@ -10,7 +10,7 @@ import pytest
 from scripnix.pycommand.command import check_root_user, is_root_user, join_exceptions
 
 
-def test_command_check_root_user():
+def test_check_root_user():
     with pytest.raises(ClickException) as excinfo:
         check_root_user("foo")
 
@@ -19,7 +19,7 @@ def test_command_check_root_user():
     assert message.endswith("sudo foo")
 
 
-def test_command_is_root_user():
+def test_is_root_user():
     assert not is_root_user()
 
 
@@ -29,7 +29,5 @@ def test_command_is_root_user():
     (["foo", "bar"], "foo\n       bar"),
     (["foo", "bar", "bat"], "foo\n       bar\n       bat"),
 ])
-def test_command_join_exceptions(exceptions, expected):
+def test_join_exceptions(exceptions, expected):
     assert join_exceptions(exceptions=exceptions) == expected
-
-

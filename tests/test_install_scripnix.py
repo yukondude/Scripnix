@@ -37,11 +37,11 @@ def _check_file_contents(*expected):
             assert re.match(regex, whole_file, re.MULTILINE) is not None
 
 
-def test_install_scripnix_help_option():
+def test_help_option():
     common_help_option(command_entry=main, command_name=COMMAND_NAME)
 
 
-def test_install_scripnix_install_global():
+def test_install_global():
     def execute(fn, *args, echo):
         fn(*args)
         _ = echo
@@ -71,7 +71,7 @@ def test_install_scripnix_install_global():
                              ("./test/sconf.bash", r"^# Global configuration setting overrides for sconf\.bash\.$"))
 
 
-def test_install_scripnix_install_per_user():
+def test_install_per_user():
     def execute(fn, *args, echo):
         fn(*args)
         _ = echo
@@ -85,7 +85,7 @@ def test_install_scripnix_install_per_user():
         _check_file_contents(("./.test/README", r"^User Scripnix configuration settings\.$"))
 
 
-def test_install_scripnix_main_dry_run():
+def test_main_dry_run():
     runner = CliRunner()
 
     with CliRunner().isolated_filesystem():
@@ -95,5 +95,5 @@ def test_install_scripnix_main_dry_run():
         assert len(result.output.split("\n")) >= 3
 
 
-def test_install_scripnix_version_option():
+def test_version_option():
     common_version_option(command_entry=main, command_name=COMMAND_NAME)

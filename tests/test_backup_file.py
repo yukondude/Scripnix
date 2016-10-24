@@ -16,7 +16,7 @@ from scripnix.pycommand.backup_file import assemble_dry_run_message, Backup, col
 from .common_options import common_help_option, common_version_option
 
 
-def test_backup_file_help_option():
+def test_help_option():
     common_help_option(command_entry=main, command_name=COMMAND_NAME)
 
 
@@ -30,11 +30,11 @@ DRY_RUN_PREFIX = "{} would do the following:".format(COMMAND_NAME)
     ([Backup('foo', 'foo.1', False), Backup('bar', 'bar.1', True)],
      "\n".join([DRY_RUN_PREFIX, "cp foo foo.1", "cp bar bar.1", "chmod -x,u-s bar.1"])),
 ])
-def test_backup_file_assemble_dry_run_message(backups, expected):
+def test_assemble_dry_run_message(backups, expected):
     assert assemble_dry_run_message(backups=backups) == expected
 
 
-def test_backup_file_version_option():
+def test_version_option():
     common_version_option(command_entry=main, command_name=COMMAND_NAME)
 
 
@@ -62,7 +62,7 @@ def _create_files(file_name_permissions, modification_ts):
     ([("test.tst", 0o0644), ("test.tst.20140702", 0o0644)],
      [Backup("test.tst", "test.tst.20140702.1", False), Backup("test.tst.20140702", "test.tst.20140702.20140702", False)]),
 ])
-def test_backup_file_collect_backups(file_name_permissions, expected):
+def test_collect_backups(file_name_permissions, expected):
     with CliRunner().isolated_filesystem():
         backups, test_path = _create_files(file_name_permissions, datetime.datetime(2014, 7, 2, 0, 0).timestamp())
         assert len(backups) == len(expected)
@@ -77,7 +77,7 @@ def test_backup_file_collect_backups(file_name_permissions, expected):
     ([("test.tst", 0o0644)], [("test.tst", 0o100644)]),
     ([("test.tst", 0o0644), ("test.exe", 0o0755)], [("test.tst", 0o100644), ("test.exe", 0o100755)]),
 ])
-def test_backup_file_execute_backups_failure(file_name_permissions, expected):
+def test_execute_backups_failure(file_name_permissions, expected):
     with CliRunner().isolated_filesystem():
         backups, test_path = _create_files(file_name_permissions, datetime.datetime(2013, 8, 31, 0, 0).timestamp())
 
@@ -105,7 +105,7 @@ def test_backup_file_execute_backups_failure(file_name_permissions, expected):
     ([("test.suid", 0o4644)], [("test.suid", 0o104644), ("test.suid.20120616", 0o100644)]),
     ([("test.suid", 0o4750)], [("test.suid", 0o104750), ("test.suid.20120616", 0o100640)]),
 ])
-def test_backup_file_execute_backups_success(file_name_permissions, expected):
+def test_execute_backups_success(file_name_permissions, expected):
     with CliRunner().isolated_filesystem():
         backups, test_path = _create_files(file_name_permissions, datetime.datetime(2012, 6, 16, 0, 0).timestamp())
         execute_backups(backups)
@@ -126,7 +126,7 @@ def test_backup_file_execute_backups_success(file_name_permissions, expected):
     ([("test.tst", 0o0644)], ["--dry-run", "test.tst"],
      ([("test.tst", 0o100644)], DRY_RUN_PREFIX + r"\ncp .+/test\.tst .+/test\.tst\.20150314\n$")),
 ])
-def test_backup_file_main(file_name_permissions, arguments, expected):
+def test_main(file_name_permissions, arguments, expected):
     runner = CliRunner()
 
     with CliRunner().isolated_filesystem():
