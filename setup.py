@@ -15,6 +15,10 @@ import scripnix
 HERE = os.path.abspath(os.path.dirname(__file__))
 
 
+with open(os.path.join(HERE, 'README.md'), encoding='utf-8') as f:
+    long_description = f.read()
+
+
 def gather_console_scripts():
     """ Return the list of the project's console script entry points.
     """
@@ -23,7 +27,7 @@ def gather_console_scripts():
     full_command_path = os.path.join(HERE, command_path)
     package_path = command_path.replace('/', '.')
 
-    for file_name in [f for f in os.listdir(full_command_path) if os.path.isfile(os.path.join(full_command_path, f))]:
+    for file_name in [fn for fn in os.listdir(full_command_path) if os.path.isfile(os.path.join(full_command_path, fn))]:
         if file_name in ('__init__.py', 'command.py'):
             continue
 
@@ -65,7 +69,9 @@ setup(
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Natural Language :: English",
         "Operating System :: MacOS",
+        "Operating System :: POSIX",
         "Operating System :: POSIX :: Linux",
+        "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.3",
         "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",
@@ -86,9 +92,10 @@ setup(
     extras_require={
         'testing': ["pytest", "pytest-cov"],
     },
+    include_package_data=True,
     install_requires=gather_requirements(),
     license="GPLv3",
-    long_description="See README.md.",
+    long_description=long_description,
     name="Scripnix",
     packages=find_packages(),
     platforms=["MacOS", "Linux"],
