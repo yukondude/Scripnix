@@ -4,9 +4,8 @@ python:
 - "3.4"
 - "3.5"
 install:
-- "pip install -r requirements.txt"
-- "pip install pytest pytest-cov"
-- "pip install ."
+- travis_retry python setup.py develop
+- travis_retry pip install pytest-cov coverage
 script:
   py.test --cov=scripnix/pycommand --cov=tests --cov-report=term-missing --cov-fail-under=80
 after_success:
