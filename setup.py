@@ -6,7 +6,7 @@
 # Refer to the attached LICENSE file or see <http://www.gnu.org/licenses/> for details.
 
 import os
-from setuptools import setup
+from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
 import sys
 import scripnix
@@ -90,7 +90,7 @@ setup(
     license="GPLv3",
     long_description="See README.md.",
     name="Scripnix",
-    packages=["scripnix"],
+    packages=find_packages(),
     platforms=["MacOS", "Linux"],
     tests_require=["pytest", "pytest-cov"],
     url="https://yukondude.github.io/Scripnix/",
