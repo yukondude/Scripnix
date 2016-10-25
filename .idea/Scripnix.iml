@@ -3,7 +3,11 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/scripnix" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/scripnix/pycommand" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/Scripnix.egg-info" />
+      <excludeFolder url="file://$MODULE_DIR$/build" />
+      <excludeFolder url="file://$MODULE_DIR$/dist" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.5.2 virtualenv at ~/.virtualenvs/Scripnix" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
