@@ -47,6 +47,8 @@ def test_install_global():
         _ = echo
 
     with CliRunner().isolated_filesystem():
+        # Run twice to exercise both paths of the file existence check.
+        install_global(execute, config_path="./test", os_name=operating_system())
         install_global(execute, config_path="./test", os_name=operating_system())
 
         _check_exists_with_mode(("./test", 0o42755),
@@ -77,6 +79,8 @@ def test_install_per_user():
         _ = echo
 
     with CliRunner().isolated_filesystem():
+        # Run twice to exercise both paths of the file existence check.
+        install_per_user(execute, config_path="./.test")
         install_per_user(execute, config_path="./.test")
 
         _check_exists_with_mode(("./.test", 0o42750),
