@@ -16,10 +16,6 @@ def test_help_option():
 
 
 def test_main():
-    # TODO: Skip testing the describe-scripnix command for the time being since it doesn't seem to work on Travis CI. Looks like the
-    # subprocess.check_output() call in collect_help_text() isn't finding the commands to run (~"/bin/sh backup-file not found").
-    # return
-
     result = CliRunner().invoke(main)
     help_text = result.output
     assert len(help_text) > 0
