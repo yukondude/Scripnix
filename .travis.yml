@@ -5,9 +5,9 @@ python:
 - "3.5"
 install:
 - "pip install -r requirements.txt"
-- "pip install pytest pytest-cov coveralls"
+- "pip install pytest pytest-cov"
 - "pip install ."
 script:
   py.test --cov=scripnix/pycommand --cov=tests --cov-report=term-missing --cov-fail-under=80
 after_success:
-  coveralls
+- bash <(curl -s https://codecov.io/bash)
