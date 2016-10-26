@@ -19,7 +19,7 @@ attached LICENSE file or see http://www.gnu.org/licenses/ for details.
 Version
 -------
 
-``scripnix.__version__ == 0.1.2``
+``scripnix.__version__ == 0.1.3``
 
 Installation
 ------------

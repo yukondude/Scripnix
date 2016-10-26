@@ -15,8 +15,8 @@ import scripnix
 HERE = os.path.abspath(os.path.dirname(__file__))
 
 
-with open(os.path.join(HERE, 'README.rst'), encoding='utf-8') as f:
-    long_description = f.read()
+# with open(os.path.join(HERE, 'README.rst'), encoding='utf-8') as f:
+#     long_description = f.read()
 
 
 def gather_console_scripts():
@@ -95,7 +95,7 @@ setup(
     include_package_data=True,
     install_requires=gather_requirements(),
     license="GPLv3",
-    long_description=long_description,
+    long_description="See one of the README files for details.",
     name="Scripnix",
     packages=find_packages(),
     platforms=["MacOS", "Linux"],
