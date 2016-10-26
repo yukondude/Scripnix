@@ -14,7 +14,7 @@ Refer to the attached LICENSE file or see <http://www.gnu.org/licenses/> for det
 
 ## Version
 
-`scripnix.__version__ == 0.1.3`
+`scripnix.__version__ == 0.1.4`
 
 ## Installation
 
