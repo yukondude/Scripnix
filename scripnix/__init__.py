@@ -13,4 +13,4 @@
 #
 # Copyright 2016 Dave Rogers <info@yukondude.com>
 
-__version__ = "0.1.4"
+__version__ = "0.1.5"
