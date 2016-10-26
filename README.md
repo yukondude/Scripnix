@@ -1,9 +1,9 @@
 # Scripnix
 Useful Python3 and bash shell scripts for macOS/BSD and \*NIX. Useful to me, at any rate. YMMV.
 
-[![Build Status](https://travis-ci.org/yukondude/Scripnix.svg?branch=master)](https://travis-ci.org/yukondude/Scripnix)
+[![buildstatus](https://travis-ci.org/yukondude/Scripnix.svg?branch=master)](https://travis-ci.org/yukondude/Scripnix)
 [![codecov](https://codecov.io/gh/yukondude/Scripnix/branch/master/graph/badge.svg)](https://codecov.io/gh/yukondude/Scripnix)
-[![PyPI version](https://badge.fury.io/py/Scripnix.svg)](https://badge.fury.io/py/Scripnix)
+[![pypiversion](https://badge.fury.io/py/Scripnix.svg)](https://badge.fury.io/py/Scripnix)
 
 Replaces the old [Scripnix0](https://github.com/yukondude/Scripnix0) project which had grown crufty and was not macOS-friendly.
 
@@ -14,7 +14,7 @@ Refer to the attached LICENSE file or see <http://www.gnu.org/licenses/> for det
 
 ## Version
 
-`scripnix.__version__ == 0.1.1`
+`scripnix.__version__ == 0.1.2`
 
 ## Installation
 
