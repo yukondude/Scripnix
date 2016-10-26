@@ -1,12 +1,12 @@
 # Scripnix
 Useful Python3 and bash shell scripts for macOS/BSD and \*NIX. Useful to me, at any rate. YMMV.
 
+[![status](https://img.shields.io/pypi/status/Scripnix.svg)](https://pypi.python.org/pypi/Scripnix/)
 [![buildstatus](https://travis-ci.org/yukondude/Scripnix.svg?branch=master)](https://travis-ci.org/yukondude/Scripnix)
 [![codecov](https://codecov.io/gh/yukondude/Scripnix/branch/master/graph/badge.svg)](https://codecov.io/gh/yukondude/Scripnix)
 [![pypiversion](https://img.shields.io/pypi/v/Scripnix.svg)](https://pypi.python.org/pypi/Scripnix/)
-[![licence](https://img.shields.io/pypi/l/Scripnix.svg)](https://pypi.python.org/pypi/Scripnix/)
 [![pyversions](https://img.shields.io/pypi/pyversions/Scripnix.svg)](https://pypi.python.org/pypi/Scripnix/)
-[![status](https://img.shields.io/pypi/status/Scripnix.svg)](https://pypi.python.org/pypi/Scripnix/)
+[![licence](https://img.shields.io/pypi/l/Scripnix.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 
 Replaces the old [Scripnix0](https://github.com/yukondude/Scripnix0) project which had grown crufty and was not macOS-friendly.
 
