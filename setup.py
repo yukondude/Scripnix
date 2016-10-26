@@ -82,9 +82,6 @@ setup(
         "Topic :: Utilities",
     ],
     cmdclass={'test': PyTest},
-    data_files=[
-        ('', ["README.md", "LICENSE"]),
-    ],
     description=scripnix.__doc__.strip(),
     entry_points={
         'console_scripts': gather_console_scripts(),
