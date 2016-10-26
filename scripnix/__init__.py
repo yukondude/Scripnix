@@ -1,4 +1,4 @@
-""" Scripnix: Useful Python3 and bash shell scripts for macOS/BSD and *NIX.
+""" Useful Python3 and bash shell scripts for macOS/BSD and *NIX. Useful to me, at any rate. YMMV.
 """
 
 # This file is part of Scripnix.
