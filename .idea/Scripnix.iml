@@ -5,6 +5,7 @@
       <sourceFolder url="file://$MODULE_DIR$/scripnix" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/scripnix/pycommand" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/.eggs" />
       <excludeFolder url="file://$MODULE_DIR$/.idea" />
       <excludeFolder url="file://$MODULE_DIR$/Scripnix.egg-info" />
       <excludeFolder url="file://$MODULE_DIR$/build" />
