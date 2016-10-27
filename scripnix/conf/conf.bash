@@ -1,0 +1,13 @@
+# Configuration variables. Do not edit these. Instead, override values as needed in /etc/scripnix/conf.bash or ~/.scripnix/conf.bash.
+#
+# This file is part of Scripnix. Copyright 2016 Dave Rogers <info@yukondude.com>. Licensed under the GNU General Public License, version 3.
+# Refer to the attached LICENSE file or see <http://www.gnu.org/licenses/> for details.
+
+# Temporary directory (to which pretty much every user has write permissions).
+TMP_DIR='/tmp'
+
+# Apache HTTPD log file.
+APACHE_LOG='/var/log/apache2/access.log'
+
+# Exclusions from find searches.
+FIND_PATH_EXCLUDE='( -path /dev -or -path /proc -or -path /sys ) -prune'
