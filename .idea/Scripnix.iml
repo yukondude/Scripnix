@@ -11,6 +11,7 @@
       <excludeFolder url="file://$MODULE_DIR$/build" />
       <excludeFolder url="file://$MODULE_DIR$/dist" />
     </content>
+    <content url="file://$MODULE_DIR$/../homebrew-tap" />
     <orderEntry type="jdk" jdkName="Python 3.5.2 virtualenv at ~/.virtualenvs/Scripnix" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
