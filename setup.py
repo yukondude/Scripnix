@@ -93,7 +93,7 @@ setup(
     install_requires=gather_requirements(),
     license="GPLv3",
     long_description="See one of the README files for details.",
-    name="Scripnix",
+    name="scripnix",
     packages=find_packages(),
     platforms=["MacOS", "Linux"],
     tests_require=["pytest", "pytest-cov"],
