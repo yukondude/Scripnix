@@ -12,6 +12,11 @@ import sys
 import scripnix
 
 
+if sys.version_info < (3, 3):
+    sys.stderr.write("Scripnix requires Python 3.3 or higher.\n")
+    sys.exit(1)
+
+
 HERE = os.path.abspath(os.path.dirname(__file__))
 
 
