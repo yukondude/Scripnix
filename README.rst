@@ -19,7 +19,7 @@ attached LICENSE file or see http://www.gnu.org/licenses/ for details.
 Change Log
 ----------
 
-The current version is 0.1.7. Scripnix is
+The current version is 0.1.8. Scripnix is
 `semver <http://semver.org/>`__-ish in its versioning scheme.
 
 Scripnix is currently an alpha release, so expect many many breaking
