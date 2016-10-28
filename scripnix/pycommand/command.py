@@ -5,12 +5,16 @@
 # Refer to the attached LICENSE file or see <http://www.gnu.org/licenses/> for details.
 
 import click
+import configparser
+import itertools
 import platform
 import os
 import socket
 
 
 # Scripnix configuration directory locations.
+HERE = os.path.abspath(os.path.dirname(__file__))
+BASE_CONFIG_DIR = os.path.abspath(os.path.join(HERE, "../conf"))
 ROOT_CONFIG_DIR = "/etc/scripnix"
 USER_CONFIG_DIR = os.path.expanduser("~/.scripnix")
 
@@ -91,3 +95,30 @@ def operating_system():
     """
     os_name = platform.system().lower()
     return "macos" if os_name == "darwin" else os_name
+
+
+def read_configuration():
+    """ Return the current Scripnix configuration as a single dictionary.
+    """
+    config = configparser.ConfigParser()
+
+    def read_file_configuration(path, file_name, is_required):
+        file_path = os.path.join(path, file_name)
+
+        try:
+            config.read_file(itertools.chain(['[DEFAULT]'], open(file_path)))
+        except FileNotFoundError:
+            if is_required:
+                raise click.ClickException("The required configuration file '{}' was not found. "
+                                           "Please re-install Scripnix".format(file_path))
+
+    for config_file_name, is_root_required in (("conf.bash", False), ("sconf.bash", True)):
+        if is_root_required and not is_root_user():
+            continue
+
+        for config_dir, is_file_required in ((BASE_CONFIG_DIR, True), (ROOT_CONFIG_DIR, False), (USER_CONFIG_DIR, False)):
+            read_file_configuration(path=config_dir, file_name=config_file_name, is_required=is_file_required)
+
+    # Strip out leading and trailing single quotes from the values while converting to a dictionary (with uppercase keys as in the original
+    # configuration files).
+    return {k.upper(): v.strip("'") for k, v in dict(config["DEFAULT"]).items()}
