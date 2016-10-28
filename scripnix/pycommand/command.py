@@ -110,7 +110,7 @@ def read_configuration():
         except FileNotFoundError:
             if is_required:
                 raise click.ClickException("The required configuration file '{}' was not found. "
-                                           "Please re-install Scripnix".format(file_path))
+                                           "Please re-install Scripnix.".format(file_path))
 
     for config_file_name, is_root_required in (("conf.bash", False), ("sconf.bash", True)):
         if is_root_required and not is_root_user():
