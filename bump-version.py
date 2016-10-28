@@ -34,3 +34,12 @@ if __name__ == '__main__':
 
     with open(version_path, "w") as f:
         f.write(version_text)
+
+    version_match = re.search(r"__version__ = \"(\d+\.\d+\.\d+)\"", version_text)
+
+    try:
+        version_no = version_match.group(1)
+    except AttributeError:
+        sys.stderr.write("Can't find bumped version number.\n")
+    else:
+        sys.stdout.write(version_no + "\n")
