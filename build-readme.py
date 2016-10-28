@@ -15,11 +15,8 @@ from scripnix.pycommand.describe_scripnix import main
 if __name__ == '__main__':
     here = os.path.abspath(os.path.dirname(__file__))
 
-    with open(os.path.join(here, "README-prefix-a.md"), "r") as f:
+    with open(os.path.join(here, "README-prefix.md"), "r") as f:
         readme = f.read()
-
-    with open(os.path.join(here, "README-prefix-b.md"), "r") as f:
-        readme += f.read()
 
     today = datetime.date.today().strftime("%B %-d, %Y")
     version = scripnix.__version__
