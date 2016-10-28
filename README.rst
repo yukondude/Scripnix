@@ -30,8 +30,8 @@ Scripnix.
 Installation
 ------------
 
-Following installation using one of the methods below, you may want to
-run the ``install-scripnix`` command as the root user to setup the
+Following installation using one of the methods below, you may also want
+to run the ``install-scripnix`` command as the root user to setup the
 system-wide configuration. Any other users that also wish to use
 Scripnix should also run that command.
 
@@ -45,6 +45,7 @@ including Python 3.
 
     brew tap yukondude/tap
     brew install scripnix
+    install-scripnix
 
 PyPI (POSIX)
 ~~~~~~~~~~~~
@@ -55,6 +56,7 @@ your preferred method.
 ::
 
     pip3 install scripnix
+    install-scripnix
 
 Development Setup
 -----------------
@@ -64,7 +66,7 @@ Development Setup
 2. Create a Python 3 virtualenv for Scripnix.
 3. Clone the Scripnix repo.
 4. Install dependencies:
-   ``pip install click coverage pytest pytest-cov``
+   ``pip install -r requirements.txt -r requirements-dev.txt -r requirements-test.txt``
 5. Install the project in development mode: ``./setup.py develop``
 6. Run the unit tests to make sure everything is copacetic:
    ``./setup.py test``

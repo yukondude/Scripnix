@@ -7,10 +7,7 @@
 
 import os
 from setuptools import setup, find_packages
-from setuptools.command.develop import develop as DevelopCommand
-from setuptools.command.install import install as InstallCommand
 from setuptools.command.test import test as TestCommand
-import subprocess
 import sys
 import scripnix
 
@@ -52,25 +49,6 @@ def gather_requirements(requirements_file_name):
     return [pkg.strip() for pkg in open(os.path.join(HERE, requirements_file_name), 'r').readlines()]
 
 
-class PostDevelopCommand(DevelopCommand):
-    """Post-installation for development mode."""
-    def run(self):
-        DevelopCommand.run(self)
-
-        if not self.uninstall:
-            sys.stdout.write("Running install-scripnix\n")
-            subprocess.call(["install-scripnix", "--yes", "--verbose"])
-
-
-# noinspection PyClassHasNoInit
-class PostInstallCommand(InstallCommand):
-    """Post-installation for installation mode."""
-    def run(self):
-        InstallCommand.run(self)
-        sys.stdout.write("Running install-scripnix\n")
-        subprocess.call(["install-scripnix", "--yes"])
-
-
 # noinspection PyAttributeOutsideInit
 class PyTest(TestCommand):
     def finalize_options(self):
@@ -109,8 +87,6 @@ setup(
         "Topic :: Utilities",
     ],
     cmdclass={
-        'develop': PostDevelopCommand,
-        'install': PostInstallCommand,
         'test': PyTest
     },
     description=scripnix.__doc__.strip(),

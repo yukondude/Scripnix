@@ -25,7 +25,7 @@ Once ready for prime time, the major version number will jump to 2 to reflect th
 
 ## Installation
 
-Following installation using one of the methods below, you may want to run the `install-scripnix` command as the root user to setup the
+Following installation using one of the methods below, you may also want to run the `install-scripnix` command as the root user to setup the
 system-wide configuration.
 Any other users that also wish to use Scripnix should also run that command.
 
@@ -35,19 +35,21 @@ On macOS, Homebrew will take care of installing any dependencies, including Pyth
 
     brew tap yukondude/tap
     brew install scripnix
+    install-scripnix
     
 ### PyPI (POSIX)
 
 On *NIX, you will first need to install Python 3.3 (or higher) using your preferred method.
 
     pip3 install scripnix
+    install-scripnix
     
 ## Development Setup
 
  1. Install Scripnix, as above, so that all of its dependencies are available.
  1. Create a Python 3 virtualenv for Scripnix.
  1. Clone the Scripnix repo.
- 1. Install dependencies: `pip install click coverage pytest pytest-cov`
+ 1. Install dependencies: `pip install -r requirements.txt -r requirements-dev.txt -r requirements-test.txt`
  1. Install the project in development mode: `./setup.py develop`
  1. Run the unit tests to make sure everything is copacetic: `./setup.py test`
  1. Pour a snifter of Martell XO and light up a Bolivar Belicoso. 
