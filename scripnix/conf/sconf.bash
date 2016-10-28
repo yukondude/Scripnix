@@ -5,7 +5,7 @@
 
 ARCHIVE_DIR='/var/archive'
 ARCHIVE_EXCLUSIONS='/etc/scripnix/archive-exclusions'
-ARCHIVE_PATH_DIR='/etc/scripnix/archive-paths'
+ARCHIVE_PATHS_DIR='/etc/scripnix/archive-paths'
 
 MYSQL_DB_DIR='/var/lib/mysql'
 MYSQL_DUMP_FILE='mysql-dump.tar'
@@ -13,4 +13,4 @@ MYSQL_DUMP_FILE='mysql-dump.tar'
 PGSQL_DUMP_FILE='pgsql-dump.tar'
 
 SYSTEM_CRONTAB='/etc/crontab'
-SYSTEM_CRONDIR='/etc/cron.d'
+SYSTEM_CRON_DIR='/etc/cron.d'
