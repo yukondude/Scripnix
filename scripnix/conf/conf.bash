@@ -6,8 +6,5 @@
 # Temporary directory (to which pretty much every user has write permissions).
 TMP_DIR='/tmp'
 
-# Apache HTTPD log file.
-APACHE_LOG='/var/log/apache2/access.log'
-
 # Exclusions from find searches.
 FIND_PATH_EXCLUDE='( -path /dev -or -path /proc -or -path /sys ) -prune'
