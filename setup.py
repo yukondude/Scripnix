@@ -43,10 +43,10 @@ def gather_console_scripts():
     return console_scripts
 
 
-def gather_requirements():
+def gather_requirements(requirements_file_name):
     """ Return the list of required packages and versions from requirements.txt.
     """
-    return [pkg.strip() for pkg in open(os.path.join(HERE, "requirements.txt"), 'r').readlines()]
+    return [pkg.strip() for pkg in open(os.path.join(HERE, requirements_file_name), 'r').readlines()]
 
 
 # noinspection PyAttributeOutsideInit
@@ -92,16 +92,16 @@ setup(
         'console_scripts': gather_console_scripts(),
     },
     extras_require={
-        'testing': ["pytest", "pytest-cov"],
+        'testing': gather_requirements("requirements-test.txt"),
     },
     include_package_data=True,
-    install_requires=gather_requirements(),
+    install_requires=gather_requirements("requirements.txt"),
     license="GPLv3",
     long_description="See one of the README files for details.",
     name="scripnix",
     packages=find_packages(),
     platforms=["MacOS", "Linux"],
-    tests_require=["pytest", "pytest-cov"],
+    tests_require=gather_requirements("requirements-test.txt"),
     url="https://yukondude.github.io/Scripnix/",
     version=scripnix.__version__
 )

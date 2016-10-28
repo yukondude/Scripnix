@@ -1,0 +1,2 @@
+twine>=1.8.1
+docutils>=0.12
