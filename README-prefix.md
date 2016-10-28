@@ -25,6 +25,10 @@ Once ready for prime time, the major version number will jump to 2 to reflect th
 
 ## Installation
 
+Following installation using one of the methods below, you may want to run the `install-scripnix` command as the root user to setup the
+system-wide configuration.
+Any other users that also wish to use Scripnix should also run that command.
+
 ### Homebrew (macOS)
 
 On macOS, Homebrew will take care of installing any dependencies, including Python 3.
