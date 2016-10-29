@@ -25,7 +25,7 @@ install:
 - travis_retry pip install pytest pytest-cov coverage
 
 script:
-  py.test --cov=scripnix/pycommand --cov=tests --cov-report=term-missing --cov-fail-under=80
+  py.test --cov=scripnix/pycommand --cov=tests --cov-report=term-missing --cov-fail-under=80 scripnix tests
 
 after_success:
 - bash <(curl -s https://codecov.io/bash)
