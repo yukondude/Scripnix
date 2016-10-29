@@ -22,7 +22,7 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pip install jsonschema keyring ; fi
 
 install:
-- travis_retry python setup.py install
+- travis_retry python setup.py develop
 - travis_retry pip install pytest-cov coverage
 
 script:
