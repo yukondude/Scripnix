@@ -3,6 +3,9 @@ python:
 - "3.3"
 - "3.4"
 - "3.5"
+os:
+- linux
+- osx
 install:
 - travis_retry python setup.py develop
 - travis_retry pip install pytest-cov coverage
