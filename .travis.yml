@@ -19,11 +19,10 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install python3 ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then virtualenv venv -p python3 ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source venv/bin/activate ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pip install jsonschema keyring ; fi
 
 install:
 - travis_retry python setup.py develop
-- travis_retry pip install pytest-cov coverage
+- travis_retry pip install pytest pytest-cov coverage
 
 script:
   py.test --cov=scripnix/pycommand --cov=tests --cov-report=term-missing --cov-fail-under=80
