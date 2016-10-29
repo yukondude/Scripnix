@@ -4,7 +4,7 @@
   <head>
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="description" content="Scripnix : Handy macOS and *NIX shell scripts.">
+    <meta name="description" content="Scripnix : Useful Python3 and bash shell scripts for macOS/BSD and \*NIX. Useful to me, at any rate. YMMV.">
 
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
@@ -19,7 +19,7 @@
           <a id="forkme_banner" href="https://github.com/yukondude/Scripnix">View on GitHub</a>
 
           <h1 id="project_title">Scripnix</h1>
-          <h2 id="project_tagline">Handy macOS and *NIX shell scripts.</h2>
+          <h2 id="project_tagline">Useful Python3 and bash shell scripts for macOS/BSD and \*NIX. Useful to me, at any rate. YMMV.</h2>
 
             <section id="downloads">
               <a class="zip_download_link" href="https://github.com/yukondude/Scripnix/zipball/master">Download this project as a .zip file</a>
@@ -36,8 +36,12 @@
 
 <p>Useful Python3 and bash shell scripts for macOS/BSD and *NIX. Useful to me, at any rate. YMMV.</p>
 
-<p><a href="https://travis-ci.org/yukondude/Scripnix"><img src="https://travis-ci.org/yukondude/Scripnix.svg?branch=master" alt="Build Status"></a>
-<a href="https://codecov.io/gh/yukondude/Scripnix"><img src="https://codecov.io/gh/yukondude/Scripnix/branch/master/graph/badge.svg" alt="codecov"></a></p>
+<p><a href="https://pypi.python.org/pypi/Scripnix/"><img src="https://img.shields.io/pypi/status/Scripnix.svg" alt="status"></a>
+<a href="https://travis-ci.org/yukondude/Scripnix"><img src="https://travis-ci.org/yukondude/Scripnix.svg?branch=master" alt="buildstatus"></a>
+<a href="https://codecov.io/gh/yukondude/Scripnix"><img src="https://codecov.io/gh/yukondude/Scripnix/branch/master/graph/badge.svg" alt="codecov"></a>
+<a href="https://pypi.python.org/pypi/Scripnix/"><img src="https://img.shields.io/pypi/v/Scripnix.svg" alt="pypiversion"></a>
+<a href="https://pypi.python.org/pypi/Scripnix/"><img src="https://img.shields.io/pypi/pyversions/Scripnix.svg" alt="pyversions"></a>
+<a href="https://www.gnu.org/licenses/gpl-3.0.en.html"><img src="https://img.shields.io/pypi/l/Scripnix.svg" alt="licence"></a></p>
 
 <p>Replaces the old <a href="https://github.com/yukondude/Scripnix0">Scripnix0</a> project which had grown crufty and was not macOS-friendly.</p>
 
@@ -48,19 +52,60 @@
 Refer to the attached LICENSE file or see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a> for details.</p>
 
 <h2>
-<a id="version" class="anchor" href="#version" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Version</h2>
+<a id="change-log" class="anchor" href="#change-log" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Change Log</h2>
 
-<p><code>scripnix.__version__ == 0.1.0</code></p>
+<p>The current version is 0.1.9.
+Scripnix is <a href="http://semver.org/">semver</a>-ish in its versioning scheme.</p>
+
+<p>Scripnix is currently an alpha release, so expect many many breaking changes.
+Once ready for prime time, the major version number will jump to 2 to reflect that this is actually the second incarnation of Scripnix.</p>
 
 <h2>
 <a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h2>
 
-<p><em>Homebrew and PyPI, eventually.</em></p>
+<p>Following installation using one of the methods below, you may also want to run the <code>install-scripnix</code> command as the root user to setup the
+system-wide configuration.
+Any other users that also wish to use Scripnix should also run that command.</p>
+
+<h3>
+<a id="homebrew-macos" class="anchor" href="#homebrew-macos" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Homebrew (macOS)</h3>
+
+<p>On macOS, Homebrew will take care of installing any dependencies, including Python 3.</p>
+
+<pre><code>brew tap yukondude/tap
+brew install scripnix
+install-scripnix
+</code></pre>
+
+<h3>
+<a id="pypi-posix" class="anchor" href="#pypi-posix" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>PyPI (POSIX)</h3>
+
+<p>On *NIX, you will first need to install Python 3.3 (or higher) using your preferred method.</p>
+
+<pre><code>pip3 install scripnix
+install-scripnix
+</code></pre>
+
+<h2>
+<a id="development-setup" class="anchor" href="#development-setup" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Development Setup</h2>
+
+<ol>
+<li>Install Scripnix, as above, so that all of its dependencies are available.</li>
+<li>Create a Python 3 virtualenv for Scripnix.</li>
+<li>Clone the Scripnix repo.</li>
+<li>Install dependencies: <code>pip install -r requirements.txt -r requirements-dev.txt -r requirements-test.txt</code>
+</li>
+<li>Install the project in development mode: <code>./setup.py develop</code>
+</li>
+<li>Run the unit tests to make sure everything is copacetic: <code>./setup.py test</code>
+</li>
+<li>Pour a snifter of Martell XO and light up a Bolivar Belicoso. </li>
+</ol>
 
 <h2>
 <a id="commands" class="anchor" href="#commands" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Commands</h2>
 
-<p>The following command descriptions were generated by <code>describe-scripnix</code> on October 25, 2016.</p>
+<p>The following command descriptions were generated by <code>describe-scripnix</code> on October 28, 2016.</p>
 
 <h3>
 <a id="backup-file" class="anchor" href="#backup-file" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>backup-file</code>
@@ -104,15 +149,20 @@ Options:
 <pre><code>Usage: gather-cron-jobs [OPTIONS]
 
   Gather all of the system and user crontab schedules and display them in a
-  consolidated tab-delimited table:
+  consolidated table (space-aligned by default, or delimited if so
+  specified: minute (m), hour (h), day of the month (dom), month (mon), day
+  of the week (dow), user, and command.
 
-  mi hr dm mo dw user command
+  Must be run as the root user.
 
   The gather-cron-jobs command is part of Scripnix.
 
 Options:
-  -V, --version  Show version and exit.
-  -h, --help     Show this message and exit.
+  -d, --delimiter TEXT  Column delimiter character(s). If omitted, the output
+                        is space-aligned.
+  -h, --header          Display the table header row.
+  -V, --version         Show version and exit.
+  --help                Show this message and exit.
 </code></pre>
 
 <h3>
