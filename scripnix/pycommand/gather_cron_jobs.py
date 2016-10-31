@@ -15,7 +15,7 @@ Crontab = collections.namedtuple("Crontab", "minute hour day_of_the_month month 
 
 
 def format_crontab_table(crontabs, delimiter=None, header=False):
-    _, _, _ = crontabs, delimiter, header
+    _, _, _ = crontabs, delimiter, header  # noqa: F841
     return ""
 
 
@@ -28,7 +28,7 @@ def gather_system_crontabs():
 
 
 def gather_user_crontabs(users):
-    _ = users
+    _ = users  # noqa: F841
     return []
 
 
@@ -36,7 +36,7 @@ def gather_user_crontabs(users):
 @click.option("--delimiter", "-d", help="Column delimiter character(s). If omitted, the output is space-aligned.")
 @click.option("--header", "-h", is_flag=True, help="Display the table header row.")
 def main(delimiter, header):
-    """ Gather all of the system and user crontab schedules and display them in a consolidated table (space-aligned by default, or delimited
+    """ Gather all of the system and user crontab schedules and display them in a consolidated table (space-aligned by default, or delimited FOO
         if so specified: minute (m), hour (h), day of the month (dom), month (mon), day of the week (dow), user, and command.
 
         Must be run as the root user.

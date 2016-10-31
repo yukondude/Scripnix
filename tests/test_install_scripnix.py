@@ -44,7 +44,7 @@ def test_help_option():
 def test_install_global():
     def execute(fn, *args, echo):
         fn(*args)
-        _ = echo
+        _ = echo  # noqa: F841
 
     with CliRunner().isolated_filesystem():
         # Run twice to exercise both paths of the file existence check.
@@ -76,7 +76,7 @@ def test_install_global():
 def test_install_per_user():
     def execute(fn, *args, echo):
         fn(*args)
-        _ = echo
+        _ = echo  # noqa: F841
 
     with CliRunner().isolated_filesystem():
         # Run twice to exercise both paths of the file existence check.

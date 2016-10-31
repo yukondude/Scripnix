@@ -53,7 +53,8 @@ def gather_requirements(requirements_file_name):
 class PyTest(TestCommand):
     def finalize_options(self):
         TestCommand.finalize_options(self)
-        self.test_args = ["--cov=scripnix/pycommand", "--cov=tests", "--cov-report=term-missing", "--cov-fail-under=80"]
+        self.test_args = ["--cov=scripnix/pycommand", "--cov=tests", "--cov-report=term-missing", "--cov-fail-under=80",
+                          "--flake8"]
         self.test_suite = True
 
     def run_tests(self):

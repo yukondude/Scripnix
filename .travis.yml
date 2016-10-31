@@ -22,10 +22,10 @@ before_install:
 
 install:
 - travis_retry python setup.py develop
-- travis_retry pip install pytest pytest-cov coverage
+- travis_retry pip install pytest coverage pytest-cov flake8 pytest-flake8
 
 script:
-  py.test --cov=scripnix/pycommand --cov=tests --cov-report=term-missing --cov-fail-under=80 scripnix tests
+  py.test --cov=scripnix/pycommand --cov=tests --cov-report=term-missing --cov-fail-under=80 --flake8 scripnix tests
 
 after_success:
 - bash <(curl -s https://codecov.io/bash)
