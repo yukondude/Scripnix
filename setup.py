@@ -51,17 +51,24 @@ def gather_requirements(requirements_file_name):
 
 # noinspection PyAttributeOutsideInit
 class PyTest(TestCommand):
+    test_args = ["--cov=scripnix/pycommand", "--cov=tests", "--cov-report=term-missing", "--cov-fail-under=80", "--flake8"]
+    test_suite = True
+
     def finalize_options(self):
         TestCommand.finalize_options(self)
-        self.test_args = ["--cache-clear", "--cov=scripnix/pycommand", "--cov=tests", "--cov-report=term-missing",
-                          "--cov-fail-under=80", "--flake8"]
-        self.test_suite = True
 
     def run_tests(self):
         # noinspection PyPackageRequirements
         import pytest
         errcode = pytest.main(self.test_args)
         sys.exit(errcode)
+
+
+# noinspection PyAttributeOutsideInit
+class PyCleanTest(PyTest):
+    """ Same as PyTest, but clear the cache first.
+    """
+    test_args = ["--cache-clear", "--cov=scripnix/pycommand", "--cov=tests", "--cov-report=term-missing", "--cov-fail-under=80", "--flake8"]
 
 
 setup(
@@ -88,7 +95,8 @@ setup(
         "Topic :: Utilities",
     ],
     cmdclass={
-        'test': PyTest
+        'test': PyTest,
+        'cleantest': PyCleanTest,
     },
     description=scripnix.__doc__.strip(),
     entry_points={
