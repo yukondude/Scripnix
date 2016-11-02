@@ -7,7 +7,6 @@
 import click
 import configparser
 import itertools
-import platform
 import os
 import socket
 
@@ -88,13 +87,6 @@ def join_exceptions(exceptions):
         format.
     """
     return ("\n" + " " * EXCEPTION_INDENT).join(exceptions)
-
-
-def operating_system():
-    """ Return the operating system platform name (e.g., linux, macos, windows).
-    """
-    os_name = platform.system().lower()
-    return "macos" if os_name == "darwin" else os_name
 
 
 def read_configuration():

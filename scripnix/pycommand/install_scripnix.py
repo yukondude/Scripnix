@@ -5,7 +5,8 @@
 # Refer to the attached LICENSE file or see <http://www.gnu.org/licenses/> for details.
 
 import click
-from .command import common_command_and_options, hostname, is_root_user, operating_system, USER_CONFIG_DIR, ROOT_CONFIG_DIR
+from .command import common_command_and_options, hostname, is_root_user, USER_CONFIG_DIR, ROOT_CONFIG_DIR
+from .os_name import operating_system
 import grp
 import os
 import pwd

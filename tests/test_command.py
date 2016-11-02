@@ -5,7 +5,6 @@
 # Refer to the attached LICENSE file or see <http://www.gnu.org/licenses/> for details.
 
 from click import ClickException
-import os
 import platform
 # noinspection PyPackageRequirements
 import pytest
@@ -51,14 +50,6 @@ def test_is_root_user():
 ])
 def test_join_exceptions(exceptions, expected):
     assert command.join_exceptions(exceptions=exceptions) == expected
-
-
-def test_operating_system():
-    ops = command.operating_system()
-    assert len(ops) > 0
-    # noinspection PyUnresolvedReferences
-    test_ops = os.uname().sysname.lower()  # A different method from that used by operating_system().
-    assert ops == ("macos" if test_ops == "darwin" else test_ops)
 
 
 def test_read_configuration():
