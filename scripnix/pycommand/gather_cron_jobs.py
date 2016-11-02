@@ -14,7 +14,7 @@ COMMAND_NAME = "gather-cron-jobs"
 Crontab = collections.namedtuple("Crontab", "minute hour day_of_the_month month day_of_the_week user command")
 
 
-def format_crontab_table(crontabs, delimiter=None, header=False):
+def format_crontab_table(crontabs, header=True, delimiter=None):
     _, _, _ = crontabs, delimiter, header  # noqa: F841
     return ""
 
@@ -34,8 +34,8 @@ def gather_user_crontabs(users):
 
 @common_command_and_options(command_name=COMMAND_NAME)
 @click.option("--delimiter", "-d", help="Column delimiter character(s). If omitted, the output is space-aligned.")
-@click.option("--header", "-h", is_flag=True, help="Display the table header row.")
-def main(delimiter, header):
+@click.option("--no-header", "-H", is_flag=True, help="Don't display the table header row.")
+def main(delimiter, no_header):
     """ Gather all of the system and user crontab schedules and display them in a consolidated table (space-aligned by default, or delimited
         if so specified: minute (m), hour (h), day of the month (dom), month (mon), day of the week (dow), user, and command.
 
@@ -49,4 +49,4 @@ def main(delimiter, header):
 
     consolidated_crontab = gather_system_crontabs()
     consolidated_crontab.extend(gather_user_crontabs(users=[p.pw_name for p in pwd.getpwall()]))
-    click.echo(format_crontab_table(consolidated_crontab, delimiter, header))
+    click.echo(format_crontab_table(consolidated_crontab, not no_header, delimiter))
