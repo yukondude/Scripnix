@@ -7,20 +7,60 @@
 import click
 import collections
 import pwd
+import re
+import subprocess
 from .command import check_root_user, common_command_and_options, read_configuration
 
 
 COMMAND_NAME = "gather-cron-jobs"
-Crontab = collections.namedtuple("Crontab", "minute hour day_of_the_month month day_of_the_week user command")
+
+CRON_COMMENT_REGEX = re.compile(r"^(\s*#.*|\s*)$")
+CRON_RULE_PREFIX = r"^\s*"
+CRON_RULE_TERM = r"(\S+)\s+"
+CRON_RULE_SUFFIX = r"(.+?)\s*$"
+SYSTEM_CRON_RULE_REGEX = re.compile(CRON_RULE_PREFIX + CRON_RULE_TERM * 6 + CRON_RULE_SUFFIX)
+USER_CRON_RULE_REGEX = re.compile(CRON_RULE_PREFIX + CRON_RULE_TERM * 5 + CRON_RULE_SUFFIX)
+
+USER_CRON_CMD = "crontab -u {user} -l"
+
+CronRule = collections.namedtuple("CronRule", "minute hour day_of_the_month month day_of_the_week user command")
+
+
+def parse_crontab_rule(rule, user=None):
+    """ Parse a single line from a crontab file and return it as a CronRule namedtuple. If user is given, assume the line doesn't contain a
+        user column. Return None if the line is empty, a comment, or can't be parsed.
+    """
+    if CRON_COMMENT_REGEX.match(rule) is not None:
+        return None
+
+    crontab_regex = USER_CRON_RULE_REGEX if user else SYSTEM_CRON_RULE_REGEX
+    match = crontab_regex.match(rule)
+
+    if match is None:
+        return None
+
+    user = user if user else match.group(6)
+    command = match.group(6) if user else match.group(7)
+
+    return CronRule(minute=match.group(1), hour=match.group(2), day_of_the_month=match.group(3), month=match.group(4),
+                    day_of_the_week=match.group(5), user=user, command=command)
 
 
 def format_crontab_table(crontabs, header=True, delimiter=None):
     _, _, _ = crontabs, delimiter, header  # noqa: F841
-    return ""
+
+    # crontab_rules = re.sub(r"\s+", "")
+
+    return "\n".join([str(c) for c in crontabs])
 
 
-def gather_single_user_crontabs():
-    return []
+def gather_single_user_crontabs(user):
+    try:
+        crontabs = subprocess.check_output([USER_CRON_CMD.format(user=user)], shell=True, stderr=subprocess.DEVNULL).decode("utf-8")
+    except subprocess.CalledProcessError:
+        return None
+
+    return filter(None, [parse_crontab_rule(rule, user) for rule in crontabs.split("\n")])
 
 
 def gather_system_crontabs():
@@ -28,8 +68,15 @@ def gather_system_crontabs():
 
 
 def gather_user_crontabs(users):
-    _ = users  # noqa: F841
-    return []
+    crontabs = []
+
+    for user in users:
+        user_crontabs = gather_single_user_crontabs(user)
+
+        if user_crontabs:
+            crontabs.extend(user_crontabs)
+
+    return crontabs
 
 
 @common_command_and_options(command_name=COMMAND_NAME)
@@ -45,7 +92,6 @@ def main(delimiter, no_header):
     """
     check_root_user(command_name=COMMAND_NAME)
     config = read_configuration()
-    print(config)
 
     consolidated_crontab = gather_system_crontabs()
     consolidated_crontab.extend(gather_user_crontabs(users=[p.pw_name for p in pwd.getpwall()]))
