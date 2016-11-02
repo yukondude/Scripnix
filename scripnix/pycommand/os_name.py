@@ -24,7 +24,7 @@ def operating_system(translate=True):
 
 
 @common_command_and_options(command_name=COMMAND_NAME)
-@click.option("--no-translate", "-n", is_flag=True, help="Do not translate the original operating system string to its more familiar name.")
+@click.option("--no-translate", "-T", is_flag=True, help="Do not translate the original operating system string to its more familiar name.")
 def main(no_translate):
     """ Return the operating system platform name.
 
