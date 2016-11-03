@@ -1,4 +1,4 @@
-""" Scripnix os_name command unit tests
+""" Scripnix os-name command unit tests
 """
 
 # This file is part of Scripnix. Copyright 2016 Dave Rogers <info@yukondude.com>. Licensed under the GNU General Public License, version 3.
