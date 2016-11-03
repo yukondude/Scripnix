@@ -6,7 +6,7 @@
 
 # noinspection PyPackageRequirements
 import pytest
-from scripnix.pycommand.gather_cron_jobs import COMMAND_NAME, CronRule, main, parse_cron_rule, parse_crontab
+from scripnix.pycommand.gather_cron_jobs import COMMAND_NAME, CronRule, format_cron_rules_table, main, parse_cron_rule, parse_crontab
 from .common_options import common_help_option, common_version_option
 
 
@@ -59,6 +59,43 @@ SAMPLE_USER_CRON_RULES = [
     CronRule(*line2args("5 0,4,10,16 * * *"), user="user3", command="/bin/now --and --again >/tmp/log"),
     CronRule(*line2args("0 0 * * *"), user="user3", command="nightly-routine --need >doing"),
 ]
+
+SAMPLE_USER_CRON_TABLE = """m	h	dom	mon	dow	user	command
+*	*	*	*	*	user3	/bin/all-the-time --you-bet 2>/dev/null
+0	0	*	*	*	user3	/usr/bin/wget -O - -q -t 1 http://localhost/cron.php
+0	0	*	*	*	user3	nightly-routine --need >doing
+5	0,4,10,16	*	*	*	user3	/bin/now --and --again >/tmp/log
+5	10,22	*	*	*	user3	/home/me/do-it-daily --yes -Q
+30	4	*	*	*	user3	/bin/backup"""
+
+
+@pytest.mark.parametrize('header,delimiter,do_sort', [
+    (True, "\t", True),
+    (True, "@@", True),
+    (True, " ", True),
+    (False, "\t", True),
+    (False, "@@", True),
+    (False, " ", True),
+    (True, "\t", False),
+    (True, "@@", False),
+    (True, " ", False),
+    (False, "\t", False),
+    (False, "@@", False),
+    (False, " ", False),
+])
+def test_format_cron_rules_table(header, delimiter, do_sort):
+    formatted = format_cron_rules_table(SAMPLE_USER_CRON_RULES, header, delimiter, do_sort)
+    expected = SAMPLE_USER_CRON_TABLE.replace("\t", delimiter) if delimiter != "\t" else SAMPLE_USER_CRON_TABLE
+
+    if not header:
+        eol_pos = expected.index('\n')
+        expected = expected[eol_pos + 1:]
+
+    if do_sort:
+        assert formatted == expected
+    else:
+        for line in expected.split("\n"):
+            assert line in formatted
 
 
 def test_help_option():
