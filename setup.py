@@ -6,8 +6,6 @@
 # Refer to the attached LICENSE file or see <http://www.gnu.org/licenses/> for details.
 
 import os
-# noinspection PyPackageRequirements
-import pytest
 from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
 import sys
@@ -60,6 +58,8 @@ class PyTest(TestCommand):
         TestCommand.finalize_options(self)
 
     def run_tests(self):
+        # noinspection PyPackageRequirements
+        import pytest
         sys.exit(pytest.main(self.test_args))
 
 

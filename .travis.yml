@@ -21,9 +21,9 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source venv/bin/activate ; fi
 
 install:
-- travis_retry python setup.py develop
+- travis_retry pip install pytest coverage flake8 pytest-cov pytest-flake8
 - travis_retry pip install --upgrade pytest
-- travis_retry pip install coverage pytest-cov flake8 pytest-flake8
+- travis_retry python setup.py develop
 
 script:
   py.test --cov=scripnix/pycommand --cov=tests --cov-report=term-missing --cov-fail-under=80 --flake8 scripnix tests
