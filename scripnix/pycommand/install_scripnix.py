@@ -6,8 +6,7 @@
 
 import click
 from .command import common_command_and_options
-from .common import hostname, is_root_user, USER_CONFIG_DIR, ROOT_CONFIG_DIR
-from .os_name import operating_system
+from .common import hostname, is_root_user, operating_system, USER_CONFIG_DIR, ROOT_CONFIG_DIR
 import grp
 import os
 import pwd

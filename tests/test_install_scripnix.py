@@ -8,9 +8,8 @@ from click.testing import CliRunner
 import os
 import re
 from scripnix import __version__
-from scripnix.pycommand.common import hostname
+from scripnix.pycommand.common import hostname, operating_system
 from scripnix.pycommand.install_scripnix import COMMAND_NAME, install_global, install_per_user, main
-from scripnix.pycommand.os_name import operating_system
 from .common_options import common_help_option, common_version_option
 
 

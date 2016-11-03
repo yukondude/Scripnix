@@ -6,7 +6,8 @@
 
 from click.testing import CliRunner
 import os
-from scripnix.pycommand.os_name import COMMAND_NAME, main, operating_system
+from scripnix.pycommand.common import operating_system
+from scripnix.pycommand.os_name import COMMAND_NAME, main
 from .common_options import common_help_option, common_version_option
 
 
