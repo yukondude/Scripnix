@@ -24,6 +24,17 @@ CRON_RULE_SUFFIX = r"(.+?)\s*$"
 SYSTEM_CRON_RULE_REGEX = re.compile(CRON_RULE_PREFIX + CRON_RULE_TERM * 6 + CRON_RULE_SUFFIX)
 USER_CRON_RULE_REGEX = re.compile(CRON_RULE_PREFIX + CRON_RULE_TERM * 5 + CRON_RULE_SUFFIX)
 
+CRON_SHORTCUTS = {
+    '@annually': "0 0 1 1 *",
+    '@daily': "0 0 * * *",
+    '@every_minute': "* * * * *",
+    '@hourly': "0 * * * *",
+    '@midnight': "0 0 * * *",
+    '@monthly': "0 0 1 * *",
+    '@weekly': "0 0 * * 0",
+    '@yearly': "0 0 1 1 *",
+}
+
 USER_CRON_CMD = "crontab -u {user} -l"
 
 # Structure for a single cron rule.
@@ -75,6 +86,13 @@ def parse_cron_rule(rule, user=None):
     if CRON_IGNORE_REGEX.match(rule) is not None:
         return None
 
+    # For simplicity's sake, replace '@' schedule shortcuts (except @reboot and @every_second which are ignored) with their corresponding
+    # time fields.
+    for shortcut in CRON_SHORTCUTS.keys():
+        if re.match(r"^\s*{}".format(shortcut), rule) is not None:
+            rule = rule.replace(shortcut, CRON_SHORTCUTS[shortcut])
+            break
+
     crontab_regex = USER_CRON_RULE_REGEX if user else SYSTEM_CRON_RULE_REGEX
     match = crontab_regex.match(rule)
 
@@ -91,7 +109,7 @@ def parse_cron_rule(rule, user=None):
 def parse_crontab(crontab, user):
     """ Return a list of parsed, non-empty, CronRule entries for the given crontab text file contents.
     """
-    return filter(None, [parse_cron_rule(rule, user) for rule in crontab.split("\n")])
+    return list(filter(None, [parse_cron_rule(rule, user) for rule in crontab.split("\n")]))
 
 
 @common_command_and_options(command_name=COMMAND_NAME)
