@@ -67,8 +67,9 @@ def gather_single_user_cron_rules(user):
     return parse_crontab(crontab, user)
 
 
-def gather_system_cron_rules():
+def gather_system_cron_rules(run_parts):
     # TODO: do the thing it's supposed to, you know, do.
+    _ = run_parts  # noqa
     return []
 
 
@@ -115,11 +116,13 @@ def parse_crontab(crontab, user):
 @common_command_and_options(command_name=COMMAND_NAME)
 @click.option("--delimiter", "-d", help="Column delimiter character(s).  [default: tab]")
 @click.option("--no-header", "-H", is_flag=True, help="Don't display the table header row.")
+@click.option("--run-parts", "-r", is_flag=True,
+              help="Show any commands in a run-parts target directory as if they were individually scheduled.")
 @click.option("--sort", "-s", is_flag=True, help="Sort table (approximately) by scheduled time.")
-def main(delimiter, no_header, sort):
+def main(delimiter, no_header, run_parts, sort):
     """ Gather all of the system and user crontab schedules and display them in a consolidated table (tab-delimited by default): minute (m),
         hour (h), day of the month (dom), month (mon), day of the week (dow), user, and command. Optionally, the results may be sorted (as
-        best as possible) by the scheduled hour and minute.
+        well as possible) by the scheduled hour and minute.
 
         Must be run as the root user.
 
@@ -128,6 +131,6 @@ def main(delimiter, no_header, sort):
     check_root_user(command_name=COMMAND_NAME)
     _ = read_configuration()  # noqa
 
-    consolidated_cron_rules = gather_system_cron_rules()
+    consolidated_cron_rules = gather_system_cron_rules(run_parts)
     consolidated_cron_rules.extend(gather_user_cron_rules(users=[p.pw_name for p in pwd.getpwall()]))
     click.echo(format_cron_rules_table(consolidated_cron_rules, not no_header, "\t" if not delimiter else delimiter, sort))
