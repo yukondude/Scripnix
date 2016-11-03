@@ -47,13 +47,16 @@ def format_cron_rules_table(cron_rules, header, delimiter, do_sort):
     """ Return the given list of CronRule entries formatted as delimited lines of text, with an optional initial header line. Sort the lines
         by the hour and minute elements if do_sort is True.
     """
+    # Shallow-copy to avoid propagating in-place changes.
+    rules = cron_rules[:]
+
     if do_sort:
-        cron_rules.sort(key=lambda e: (e.hour, e.minute))
+        rules.sort(key=lambda e: (e.hour, e.minute))
 
     if header:
-        cron_rules.insert(0, CRONTAB_HEADER)
+        rules.insert(0, CRONTAB_HEADER)
 
-    return "\n".join([delimiter.join(c) for c in cron_rules])
+    return "\n".join([delimiter.join(c) for c in rules])
 
 
 def gather_single_user_cron_rules(user):
