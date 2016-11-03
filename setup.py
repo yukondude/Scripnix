@@ -6,6 +6,8 @@
 # Refer to the attached LICENSE file or see <http://www.gnu.org/licenses/> for details.
 
 import os
+# noinspection PyPackageRequirements
+import pytest
 from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
 import sys
@@ -20,7 +22,7 @@ if sys.version_info < (3, 3):
 HERE = os.path.abspath(os.path.dirname(__file__))
 
 
-with open(os.path.join(HERE, 'README.rst'), encoding='utf-8') as f:
+with open(os.path.join(HERE, "README.rst"), encoding='utf-8') as f:
     long_description = f.read().strip()
 
 
@@ -28,16 +30,16 @@ def gather_console_scripts():
     """ Return the list of the project's console script entry points.
     """
     console_scripts = []
-    command_path = 'scripnix/pycommand'
+    command_path = "scripnix/pycommand"
     full_command_path = os.path.join(HERE, command_path)
-    package_path = command_path.replace('/', '.')
+    package_path = command_path.replace("/", ".")
 
     for file_name in [fn for fn in os.listdir(full_command_path) if os.path.isfile(os.path.join(full_command_path, fn))]:
-        if file_name in ('__init__.py', 'command.py'):
+        if file_name in scripnix.NON_COMMANDS['pycommand']:
             continue
 
         command_module = os.path.splitext(file_name)[0]
-        command_name = command_module.replace('_', '-')
+        command_name = command_module.replace("_", "-")
         console_scripts.append("{}={}.{}:main".format(command_name, package_path, command_module))
 
     return console_scripts
@@ -46,7 +48,7 @@ def gather_console_scripts():
 def gather_requirements(requirements_file_name):
     """ Return the list of required packages and versions from requirements.txt.
     """
-    return [pkg.strip() for pkg in open(os.path.join(HERE, requirements_file_name), 'r').readlines()]
+    return [pkg.strip() for pkg in open(os.path.join(HERE, requirements_file_name), "r").readlines()]
 
 
 # noinspection PyAttributeOutsideInit
@@ -58,10 +60,7 @@ class PyTest(TestCommand):
         TestCommand.finalize_options(self)
 
     def run_tests(self):
-        # noinspection PyPackageRequirements
-        import pytest
-        errcode = pytest.main(self.test_args)
-        sys.exit(errcode)
+        sys.exit(pytest.main(self.test_args))
 
 
 # noinspection PyAttributeOutsideInit

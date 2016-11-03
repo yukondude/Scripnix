@@ -10,7 +10,8 @@ from datetime import datetime
 import os
 import shutil
 import stat
-from .command import common_command_and_options, join_exceptions
+from .command import common_command_and_options
+from .common import join_exceptions
 
 
 COMMAND_NAME = "backup-file"

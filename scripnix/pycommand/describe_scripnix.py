@@ -7,6 +7,7 @@
 import click
 import os
 import subprocess
+import scripnix
 from .command import common_command_and_options
 
 
@@ -53,4 +54,4 @@ def main():
         The describe-scripnix command is part of Scripnix.
     """
     here = os.path.abspath(os.path.dirname(__file__))
-    click.echo(format_commands(path=here, exclusions=("__init__.py", "command.py")))
+    click.echo(format_commands(path=here, exclusions=scripnix.NON_COMMANDS['pycommand']))

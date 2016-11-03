@@ -9,7 +9,8 @@ import collections
 import pwd
 import re
 import subprocess
-from .command import check_root_user, common_command_and_options, read_configuration
+from .command import common_command_and_options
+from .common import check_root_user, read_configuration
 
 
 COMMAND_NAME = "gather-cron-jobs"

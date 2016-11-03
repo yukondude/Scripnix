@@ -7,6 +7,7 @@
 from click.testing import CliRunner
 import os
 import re
+import scripnix
 from scripnix.pycommand.describe_scripnix import COMMAND_NAME, main
 from .common_options import common_help_option, common_version_option
 
@@ -22,7 +23,7 @@ def test_main():
 
     here = os.path.abspath(os.path.dirname(__file__))
     path = os.path.abspath(os.path.join(here, "../scripnix/pycommand"))
-    command_files = [f for f in os.listdir(path) if f not in ("__init__.py", "command.py") and os.path.isfile(os.path.join(path, f))]
+    command_files = [f for f in os.listdir(path) if f not in scripnix.NON_COMMANDS['pycommand'] and os.path.isfile(os.path.join(path, f))]
     commands = [os.path.splitext(f)[0].replace('_', '-') for f in command_files]
 
     for command in commands:
