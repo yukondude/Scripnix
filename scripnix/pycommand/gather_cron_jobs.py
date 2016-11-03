@@ -14,7 +14,9 @@ from .command import check_root_user, common_command_and_options, read_configura
 
 COMMAND_NAME = "gather-cron-jobs"
 
-CRON_COMMENT_REGEX = re.compile(r"^(\s*#.*|\s*)$")
+# Any crontab comment or blank line.
+CRON_IGNORE_REGEX = re.compile(r"^(\s*#.*|\s*)$")
+
 CRON_RULE_PREFIX = r"^\s*"
 CRON_RULE_TERM = r"(\S+)\s+"
 CRON_RULE_SUFFIX = r"(.+?)\s*$"
@@ -23,14 +25,53 @@ USER_CRON_RULE_REGEX = re.compile(CRON_RULE_PREFIX + CRON_RULE_TERM * 5 + CRON_R
 
 USER_CRON_CMD = "crontab -u {user} -l"
 
+# Structure for a single cron rule.
 CronRule = collections.namedtuple("CronRule", "minute hour day_of_the_month month day_of_the_week user command")
 
+CRONTAB_HEADER = CronRule("m", "h", "dom", "mon", "dow", "user", "command")
 
-def parse_crontab_rule(rule, user=None):
+
+def format_cron_rules_table(cron_rules, header, delimiter, do_sort):
+    """ Return the given list of CronRule entries formatted as delimited lines of text, with an optional initial header line. Sort the lines
+        by the hour and minute elements if do_sort is True.
+    """
+    if do_sort:
+        cron_rules.sort(key=lambda e: (e.hour, e.minute))
+
+    if header:
+        cron_rules.insert(0, CRONTAB_HEADER)
+
+    return "\n".join([delimiter.join(c) for c in cron_rules])
+
+
+def gather_single_user_cron_rules(user):
+    """ Return a list of parsed CronRule entries for the given user using the `crontab` shell command to do the work.
+    """
+    try:
+        crontab = subprocess.check_output([USER_CRON_CMD.format(user=user)], shell=True, stderr=subprocess.DEVNULL).decode("utf-8")
+    except subprocess.CalledProcessError:
+        crontab = ""
+
+    return parse_crontab(crontab, user)
+
+
+def gather_system_cron_rules():
+    # TODO: do the thing it's supposed to, you know, do.
+    return []
+
+
+def gather_user_cron_rules(users):
+    """ Return a list of gathered CronRule entries for all of the users given.
+    """
+    user_rules = [gather_single_user_cron_rules(user) for user in users]
+    return [rule for rules in user_rules for rule in rules]
+
+
+def parse_cron_rule(rule, user=None):
     """ Parse a single line from a crontab file and return it as a CronRule namedtuple. If user is given, assume the line doesn't contain a
         user column. Return None if the line is empty, a comment, or can't be parsed.
     """
-    if CRON_COMMENT_REGEX.match(rule) is not None:
+    if CRON_IGNORE_REGEX.match(rule) is not None:
         return None
 
     crontab_regex = USER_CRON_RULE_REGEX if user else SYSTEM_CRON_RULE_REGEX
@@ -46,53 +87,28 @@ def parse_crontab_rule(rule, user=None):
                     day_of_the_week=match.group(5), user=user, command=command)
 
 
-def format_crontab_table(crontabs, header=True, delimiter=None):
-    _, _, _ = crontabs, delimiter, header  # noqa: F841
-
-    # crontab_rules = re.sub(r"\s+", "")
-
-    return "\n".join([str(c) for c in crontabs])
-
-
-def gather_single_user_crontabs(user):
-    try:
-        crontabs = subprocess.check_output([USER_CRON_CMD.format(user=user)], shell=True, stderr=subprocess.DEVNULL).decode("utf-8")
-    except subprocess.CalledProcessError:
-        return None
-
-    return filter(None, [parse_crontab_rule(rule, user) for rule in crontabs.split("\n")])
-
-
-def gather_system_crontabs():
-    return []
-
-
-def gather_user_crontabs(users):
-    crontabs = []
-
-    for user in users:
-        user_crontabs = gather_single_user_crontabs(user)
-
-        if user_crontabs:
-            crontabs.extend(user_crontabs)
-
-    return crontabs
+def parse_crontab(crontab, user):
+    """ Return a list of parsed, non-empty, CronRule entries for the given crontab text file contents.
+    """
+    return filter(None, [parse_cron_rule(rule, user) for rule in crontab.split("\n")])
 
 
 @common_command_and_options(command_name=COMMAND_NAME)
-@click.option("--delimiter", "-d", help="Column delimiter character(s). If omitted, the output is space-aligned.")
+@click.option("--delimiter", "-d", help="Column delimiter character(s).  [default: tab]")
 @click.option("--no-header", "-H", is_flag=True, help="Don't display the table header row.")
-def main(delimiter, no_header):
-    """ Gather all of the system and user crontab schedules and display them in a consolidated table (space-aligned by default, or delimited
-        if so specified: minute (m), hour (h), day of the month (dom), month (mon), day of the week (dow), user, and command.
+@click.option("--sort", "-s", is_flag=True, help="Sort table (approximately) by scheduled time.")
+def main(delimiter, no_header, sort):
+    """ Gather all of the system and user crontab schedules and display them in a consolidated table (tab-delimited by default): minute (m),
+        hour (h), day of the month (dom), month (mon), day of the week (dow), user, and command. Optionally, the results may be sorted (as
+        best as possible) by the scheduled hour and minute.
 
         Must be run as the root user.
 
         The gather-cron-jobs command is part of Scripnix.
     """
     check_root_user(command_name=COMMAND_NAME)
-    config = read_configuration()
+    _ = read_configuration()  # noqa
 
-    consolidated_crontab = gather_system_crontabs()
-    consolidated_crontab.extend(gather_user_crontabs(users=[p.pw_name for p in pwd.getpwall()]))
-    click.echo(format_crontab_table(consolidated_crontab, not no_header, delimiter))
+    consolidated_cron_rules = gather_system_cron_rules()
+    consolidated_cron_rules.extend(gather_user_cron_rules(users=[p.pw_name for p in pwd.getpwall()]))
+    click.echo(format_cron_rules_table(consolidated_cron_rules, not no_header, "\t" if not delimiter else delimiter, sort))
