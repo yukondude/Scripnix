@@ -81,11 +81,11 @@ def parse_cron_rule(rule, user=None):
     if match is None:
         return None
 
-    user = user if user else match.group(6)
-    command = match.group(6) if user else match.group(7)
+    cron_user = user if user else match.group(6)
+    cron_command = match.group(6) if user else match.group(7)
 
     return CronRule(minute=match.group(1), hour=match.group(2), day_of_the_month=match.group(3), month=match.group(4),
-                    day_of_the_week=match.group(5), user=user, command=command)
+                    day_of_the_week=match.group(5), user=cron_user, command=cron_command)
 
 
 def parse_crontab(crontab, user):
