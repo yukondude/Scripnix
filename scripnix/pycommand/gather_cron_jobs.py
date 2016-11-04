@@ -6,8 +6,10 @@
 
 import click
 import collections
+import os
 import pwd
 import re
+import stat
 import subprocess
 from .command import common_command_and_options
 from .common import check_root_user, read_configuration
@@ -28,6 +30,7 @@ SYSTEM_CRON_JOB_REGEX = re.compile(CRON_JOB_PREFIX + CRON_TIME_TERM * 5 + CRON_U
 USER_CRON_JOB_REGEX = re.compile(CRON_JOB_PREFIX + CRON_TIME_TERM * 5 + CRON_JOB_SUFFIX)
 SYSTEM_SHORTCUT_CRON_JOB_REGEX = re.compile(CRON_JOB_PREFIX + CRON_SHORTCUT_TERM + CRON_USER_TERM + CRON_JOB_SUFFIX)
 USER_SHORTCUT_CRON_JOB_REGEX = re.compile(CRON_JOB_PREFIX + CRON_SHORTCUT_TERM + CRON_JOB_SUFFIX)
+CRON_RUN_PARTS_JOB = re.compile(r"\s*run-parts(?:\s+-{1,2}\S+)*\s+(\S+)")
 
 CRON_SHORTCUTS = {
     '@annually': "0 0 1 1 *",
@@ -90,8 +93,9 @@ def gather_user_cron_jobs(users, do_unpack):
 
 def parse_cron_job(job, user, do_unpack):
     """ Parse a single line from a crontab file and return it as a list of CronJob namedtuples. If user is given, assume the line doesn't
-        contain a user column. Replace shortcuts with time fields (@reboot and @every_second are left more or less as-is). Return an empty
-        list if the line is empty, a comment, or can't be parsed.
+        contain a user column. Replace shortcuts with time fields (@reboot and @every_second are left more or less as-is). Separately list
+        commands from a run-parts target directory if do_unpack is True. Return an empty list if the line is empty, a comment, or can't be
+        parsed.
     """
     if CRON_IGNORE_REGEX.match(job) is not None:
         return []
@@ -125,8 +129,13 @@ def parse_cron_job(job, user, do_unpack):
     if user:
         job_fields.insert(5, user)
 
-    if not do_unpack:  # TODO: Actually unpack run-parts somewhere
-        return [CronJob(*job_fields)]
+    jobs = unpack_job_command(do_unpack, job_fields)
+
+    if not jobs:
+        # If nothing could be unpacked, just emit the command as given.
+        jobs = [CronJob(*job_fields)]
+
+    return jobs
 
 
 def parse_crontab(crontab, user, do_unpack):
@@ -157,3 +166,29 @@ def main(delimiter, no_header, run_parts, sort):
     consolidated_cron_jobs = gather_system_cron_jobs(run_parts)
     consolidated_cron_jobs.extend(gather_user_cron_jobs(users=[p.pw_name for p in pwd.getpwall()], do_unpack=run_parts))
     click.echo(format_cron_jobs_table(consolidated_cron_jobs, not no_header, "\t" if not delimiter else delimiter, sort))
+
+
+def unpack_job_command(do_unpack, job_fields):
+    """ Unpack a run-parts target directory and return the commands as a list of CronJob namedtuples using the same schedule as the original
+        job iff: do_unpack is True, "run-parts" and a valid directory appears in the command, and there is at least one executable file in
+        that directory.
+    """
+    jobs = []
+    schedule = job_fields[:-1]
+    command = job_fields[-1]
+
+    if do_unpack:
+        run_parts_match = CRON_RUN_PARTS_JOB.search(command)
+
+        if run_parts_match:
+            path = run_parts_match.group(1)
+
+            if os.path.isdir(path):
+                for file_name in os.listdir(path):
+                    file_path = os.path.join(path, file_name)
+
+                    if stat.S_IXUSR & os.stat(file_path)[stat.ST_MODE]:
+                        unpacked_job_fields = schedule + [file_path]
+                        jobs.append(CronJob(*unpacked_job_fields))
+
+    return jobs

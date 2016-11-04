@@ -4,6 +4,8 @@
 # This file is part of Scripnix. Copyright 2016 Dave Rogers <info@yukondude.com>. Licensed under the GNU General Public License, version 3.
 # Refer to the attached LICENSE file or see <http://www.gnu.org/licenses/> for details.
 
+from click.testing import CliRunner
+import os
 # noinspection PyPackageRequirements
 import pytest
 from scripnix.pycommand.gather_cron_jobs import COMMAND_NAME, CronJob, format_cron_jobs_table, main, parse_cron_job, parse_crontab
@@ -79,6 +81,14 @@ SAMPLE_USER_CRON_TABLE = """m	h	dom	mon	dow	user	command
 30	4	*	*	*	user3	/bin/backup"""
 
 
+def _create_file(file_path, mode):
+    """ Create the (empty) file and assign its given permissions.
+    """
+    with open(file_path, "a"):
+        pass
+    os.chmod(file_path, mode)
+
+
 @pytest.mark.parametrize('header,delimiter,do_sort', [
     (True, "\t", True),
     (True, "@@", True),
@@ -123,6 +133,7 @@ def test_help_option():
     ("  # Comment", "user2", False, []),
     ("* * * false >/dev/null", "user2", False, []),
     ("PATH=/usr/local/bin:/home/user1/bin", "user2", False, []),
+
     ("* * * * * /bin/all -the >time", "user1", False, [CronJob(*line2args("* * * * * user1"), command="/bin/all -the >time")]),
     ("*    *     *  * *   /bin/every-minute", "user1", False, [CronJob(*line2args("* * * * * user1 /bin/every-minute"))]),
     ("*/10 *     *  * *   /bin/every-10-minutes", "user1", False, [CronJob(*line2args("*/10 * * * * user1 /bin/every-10-minutes"))]),
@@ -131,6 +142,7 @@ def test_help_option():
     ("00   09-17 *  * *   /bin/work-hours", "user1", False, [CronJob(*line2args("00 09-17 * * * user1 /bin/work-hours"))]),
     ("00   13    *  * 1-5 /bin/weekdays", "user1", False, [CronJob(*line2args("00 13 * * 1-5 user1 /bin/weekdays"))]),
     ("00   14    1  1 *   /bin/january-1", "user1", False, [CronJob(*line2args("00 14 1 1 * user1 /bin/january-1"))]),
+
     ("      @reboot /bin/reboot", "user1", False, [CronJob(minute="@reboot", hour=" ", day_of_the_month=" ", month=" ", day_of_the_week=" ",
                                                            user="user1", command="/bin/reboot")]),
     ("@every_second /bin/fast", "user1", False, [CronJob(minute="@every_second", hour=" ", day_of_the_month=" ", month=" ",
@@ -139,6 +151,7 @@ def test_help_option():
     ("      @weekly /bin/weekly", "user1", False, [CronJob(*line2args("0 0 * * 0 user1 /bin/weekly"))]),
     ("     @monthly /bin/monthly", "user1", False, [CronJob(*line2args("0 0 1 * * user1 /bin/monthly"))]),
     ("      @yearly /bin/yearly", "user1", False, [CronJob(*line2args("0 0 1 1 * user1 /bin/yearly"))]),
+
     ("*    *     *  * *   user2 /bin/all -the >time", None, False, [CronJob(*line2args("* * * * * user2"),
                                                                             command="/bin/all -the >time")]),
     ("*    *     *  * *   user2 /bin/every-minute", None, False, [CronJob(*line2args("* * * * * user2 /bin/every-minute"))]),
@@ -148,6 +161,7 @@ def test_help_option():
     ("00   09-17 *  * *   user2 /bin/work-hours", None, False, [CronJob(*line2args("00 09-17 * * * user2 /bin/work-hours"))]),
     ("00   13    *  * 1-5 user2 /bin/weekdays", None, False, [CronJob(*line2args("00 13 * * 1-5 user2 /bin/weekdays"))]),
     ("00   14    1  1 *   user2 /bin/january-1", None, False, [CronJob(*line2args("00 14 1 1 * user2 /bin/january-1"))]),
+
     ("      @reboot user2 /bin/reboot", None, False, [CronJob(minute="@reboot", hour=" ", day_of_the_month=" ", month=" ",
                                                               day_of_the_week=" ", user="user2", command="/bin/reboot")]),
     ("@every_second user2 /bin/fast", None, False, [CronJob(minute="@every_second", hour=" ", day_of_the_month=" ", month=" ",
@@ -156,9 +170,41 @@ def test_help_option():
     ("      @weekly user2 /bin/weekly", None, False, [CronJob(*line2args("0 0 * * 0 user2 /bin/weekly"))]),
     ("     @monthly user2 /bin/monthly", None, False, [CronJob(*line2args("0 0 1 * * user2 /bin/monthly"))]),
     ("      @yearly user2 /bin/yearly", None, False, [CronJob(*line2args("0 0 1 1 * user2 /bin/yearly"))]),
+
+    ("* * * * * run-parts /baz/quux", "user1", True, [CronJob(*line2args("* * * * * user1"), command="run-parts /baz/quux")]),
+
+    ("35 0 16 6 * run-parts --report .", "user1", True, [CronJob(*line2args("35 0 16 6 * user1 ./alpha")),
+                                                         CronJob(*line2args("35 0 16 6 * user1 ./bravo")),
+                                                         CronJob(*line2args("35 0 16 6 * user1 ./charlie"))
+                                                         ]),
+    ("00 13 * * 1-5 user2 run-parts .", None, True, [CronJob(*line2args("00 13 * * 1-5 user2 ./alpha")),
+                                                     CronJob(*line2args("00 13 * * 1-5 user2 ./bravo")),
+                                                     CronJob(*line2args("00 13 * * 1-5 user2 ./charlie"))
+                                                     ]),
+    ("@every_second run-parts -a -b -c .", "user1", True,
+     [CronJob(minute="@every_second", hour=" ", day_of_the_month=" ", month=" ", day_of_the_week=" ", user="user1", command="./alpha"),
+      CronJob(minute="@every_second", hour=" ", day_of_the_month=" ", month=" ", day_of_the_week=" ", user="user1", command="./bravo"),
+      CronJob(minute="@every_second", hour=" ", day_of_the_month=" ", month=" ", day_of_the_week=" ", user="user1", command="./charlie")
+      ]),
+    ("@reboot user2 run-parts .", None, True,
+     [CronJob(minute="@reboot", hour=" ", day_of_the_month=" ", month=" ", day_of_the_week=" ", user="user2", command="./alpha"),
+      CronJob(minute="@reboot", hour=" ", day_of_the_month=" ", month=" ", day_of_the_week=" ", user="user2", command="./bravo"),
+      CronJob(minute="@reboot", hour=" ", day_of_the_month=" ", month=" ", day_of_the_week=" ", user="user2", command="./charlie")
+      ]),
 ])
 def test_parse_cron_job(job, user, do_unpack, expected):
-    assert parse_cron_job(job, user, do_unpack) == expected
+    if do_unpack:
+        with CliRunner().isolated_filesystem():
+            for file_name in ("alpha", "bravo", "charlie", "delta"):
+                with open(file_name, "a"):
+                    pass
+
+                if file_name != "delta":
+                    os.chmod(file_name, 0o0755)
+
+            assert parse_cron_job(job, user, do_unpack) == expected
+    else:
+        assert parse_cron_job(job, user, do_unpack) == expected
 
 
 @pytest.mark.parametrize('crontab,user,do_unpack,expected', [
