@@ -104,54 +104,55 @@ def test_help_option():
     common_help_option(command_entry=main, command_name=COMMAND_NAME)
 
 
-@pytest.mark.parametrize('rule,user,expected', [
-    ("", None, None),
-    ("  # Comment", None, None),
-    ("* * * * false >/dev/null", None, None),
-    ("PATH=/usr/local/bin:/home/user1/bin", None, None),
-    ("", "user2", None),
-    ("  # Comment", "user2", None),
-    ("* * * false >/dev/null", "user2", None),
-    ("PATH=/usr/local/bin:/home/user1/bin", "user2", None),
-    ("* * * * * /bin/all -the >time", "user1", CronRule(*line2args("* * * * * user1"), command="/bin/all -the >time")),
-    ("*    *     *  * *   /bin/every-minute", "user1", CronRule(*line2args("* * * * * user1 /bin/every-minute"))),
-    ("*/10 *     *  * *   /bin/every-10-minutes", "user1", CronRule(*line2args("*/10 * * * * user1 /bin/every-10-minutes"))),
-    ("35   0     16 6 *   /bin/june-16", "user1", CronRule(*line2args("35 0 16 6 * user1 /bin/june-16"))),
-    ("00   11,16 *  * *   /bin/twice-per-day", "user1", CronRule(*line2args("00 11,16 * * * user1 /bin/twice-per-day"))),
-    ("00   09-17 *  * *   /bin/work-hours", "user1", CronRule(*line2args("00 09-17 * * * user1 /bin/work-hours"))),
-    ("00   13    *  * 1-5 /bin/weekdays", "user1", CronRule(*line2args("00 13 * * 1-5 user1 /bin/weekdays"))),
-    ("00   14    1  1 *   /bin/january-1", "user1", CronRule(*line2args("00 14 1 1 * user1 /bin/january-1"))),
-    ("      @reboot /bin/reboot", "user1", None),
-    ("@every_minute /bin/every-minute", "user1", CronRule(*line2args("* * * * * user1 /bin/every-minute"))),
-    ("      @weekly /bin/weekly", "user1", CronRule(*line2args("0 0 * * 0 user1 /bin/weekly"))),
-    ("     @monthly /bin/monthly", "user1", CronRule(*line2args("0 0 1 * * user1 /bin/monthly"))),
-    ("      @yearly /bin/yearly", "user1", CronRule(*line2args("0 0 1 1 * user1 /bin/yearly"))),
-    ("*    *     *  * *   user2 /bin/all -the >time", None, CronRule(*line2args("* * * * * user2"), command="/bin/all -the >time")),
-    ("*    *     *  * *   user2 /bin/every-minute", None, CronRule(*line2args("* * * * * user2 /bin/every-minute"))),
-    ("*/10 *     *  * *   user2 /bin/every-10-minutes", None, CronRule(*line2args("*/10 * * * * user2 /bin/every-10-minutes"))),
-    ("35   0     16 6 *   user2 /bin/june-16", None, CronRule(*line2args("35 0 16 6 * user2 /bin/june-16"))),
-    ("00   11,16 *  * *   user2 /bin/twice-per-day", None, CronRule(*line2args("00 11,16 * * * user2 /bin/twice-per-day"))),
-    ("00   09-17 *  * *   user2 /bin/work-hours", None, CronRule(*line2args("00 09-17 * * * user2 /bin/work-hours"))),
-    ("00   13    *  * 1-5 user2 /bin/weekdays", None, CronRule(*line2args("00 13 * * 1-5 user2 /bin/weekdays"))),
-    ("00   14    1  1 *   user2 /bin/january-1", None, CronRule(*line2args("00 14 1 1 * user2 /bin/january-1"))),
-    ("      @reboot user2 /bin/reboot", None, None),
-    ("@every_minute user2 /bin/every-minute", None, CronRule(*line2args("* * * * * user2 /bin/every-minute"))),
-    ("      @weekly user2 /bin/weekly", None, CronRule(*line2args("0 0 * * 0 user2 /bin/weekly"))),
-    ("     @monthly user2 /bin/monthly", None, CronRule(*line2args("0 0 1 * * user2 /bin/monthly"))),
-    ("      @yearly user2 /bin/yearly", None, CronRule(*line2args("0 0 1 1 * user2 /bin/yearly"))),
+@pytest.mark.parametrize('rule,user,do_unpack_run_parts,expected', [
+    ("", None, False, []),
+    ("  # Comment", None, False, []),
+    ("* * * * false >/dev/null", None, False, []),
+    ("PATH=/usr/local/bin:/home/user1/bin", None, False, []),
+    ("", "user2", False, []),
+    ("  # Comment", "user2", False, []),
+    ("* * * false >/dev/null", "user2", False, []),
+    ("PATH=/usr/local/bin:/home/user1/bin", "user2", False, []),
+    ("* * * * * /bin/all -the >time", "user1", False, [CronRule(*line2args("* * * * * user1"), command="/bin/all -the >time")]),
+    ("*    *     *  * *   /bin/every-minute", "user1", False, [CronRule(*line2args("* * * * * user1 /bin/every-minute"))]),
+    ("*/10 *     *  * *   /bin/every-10-minutes", "user1", False, [CronRule(*line2args("*/10 * * * * user1 /bin/every-10-minutes"))]),
+    ("35   0     16 6 *   /bin/june-16", "user1", False, [CronRule(*line2args("35 0 16 6 * user1 /bin/june-16"))]),
+    ("00   11,16 *  * *   /bin/twice-per-day", "user1", False, [CronRule(*line2args("00 11,16 * * * user1 /bin/twice-per-day"))]),
+    ("00   09-17 *  * *   /bin/work-hours", "user1", False, [CronRule(*line2args("00 09-17 * * * user1 /bin/work-hours"))]),
+    ("00   13    *  * 1-5 /bin/weekdays", "user1", False, [CronRule(*line2args("00 13 * * 1-5 user1 /bin/weekdays"))]),
+    ("00   14    1  1 *   /bin/january-1", "user1", False, [CronRule(*line2args("00 14 1 1 * user1 /bin/january-1"))]),
+    ("      @reboot /bin/reboot", "user1", False, []),
+    ("@every_minute /bin/every-minute", "user1", False, [CronRule(*line2args("* * * * * user1 /bin/every-minute"))]),
+    ("      @weekly /bin/weekly", "user1", False, [CronRule(*line2args("0 0 * * 0 user1 /bin/weekly"))]),
+    ("     @monthly /bin/monthly", "user1", False, [CronRule(*line2args("0 0 1 * * user1 /bin/monthly"))]),
+    ("      @yearly /bin/yearly", "user1", False, [CronRule(*line2args("0 0 1 1 * user1 /bin/yearly"))]),
+    ("*    *     *  * *   user2 /bin/all -the >time", None, False, [CronRule(*line2args("* * * * * user2"),
+                                                                             command="/bin/all -the >time")]),
+    ("*    *     *  * *   user2 /bin/every-minute", None, False, [CronRule(*line2args("* * * * * user2 /bin/every-minute"))]),
+    ("*/10 *     *  * *   user2 /bin/every-10-minutes", None, False, [CronRule(*line2args("*/10 * * * * user2 /bin/every-10-minutes"))]),
+    ("35   0     16 6 *   user2 /bin/june-16", None, False, [CronRule(*line2args("35 0 16 6 * user2 /bin/june-16"))]),
+    ("00   11,16 *  * *   user2 /bin/twice-per-day", None, False, [CronRule(*line2args("00 11,16 * * * user2 /bin/twice-per-day"))]),
+    ("00   09-17 *  * *   user2 /bin/work-hours", None, False, [CronRule(*line2args("00 09-17 * * * user2 /bin/work-hours"))]),
+    ("00   13    *  * 1-5 user2 /bin/weekdays", None, False, [CronRule(*line2args("00 13 * * 1-5 user2 /bin/weekdays"))]),
+    ("00   14    1  1 *   user2 /bin/january-1", None, False, [CronRule(*line2args("00 14 1 1 * user2 /bin/january-1"))]),
+    ("      @reboot user2 /bin/reboot", None, False, []),
+    ("@every_minute user2 /bin/every-minute", None, False, [CronRule(*line2args("* * * * * user2 /bin/every-minute"))]),
+    ("      @weekly user2 /bin/weekly", None, False, [CronRule(*line2args("0 0 * * 0 user2 /bin/weekly"))]),
+    ("     @monthly user2 /bin/monthly", None, False, [CronRule(*line2args("0 0 1 * * user2 /bin/monthly"))]),
+    ("      @yearly user2 /bin/yearly", None, False, [CronRule(*line2args("0 0 1 1 * user2 /bin/yearly"))]),
 ])
-def test_parse_cron_rule(rule, user, expected):
-    assert parse_cron_rule(rule, user) == expected
+def test_parse_cron_rule(rule, user, do_unpack_run_parts, expected):
+    assert parse_cron_rule(rule, user, do_unpack_run_parts) == expected
 
 
-@pytest.mark.parametrize('crontab,user,expected', [
-    ("", None, []),
-    ("", "user3", []),
-    (SAMPLE_SYSTEM_CRONTAB, None, SAMPLE_SYSTEM_CRON_RULES),
-    (SAMPLE_USER_CRONTAB, "user3", SAMPLE_USER_CRON_RULES),
+@pytest.mark.parametrize('crontab,user,do_unpack_run_parts,expected', [
+    ("", None, False, []),
+    ("", "user3", False, []),
+    (SAMPLE_SYSTEM_CRONTAB, None, False, SAMPLE_SYSTEM_CRON_RULES),
+    (SAMPLE_USER_CRONTAB, "user3", False, SAMPLE_USER_CRON_RULES),
 ])
-def test_parse_crontab(crontab, user, expected):
-    assert parse_crontab(crontab, user) == expected
+def test_parse_crontab(crontab, user, do_unpack_run_parts, expected):
+    assert parse_crontab(crontab, user, do_unpack_run_parts) == expected
 
 
 def test_version_option():
