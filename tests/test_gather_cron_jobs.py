@@ -81,14 +81,6 @@ SAMPLE_USER_CRON_TABLE = """m	h	dom	mon	dow	user	command
 30	4	*	*	*	user3	/bin/backup"""
 
 
-def _create_file(file_path, mode):
-    """ Create the (empty) file and assign its given permissions.
-    """
-    with open(file_path, "a"):
-        pass
-    os.chmod(file_path, mode)
-
-
 @pytest.mark.parametrize('header,delimiter,do_sort', [
     (True, "\t", True),
     (True, "@@", True),
