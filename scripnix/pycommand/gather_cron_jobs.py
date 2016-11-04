@@ -116,8 +116,9 @@ def parse_cron_job(job, user, do_unpack):
     job_fields = list(match.groups()[:])
 
     if is_shortcut_job:
-        # Insert four missing time fields for shortcut jobs.
-        job_fields[1:1] = [""] * 4
+        # Insert four missing time fields for shortcut jobs. Use a space character so that the field delimiters aren't contiguous (and
+        # therefore susceptible to being collapsed by the `column` command.
+        job_fields[1:1] = [" "] * 4
 
     if user:
         job_fields.insert(5, user)
