@@ -45,22 +45,29 @@ PATH=/bin:/sbin:/usr/bin:/usr/sbin:/home/me
 # Early morning kludge
   5 10,22 * * * /home/me/do-it-daily --yes -Q
 
+  @every_second     /bin/fast fast fast
+
 30 4         * * * /bin/backup
 5  0,4,10,16 * * * /bin/now --and --again >/tmp/log
 @midnight nightly-routine --need >doing
-
+@reboot do --after --boot
 """
 
 SAMPLE_USER_CRON_JOBS = [
     CronJob(*line2args("0 0 * * *"), user="user3", command="/usr/bin/wget -O - -q -t 1 http://localhost/cron.php"),
     CronJob(*line2args("* * * * *"), user="user3", command="/bin/all-the-time --you-bet 2>/dev/null"),
     CronJob(*line2args("5 10,22 * * *"), user="user3", command="/home/me/do-it-daily --yes -Q"),
+    CronJob(minute="@every_second", hour="", day_of_the_month="", month="", day_of_the_week="", user="user3",
+            command="/bin/fast fast fast"),
     CronJob(*line2args("30 4 * * *"), user="user3", command="/bin/backup"),
     CronJob(*line2args("5 0,4,10,16 * * *"), user="user3", command="/bin/now --and --again >/tmp/log"),
     CronJob(*line2args("0 0 * * *"), user="user3", command="nightly-routine --need >doing"),
+    CronJob(minute="@reboot", hour="", day_of_the_month="", month="", day_of_the_week="", user="user3", command="do --after --boot"),
 ]
 
 SAMPLE_USER_CRON_TABLE = """m	h	dom	mon	dow	user	command
+@every_second					user3	/bin/fast fast fast
+@reboot					user3	do --after --boot
 *	*	*	*	*	user3	/bin/all-the-time --you-bet 2>/dev/null
 0	0	*	*	*	user3	/usr/bin/wget -O - -q -t 1 http://localhost/cron.php
 0	0	*	*	*	user3	nightly-routine --need >doing
@@ -121,7 +128,10 @@ def test_help_option():
     ("00   09-17 *  * *   /bin/work-hours", "user1", False, [CronJob(*line2args("00 09-17 * * * user1 /bin/work-hours"))]),
     ("00   13    *  * 1-5 /bin/weekdays", "user1", False, [CronJob(*line2args("00 13 * * 1-5 user1 /bin/weekdays"))]),
     ("00   14    1  1 *   /bin/january-1", "user1", False, [CronJob(*line2args("00 14 1 1 * user1 /bin/january-1"))]),
-    ("      @reboot /bin/reboot", "user1", False, []),
+    ("      @reboot /bin/reboot", "user1", False, [CronJob(minute="@reboot", hour="", day_of_the_month="", month="", day_of_the_week="",
+                                                           user="user1", command="/bin/reboot")]),
+    ("@every_second /bin/fast", "user1", False, [CronJob(minute="@every_second", hour="", day_of_the_month="", month="", day_of_the_week="",
+                                                         user="user1", command="/bin/fast")]),
     ("@every_minute /bin/every-minute", "user1", False, [CronJob(*line2args("* * * * * user1 /bin/every-minute"))]),
     ("      @weekly /bin/weekly", "user1", False, [CronJob(*line2args("0 0 * * 0 user1 /bin/weekly"))]),
     ("     @monthly /bin/monthly", "user1", False, [CronJob(*line2args("0 0 1 * * user1 /bin/monthly"))]),
@@ -135,7 +145,10 @@ def test_help_option():
     ("00   09-17 *  * *   user2 /bin/work-hours", None, False, [CronJob(*line2args("00 09-17 * * * user2 /bin/work-hours"))]),
     ("00   13    *  * 1-5 user2 /bin/weekdays", None, False, [CronJob(*line2args("00 13 * * 1-5 user2 /bin/weekdays"))]),
     ("00   14    1  1 *   user2 /bin/january-1", None, False, [CronJob(*line2args("00 14 1 1 * user2 /bin/january-1"))]),
-    ("      @reboot user2 /bin/reboot", None, False, []),
+    ("      @reboot user2 /bin/reboot", None, False, [CronJob(minute="@reboot", hour="", day_of_the_month="", month="", day_of_the_week="",
+                                                              user="user2", command="/bin/reboot")]),
+    ("@every_second user2 /bin/fast", None, False, [CronJob(minute="@every_second", hour="", day_of_the_month="", month="",
+                                                            day_of_the_week="", user="user2", command="/bin/fast")]),
     ("@every_minute user2 /bin/every-minute", None, False, [CronJob(*line2args("* * * * * user2 /bin/every-minute"))]),
     ("      @weekly user2 /bin/weekly", None, False, [CronJob(*line2args("0 0 * * 0 user2 /bin/weekly"))]),
     ("     @monthly user2 /bin/monthly", None, False, [CronJob(*line2args("0 0 1 * * user2 /bin/monthly"))]),

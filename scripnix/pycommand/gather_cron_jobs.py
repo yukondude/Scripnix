@@ -19,10 +19,13 @@ COMMAND_NAME = "gather-cron-jobs"
 CRON_IGNORE_REGEX = re.compile(r"^(\s*#.*|\s*)$")
 
 CRON_JOB_PREFIX = r"^\s*"
+CRON_JOB_SHORTCUT_TERM = r"(@reboot|@every_second)\s+"
 CRON_JOB_TERM = r"(\S+)\s+"
 CRON_JOB_SUFFIX = r"(.+?)\s*$"
 SYSTEM_CRON_JOB_REGEX = re.compile(CRON_JOB_PREFIX + CRON_JOB_TERM * 6 + CRON_JOB_SUFFIX)
 USER_CRON_JOB_REGEX = re.compile(CRON_JOB_PREFIX + CRON_JOB_TERM * 5 + CRON_JOB_SUFFIX)
+SYSTEM_SHORTCUT_CRON_JOB_REGEX = re.compile(CRON_JOB_PREFIX + CRON_JOB_SHORTCUT_TERM + CRON_JOB_TERM + CRON_JOB_SUFFIX)
+USER_SHORTCUT_CRON_JOB_REGEX = re.compile(CRON_JOB_PREFIX + CRON_JOB_SHORTCUT_TERM + CRON_JOB_SUFFIX)
 
 CRON_SHORTCUTS = {
     '@annually': "0 0 1 1 *",
@@ -85,30 +88,42 @@ def gather_user_cron_jobs(users, do_unpack):
 
 def parse_cron_job(job, user, do_unpack):
     """ Parse a single line from a crontab file and return it as a list of CronJob namedtuples. If user is given, assume the line doesn't
-        contain a user column. Return an empty list if the line is empty, a comment, or can't be parsed.
+        contain a user column. Replace shortcuts with time fields (@reboot and @every_second are left more or less as-is). Return an empty
+        list if the line is empty, a comment, or can't be parsed.
     """
     if CRON_IGNORE_REGEX.match(job) is not None:
         return []
 
-    # For simplicity's sake, replace '@' schedule shortcuts (except @reboot and @every_second which are ignored) with their corresponding
-    # time fields.
+    # For simplicity's sake, replace '@' schedule shortcuts with their corresponding time fields.
     for shortcut in CRON_SHORTCUTS.keys():
         if re.match(r"^\s*{}".format(shortcut), job) is not None:
             job = job.replace(shortcut, CRON_SHORTCUTS[shortcut])
             break
 
-    crontab_regex = USER_CRON_JOB_REGEX if user else SYSTEM_CRON_JOB_REGEX
-    match = crontab_regex.match(job)
+    is_shortcut_job = False
+    job_regex = USER_CRON_JOB_REGEX if user else SYSTEM_CRON_JOB_REGEX
+    match = job_regex.match(job)
 
-    if match is None:
-        return []
+    if not match:
+        shortcut_regex = USER_SHORTCUT_CRON_JOB_REGEX if user else SYSTEM_SHORTCUT_CRON_JOB_REGEX
+        match = shortcut_regex.match(job)
 
-    cron_user = user if user else match.group(6)
-    cron_command = match.group(6) if user else match.group(7)
+        if match:
+            is_shortcut_job = True
+        else:
+            return []
+
+    job_fields = list(match.groups()[:])
+
+    if is_shortcut_job:
+        # Insert four missing time fields for shortcut jobs.
+        job_fields[1:1] = [""] * 4
+
+    if user:
+        job_fields.insert(5, user)
 
     if not do_unpack:  # TODO: Actually unpack run-parts somewhere
-        return [CronJob(minute=match.group(1), hour=match.group(2), day_of_the_month=match.group(3), month=match.group(4),
-                        day_of_the_week=match.group(5), user=cron_user, command=cron_command)]
+        return [CronJob(*job_fields)]
 
 
 def parse_crontab(crontab, user, do_unpack):
