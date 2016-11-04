@@ -63,7 +63,7 @@ def gather_single_user_cron_rules(user, do_unpack):
     """ Return a list of parsed CronRule entries for the given user using the `crontab` shell command to do the work.
     """
     try:
-        crontab = subprocess.check_output([USER_CRON_CMD.format(user=user)], shell=True, stderr=subprocess.DEVNULL).decode("utf-8")
+        crontab = subprocess.check_output([USER_CRON_CMD.format(user=user)], shell=True, stderr=subprocess.DEVNULL).decode('utf-8')
     except subprocess.CalledProcessError:
         crontab = ""
 
@@ -125,9 +125,9 @@ def parse_crontab(crontab, user, do_unpack):
               help="Display commands in a run-parts target directory as if they were individually scheduled.")
 @click.option("--sort", "-s", is_flag=True, help="Sort table (approximately) by scheduled time.")
 def main(delimiter, no_header, run_parts, sort):
-    """ Gather all of the system and user crontab schedules and display them in a consolidated table (tab-delimited by default): minute (m),
-        hour (h), day of the month (dom), month (mon), day of the week (dow), user, and command. Optionally, the results may be sorted (as
-        well as possible) by the scheduled hour and minute.
+    """ Gather all of the system and user crontab scheduled jobs and display them in a consolidated table (tab-delimited by default):
+        minute (m), hour (h), day of the month (dom), month (mon), day of the week (dow), user, and command. Optionally, the results may be
+        sorted (as well as possible) by the scheduled hour and minute.
 
         Must be run as the root user.
 
