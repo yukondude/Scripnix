@@ -59,7 +59,7 @@ def format_cron_rules_table(cron_rules, header, delimiter, do_sort):
     return "\n".join([delimiter.join(c) for c in rules])
 
 
-def gather_single_user_cron_rules(user, do_unpack_run_parts):
+def gather_single_user_cron_rules(user, do_unpack):
     """ Return a list of parsed CronRule entries for the given user using the `crontab` shell command to do the work.
     """
     try:
@@ -67,23 +67,23 @@ def gather_single_user_cron_rules(user, do_unpack_run_parts):
     except subprocess.CalledProcessError:
         crontab = ""
 
-    return parse_crontab(crontab, user, do_unpack_run_parts)
+    return parse_crontab(crontab, user, do_unpack)
 
 
-def gather_system_cron_rules(do_unpack_run_parts):
+def gather_system_cron_rules(do_unpack):
     # TODO: do the thing it's supposed to, you know, do.
-    _ = do_unpack_run_parts  # noqa
+    _ = do_unpack  # noqa
     return []
 
 
-def gather_user_cron_rules(users, do_unpack_run_parts):
+def gather_user_cron_rules(users, do_unpack):
     """ Return a list of gathered CronRule entries for all of the users given.
     """
-    user_rules = [gather_single_user_cron_rules(user, do_unpack_run_parts) for user in users]
+    user_rules = [gather_single_user_cron_rules(user, do_unpack) for user in users]
     return [rule for rules in user_rules for rule in rules]
 
 
-def parse_cron_rule(rule, user, do_unpack_run_parts):
+def parse_cron_rule(rule, user, do_unpack):
     """ Parse a single line from a crontab file and return it as a list of CronRule namedtuples. If user is given, assume the line doesn't
         contain a user column. Return an empty list if the line is empty, a comment, or can't be parsed.
     """
@@ -106,15 +106,15 @@ def parse_cron_rule(rule, user, do_unpack_run_parts):
     cron_user = user if user else match.group(6)
     cron_command = match.group(6) if user else match.group(7)
 
-    if not do_unpack_run_parts:  # TODO: Actually unpack run-parts somewhere
+    if not do_unpack:  # TODO: Actually unpack run-parts somewhere
         return [CronRule(minute=match.group(1), hour=match.group(2), day_of_the_month=match.group(3), month=match.group(4),
                          day_of_the_week=match.group(5), user=cron_user, command=cron_command)]
 
 
-def parse_crontab(crontab, user, do_unpack_run_parts):
+def parse_crontab(crontab, user, do_unpack):
     """ Return a list of parsed, non-empty, CronRule entries for the given crontab text file contents.
     """
-    parsed_rules = [parse_cron_rule(rule, user, do_unpack_run_parts) for rule in crontab.split("\n")]
+    parsed_rules = [parse_cron_rule(rule, user, do_unpack) for rule in crontab.split("\n")]
     return list(filter(None, [rule for rules in parsed_rules for rule in rules]))
 
 
@@ -122,7 +122,7 @@ def parse_crontab(crontab, user, do_unpack_run_parts):
 @click.option("--delimiter", "-d", help="Column delimiter character(s).  [default: tab]")
 @click.option("--no-header", "-H", is_flag=True, help="Don't display the table header row.")
 @click.option("--run-parts", "-r", is_flag=True,
-              help="Unpack and display commands in a run-parts target directory as if they were individually scheduled.")
+              help="Display commands in a run-parts target directory as if they were individually scheduled.")
 @click.option("--sort", "-s", is_flag=True, help="Sort table (approximately) by scheduled time.")
 def main(delimiter, no_header, run_parts, sort):
     """ Gather all of the system and user crontab schedules and display them in a consolidated table (tab-delimited by default): minute (m),
@@ -137,5 +137,5 @@ def main(delimiter, no_header, run_parts, sort):
     _ = read_configuration()  # noqa
 
     consolidated_cron_rules = gather_system_cron_rules(run_parts)
-    consolidated_cron_rules.extend(gather_user_cron_rules(users=[p.pw_name for p in pwd.getpwall()], do_unpack_run_parts=run_parts))
+    consolidated_cron_rules.extend(gather_user_cron_rules(users=[p.pw_name for p in pwd.getpwall()], do_unpack=run_parts))
     click.echo(format_cron_rules_table(consolidated_cron_rules, not no_header, "\t" if not delimiter else delimiter, sort))

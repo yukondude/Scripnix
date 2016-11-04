@@ -104,7 +104,7 @@ def test_help_option():
     common_help_option(command_entry=main, command_name=COMMAND_NAME)
 
 
-@pytest.mark.parametrize('rule,user,do_unpack_run_parts,expected', [
+@pytest.mark.parametrize('rule,user,do_unpack,expected', [
     ("", None, False, []),
     ("  # Comment", None, False, []),
     ("* * * * false >/dev/null", None, False, []),
@@ -141,18 +141,18 @@ def test_help_option():
     ("     @monthly user2 /bin/monthly", None, False, [CronRule(*line2args("0 0 1 * * user2 /bin/monthly"))]),
     ("      @yearly user2 /bin/yearly", None, False, [CronRule(*line2args("0 0 1 1 * user2 /bin/yearly"))]),
 ])
-def test_parse_cron_rule(rule, user, do_unpack_run_parts, expected):
-    assert parse_cron_rule(rule, user, do_unpack_run_parts) == expected
+def test_parse_cron_rule(rule, user, do_unpack, expected):
+    assert parse_cron_rule(rule, user, do_unpack) == expected
 
 
-@pytest.mark.parametrize('crontab,user,do_unpack_run_parts,expected', [
+@pytest.mark.parametrize('crontab,user,do_unpack,expected', [
     ("", None, False, []),
     ("", "user3", False, []),
     (SAMPLE_SYSTEM_CRONTAB, None, False, SAMPLE_SYSTEM_CRON_RULES),
     (SAMPLE_USER_CRONTAB, "user3", False, SAMPLE_USER_CRON_RULES),
 ])
-def test_parse_crontab(crontab, user, do_unpack_run_parts, expected):
-    assert parse_crontab(crontab, user, do_unpack_run_parts) == expected
+def test_parse_crontab(crontab, user, do_unpack, expected):
+    assert parse_crontab(crontab, user, do_unpack) == expected
 
 
 def test_version_option():
