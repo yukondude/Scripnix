@@ -24,6 +24,7 @@ SHELL=/bin/sh
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
 # m h dom mon dow user	command
+@reboot root cd / && run-parts --report /etc/cron.hourly
 07 *	* * *	root    cd / && run-parts --report /etc/cron.hourly
 17 0	* * *	root	test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.daily )
 37 0	* * 7	root	test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.weekly )
@@ -31,6 +32,8 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 #"""
 
 SAMPLE_SYSTEM_CRON_JOBS = [
+    CronJob(minute="@reboot", hour=" ", day_of_the_month=" ", month=" ", day_of_the_week=" ", user="root",
+            command="cd / && run-parts --report /etc/cron.hourly"),
     CronJob(*line2args("07 * * * * root"), command="cd / && run-parts --report /etc/cron.hourly"),
     CronJob(*line2args("17 0 * * * root"), command="test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.daily )"),
     CronJob(*line2args("37 0 * * 7 root"), command="test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.weekly )"),
