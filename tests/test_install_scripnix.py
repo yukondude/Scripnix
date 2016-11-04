@@ -10,7 +10,7 @@ import re
 from scripnix import __version__
 from scripnix.pycommand.common import hostname, operating_system
 from scripnix.pycommand.install_scripnix import COMMAND_NAME, install_global, install_per_user, main
-from .common_options import common_help_option, common_version_option
+from .command import common_help_option, common_version_option
 
 
 def _check_exists_with_mode(*expected):

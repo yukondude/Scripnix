@@ -13,7 +13,7 @@ import pytest
 import re
 import time
 from scripnix.pycommand.backup_file import assemble_dry_run_message, Backup, collect_backups, COMMAND_NAME, execute_backups, main
-from .common_options import common_help_option, common_version_option
+from .command import common_help_option, common_version_option
 
 
 def test_help_option():

@@ -7,7 +7,7 @@
 # noinspection PyPackageRequirements
 import pytest
 from scripnix.pycommand.gather_cron_jobs import COMMAND_NAME, CronRule, format_cron_rules_table, main, parse_cron_rule, parse_crontab
-from .common_options import common_help_option, common_version_option
+from .command import common_help_option, common_version_option
 
 
 def line2args(line):

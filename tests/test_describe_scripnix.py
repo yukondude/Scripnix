@@ -9,7 +9,7 @@ import os
 import re
 import scripnix
 from scripnix.pycommand.describe_scripnix import COMMAND_NAME, main
-from .common_options import common_help_option, common_version_option
+from .command import common_help_option, common_version_option
 
 
 def test_help_option():
