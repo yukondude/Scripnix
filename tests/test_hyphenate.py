@@ -32,7 +32,9 @@ def test_help_option():
     (["foo bar", "   bar    baz   ", "baz___bat", "  _quux_  "], '-', ["foo-bar", "bar-baz", "baz___bat", "_quux_"]),
 ])
 def test_hyphenate(lines, delimiter, expected):
+    lines_copy = lines[:]
     assert hyphenate(lines=lines, delimiter=delimiter) == expected
+    assert lines_copy == lines
 
 
 @pytest.mark.parametrize('arguments,expected', [
@@ -42,7 +44,9 @@ def test_hyphenate(lines, delimiter, expected):
 ])
 def test_main_arguments(arguments, expected):
     runner = CliRunner()
+    arguments_copy = arguments[:]
     result = runner.invoke(main, arguments)
+    assert arguments_copy == arguments
     assert result.exit_code == 0
     assert result.output == expected
 

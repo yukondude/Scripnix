@@ -49,7 +49,9 @@ def test_is_root_user():
     (["foo", "bar", "bat"], "foo\n       bar\n       bat"),
 ])
 def test_join_exceptions(exceptions, expected):
+    exceptions_copy = exceptions[:]
     assert common.join_exceptions(exceptions=exceptions) == expected
+    assert exceptions_copy == exceptions
 
 
 def test_read_configuration():

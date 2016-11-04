@@ -93,7 +93,10 @@ def test_main_dry_run():
     runner = CliRunner()
 
     with CliRunner().isolated_filesystem():
-        result = runner.invoke(main, ["--yes", "--dry-run"])
+        arguments = ["--yes", "--dry-run"]
+        arguments_copy = arguments[:]
+        result = runner.invoke(main, arguments)
+        assert arguments_copy == arguments
         assert result.exit_code == 0
         assert re.match(r"^{} would do the following:$".format(COMMAND_NAME), result.output, re.MULTILINE) is not None
         assert len(result.output.split("\n")) >= 3

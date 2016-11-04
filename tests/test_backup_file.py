@@ -31,7 +31,9 @@ DRY_RUN_PREFIX = "{} would do the following:".format(COMMAND_NAME)
      "\n".join([DRY_RUN_PREFIX, "cp foo foo.1", "cp bar bar.1", "chmod -x,u-s bar.1"])),
 ])
 def test_assemble_dry_run_message(backups, expected):
+    backups_copy = backups
     assert assemble_dry_run_message(backups=backups) == expected
+    assert backups_copy == backups
 
 
 def test_version_option():
@@ -47,7 +49,10 @@ def _create_files(file_name_permissions, modification_ts):
             os.utime(file_name, (time.time(), modification_ts))
         os.chmod(file_name, mode)
 
-    backups = collect_backups([f[0] for f in file_name_permissions])
+    file_names = [f[0] for f in file_name_permissions]
+    file_names_copy = file_names[:]
+    backups = collect_backups(file_names)
+    assert file_names_copy == file_names
     test_path = os.path.abspath(".")
     return backups, test_path
 
@@ -82,10 +87,12 @@ def test_execute_backups_failure(file_name_permissions, expected):
         backups, test_path = _create_files(file_name_permissions, datetime.datetime(2013, 8, 31, 0, 0).timestamp())
 
         monkeyed_backups = [Backup(b.from_path + '.bad', b.to_path, b.is_exec_or_suid) for b in backups]
+        monkeyed_backups_copy = monkeyed_backups[:]
 
         with pytest.raises(ClickException) as excinfo:
             execute_backups(monkeyed_backups)
 
+        assert monkeyed_backups_copy == monkeyed_backups
         message = str(excinfo.value)
         assert len(message.split("\n")) == len(monkeyed_backups)
         assert message.startswith("Unable to copy")
@@ -108,7 +115,9 @@ def test_execute_backups_failure(file_name_permissions, expected):
 def test_execute_backups_success(file_name_permissions, expected):
     with CliRunner().isolated_filesystem():
         backups, test_path = _create_files(file_name_permissions, datetime.datetime(2012, 6, 16, 0, 0).timestamp())
+        backups_copy = backups[:]
         execute_backups(backups)
+        assert backups_copy == backups
 
         # Make sure unexpected files weren't somehow created.
         assert len(os.listdir(test_path)) == len(expected)
@@ -131,7 +140,9 @@ def test_main(file_name_permissions, arguments, expected):
 
     with CliRunner().isolated_filesystem():
         backups, test_path = _create_files(file_name_permissions, datetime.datetime(2015, 3, 14, 0, 0).timestamp())
+        arguments_copy = arguments[:]
         result = runner.invoke(main, arguments)
+        assert arguments_copy == arguments
 
         expected_file_name_permissions, expected_output_re = expected
         assert len(os.listdir(test_path)) == len(expected_file_name_permissions)

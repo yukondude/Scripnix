@@ -84,7 +84,9 @@ SAMPLE_USER_CRON_TABLE = """m	h	dom	mon	dow	user	command
     (False, " ", False),
 ])
 def test_format_cron_rules_table(header, delimiter, do_sort):
+    sample_user_cron_rules_copy = SAMPLE_USER_CRON_RULES[:]
     formatted = format_cron_rules_table(SAMPLE_USER_CRON_RULES, header, delimiter, do_sort)
+    assert sample_user_cron_rules_copy == SAMPLE_USER_CRON_RULES
     expected = SAMPLE_USER_CRON_TABLE.replace("\t", delimiter) if delimiter != "\t" else SAMPLE_USER_CRON_TABLE
 
     if not header:
