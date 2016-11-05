@@ -67,7 +67,8 @@ class PyTest(TestCommand):
 class PyCleanTest(PyTest):
     """ Same as PyTest, but clear the cache first.
     """
-    test_args = ["--cache-clear", "--cov=scripnix/pycommand", "--cov=tests", "--cov-report=term-missing", "--cov-fail-under=80", "--flake8"]
+    test_args = ["--verbose", "--cache-clear", "--cov=scripnix/pycommand", "--cov=tests", "--cov-report=term-missing",
+                 "--cov-fail-under=80", "--flake8"]
 
 
 setup(
