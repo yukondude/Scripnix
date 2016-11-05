@@ -194,7 +194,12 @@ def test_parse_cron_job(job, user, do_unpack, expected):
                 if file_name != "delta":
                     os.chmod(file_name, 0o0755)
 
-            assert parse_cron_job(job, user, do_unpack) == expected
+            parsed = parse_cron_job(job, user, do_unpack)
+            assert len(parsed) == len(expected)
+
+            for job in parsed:
+                assert job in expected
+#            assert parse_cron_job(job, user, do_unpack) == expected
     else:
         assert parse_cron_job(job, user, do_unpack) == expected
 
