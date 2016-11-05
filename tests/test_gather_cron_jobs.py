@@ -199,7 +199,6 @@ def test_parse_cron_job(job, user, do_unpack, expected):
 
             for job in parsed:
                 assert job in expected
-#            assert parse_cron_job(job, user, do_unpack) == expected
     else:
         assert parse_cron_job(job, user, do_unpack) == expected
 
