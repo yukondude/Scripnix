@@ -164,6 +164,7 @@ def test_help_option():
     ("      @yearly user2 /bin/yearly", None, False, [CronJob(*line2args("0 0 1 1 * user2 /bin/yearly"))]),
 
     ("* * * * * run-parts /baz/quux", "user1", True, [CronJob(*line2args("* * * * * user1"), command="run-parts /baz/quux")]),
+    ("* * * * * exec-bits .", "user1", True, [CronJob(*line2args("* * * * * user1"), command="exec-bits .")]),
 
     ("35 0 16 6 * run-parts --report .", "user1", True, [CronJob(*line2args("35 0 16 6 * user1 ./alpha")),
                                                          CronJob(*line2args("35 0 16 6 * user1 ./bravo")),
@@ -188,19 +189,20 @@ def test_parse_cron_job(job, user, do_unpack, expected):
     if do_unpack:
         with CliRunner().isolated_filesystem():
             for file_name in ("alpha", "bravo", "charlie", "delta"):
-                with open(file_name, "a"):
-                    pass
+                with open(file_name, "a") as f:
+                    f.write("foo")
 
                 if file_name != "delta":
                     os.chmod(file_name, 0o0755)
 
             parsed = parse_cron_job(job, user, do_unpack)
-            assert len(parsed) == len(expected)
-
-            for job in parsed:
-                assert job in expected
     else:
-        assert parse_cron_job(job, user, do_unpack) == expected
+        parsed = parse_cron_job(job, user, do_unpack)
+
+    assert len(parsed) == len(expected)
+
+    for job in parsed:
+        assert job in expected
 
 
 @pytest.mark.parametrize('crontab,user,do_unpack,expected', [
