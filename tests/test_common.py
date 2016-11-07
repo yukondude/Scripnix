@@ -58,6 +58,12 @@ def test_operating_system():
 def test_read_configuration():
     """ Test assuming Scripnix isn't installed. Can't test the root-user config options in any case.
     """
-    config = common.read_configuration()
-    assert 'TMP_DIR' in config
-    assert 'FIND_PATH_EXCLUDE' in config
+    assert common.config_values() == ()
+
+    tmp_dir = common.config_values('TMP_DIR')
+    assert tmp_dir is not None
+
+    tmp_dir, find_path_exclude, nope = common.config_values('TMP_DIR', 'FIND_PATH_EXCLUDE', 'NOPE')
+    assert tmp_dir is not None
+    assert find_path_exclude is not None
+    assert nope is None

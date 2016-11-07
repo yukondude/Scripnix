@@ -59,8 +59,10 @@ def operating_system(translate=True):
     return os_name
 
 
-def read_configuration():
-    """ Return the current Scripnix configuration as a single dictionary.
+def config_values(*args):
+    """ Return the values of the given configuration keys in a tuple. Read the configuration settings from the conf.bash and sconf.bash
+        files in order from the 1. Scripnix installation conf/ directory, the system-wide /etc/scripnix/ directory, and the users' own
+        ~/.scripnix/ directory. Later settings override earlier ones. If a key isn't present, return None instead.
     """
     config = configparser.ConfigParser()
 
@@ -83,4 +85,5 @@ def read_configuration():
 
     # Strip out leading and trailing single quotes from the values while converting to a dictionary (with uppercase keys as in the original
     # configuration files).
-    return {k.upper(): v.strip("'") for k, v in dict(config["DEFAULT"]).items()}
+    config_dict = {k.upper(): v.strip("'") for k, v in dict(config["DEFAULT"]).items()}
+    return tuple([config_dict.get(a.upper(), None) for a in args])
