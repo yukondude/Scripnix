@@ -78,8 +78,8 @@ SAMPLE_USER_CRON_TABLE = """m	h	dom	mon	dow	user	command
 0	0	*	*	*	user3	/usr/bin/wget -O - -q -t 1 http://localhost/cron.php
 0	0	*	*	*	user3	nightly-routine --need >doing
 5	0,4,10,16	*	*	*	user3	/bin/now --and --again >/tmp/log
-5	10,22	*	*	*	user3	/home/me/do-it-daily --yes -Q
-30	4	*	*	*	user3	/bin/backup"""
+30	4	*	*	*	user3	/bin/backup
+5	10,22	*	*	*	user3	/home/me/do-it-daily --yes -Q"""
 
 
 @pytest.mark.parametrize('header,delimiter,do_sort', [

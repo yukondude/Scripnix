@@ -12,7 +12,7 @@ import re
 import stat
 import subprocess
 from .command import common_command_and_options
-from .common import check_root_user, config_values
+from .common import check_root_user, config_values, natural_sort_key
 
 
 COMMAND_NAME = "gather-cron-jobs"
@@ -31,6 +31,8 @@ USER_CRON_JOB_REGEX = re.compile(CRON_JOB_PREFIX + CRON_TIME_TERM * 5 + CRON_JOB
 SYSTEM_SHORTCUT_CRON_JOB_REGEX = re.compile(CRON_JOB_PREFIX + CRON_SHORTCUT_TERM + CRON_USER_TERM + CRON_JOB_SUFFIX)
 USER_SHORTCUT_CRON_JOB_REGEX = re.compile(CRON_JOB_PREFIX + CRON_SHORTCUT_TERM + CRON_JOB_SUFFIX)
 CRON_RUN_PARTS_JOB = re.compile(r"\s*run-parts(?:\s+-{1,2}\S+)*\s+(\S+)")
+
+NATURAL_SORT_REGEX = re.compile(r"(\d+)")
 
 CRON_SHORTCUTS = {
     '@annually': "0 0 1 1 *",
@@ -74,7 +76,7 @@ def format_cron_jobs_table(cron_jobs, header, delimiter, do_sort):
     jobs = cron_jobs[:]
 
     if do_sort:
-        jobs.sort(key=lambda e: (e.hour, e.minute))
+        jobs.sort(key=lambda e: (natural_sort_key(e.hour), natural_sort_key(e.minute), natural_sort_key(e.user)))
 
     if header:
         jobs.insert(0, CRONTAB_HEADER)
