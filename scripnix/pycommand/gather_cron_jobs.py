@@ -12,7 +12,7 @@ import re
 import stat
 import subprocess
 from .command import common_command_and_options
-from .common import check_root_user, read_configuration
+from .common import check_root_user, config_values
 
 
 COMMAND_NAME = "gather-cron-jobs"
@@ -51,6 +51,21 @@ CronJob = collections.namedtuple("CronJob", "minute hour day_of_the_month month 
 CRONTAB_HEADER = CronJob("m", "h", "dom", "mon", "dow", "user", "command")
 
 
+def file_paths_in_dir(dir_path, only_executable):
+    """ Return the list of executable files (with complete paths) found directly under the given directory path.
+    """
+    file_paths = []
+
+    if os.path.isdir(dir_path):
+        for file_name in os.listdir(dir_path):
+            file_path = os.path.join(dir_path, file_name)
+
+            if not only_executable or (only_executable and stat.S_IXUSR & os.stat(file_path)[stat.ST_MODE]):
+                file_paths.append(file_path)
+
+    return file_paths
+
+
 def format_cron_jobs_table(cron_jobs, header, delimiter, do_sort):
     """ Return the given list of CronJob entries formatted as delimited lines of text, with an optional initial header line. Sort the lines
         by the hour and minute elements if do_sort is True.
@@ -78,10 +93,23 @@ def gather_single_user_cron_jobs(user, do_unpack):
     return parse_crontab(crontab, user, do_unpack)
 
 
-def gather_system_cron_jobs(do_unpack):
-    # TODO: do the thing it's supposed to, you know, do.
-    _ = do_unpack  # noqa
-    return []
+def gather_system_cron_jobs(crontab_path, cron_dir_path, do_unpack):
+    """ Return a list of gathered CronJob entries from the given system crontab file and cron directory paths.
+    """
+    paths = [crontab_path]
+    paths.extend(file_paths_in_dir(cron_dir_path, only_executable=False))
+    cron_jobs = []
+
+    for path in paths:
+        try:
+            with open(path, "r") as f:
+                crontab = f.read()
+        except OSError:
+            continue
+
+        cron_jobs.extend(parse_crontab(crontab, user=None, do_unpack=do_unpack))
+
+    return cron_jobs
 
 
 def gather_user_cron_jobs(users, do_unpack):
@@ -161,9 +189,9 @@ def main(delimiter, no_header, run_parts, sort):
         The gather-cron-jobs command is part of Scripnix.
     """
     check_root_user(command_name=COMMAND_NAME)
-    _ = read_configuration()  # noqa
 
-    consolidated_cron_jobs = gather_system_cron_jobs(run_parts)
+    system_cron_tab, system_cron_dir = config_values('SYSTEM_CRONTAB', 'SYSTEM_CRON_DIR')
+    consolidated_cron_jobs = gather_system_cron_jobs(crontab_path=system_cron_tab, cron_dir_path=system_cron_dir, do_unpack=run_parts)
     consolidated_cron_jobs.extend(gather_user_cron_jobs(users=[p.pw_name for p in pwd.getpwall()], do_unpack=run_parts))
     click.echo(format_cron_jobs_table(consolidated_cron_jobs, not no_header, "\t" if not delimiter else delimiter, sort))
 
@@ -182,13 +210,10 @@ def unpack_job_command(do_unpack, job_fields):
 
         if run_parts_match:
             path = run_parts_match.group(1)
+            file_paths = file_paths_in_dir(path, only_executable=True)
 
-            if os.path.isdir(path):
-                for file_name in os.listdir(path):
-                    file_path = os.path.join(path, file_name)
-
-                    if stat.S_IXUSR & os.stat(file_path)[stat.ST_MODE]:
-                        unpacked_job_fields = schedule + [file_path]
-                        jobs.append(CronJob(*unpacked_job_fields))
+            for file_path in file_paths:
+                unpacked_job_fields = schedule + [file_path]
+                jobs.append(CronJob(*unpacked_job_fields))
 
     return jobs

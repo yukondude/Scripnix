@@ -8,7 +8,8 @@ from click.testing import CliRunner
 import os
 # noinspection PyPackageRequirements
 import pytest
-from scripnix.pycommand.gather_cron_jobs import COMMAND_NAME, CronJob, format_cron_jobs_table, main, parse_cron_job, parse_crontab
+from scripnix.pycommand.gather_cron_jobs import COMMAND_NAME, CronJob, format_cron_jobs_table, gather_system_cron_jobs, main,\
+    parse_cron_job, parse_crontab
 from .command import common_help_option, common_version_option
 
 
@@ -110,6 +111,43 @@ def test_format_cron_jobs_table(header, delimiter, do_sort):
     else:
         for line in expected.split("\n"):
             assert line in formatted
+
+
+def test_gather_system_cron_jobs():
+    file_jobs = {
+        "./crontab": "5 10,22 * * * user4 /home/me/do-it-daily --yes -Q",
+        "./cron.d/alpha": "@midnight user4 nightly-routine --need >doing\n@reboot user4 do --after --boot",
+        "./cron.d/bravo": "0 0 * * * user5 /usr/bin/wget -O - -q -t 1 http://localhost/cron.php",
+        "./cron.d/charlie": "@reboot user5 do --after --boot",
+        "./cron.d/delta": "# Nothing to see here, folks.",
+        "./cron.d/echo": "# Unreadable.",
+    }
+    expected = (
+        CronJob(*line2args("5 10,22 * * *"), user="user4", command="/home/me/do-it-daily --yes -Q"),
+        CronJob(*line2args("0 0 * * *"), user="user4", command="nightly-routine --need >doing"),
+        CronJob(minute="@reboot", hour=" ", day_of_the_month=" ", month=" ", day_of_the_week=" ", user="user4",
+                command="do --after --boot"),
+        CronJob(*line2args("0 0 * * *"), user="user5", command="/usr/bin/wget -O - -q -t 1 http://localhost/cron.php"),
+        CronJob(minute="@reboot", hour=" ", day_of_the_month=" ", month=" ", day_of_the_week=" ", user="user5",
+                command="do --after --boot"),
+    )
+
+    with CliRunner().isolated_filesystem():
+        os.mkdir("cron.d")
+
+        for file_path in file_jobs.keys():
+            with open(file_path, "w") as f:
+                f.write(file_jobs[file_path])
+
+            if file_path == "./cron.d/echo":
+                os.chmod(file_path, 0o0000)
+
+        parsed = gather_system_cron_jobs(crontab_path="./crontab", cron_dir_path="./cron.d", do_unpack=False)
+
+    assert len(parsed) == len(expected)
+
+    for job in parsed:
+        assert job in expected
 
 
 def test_help_option():
