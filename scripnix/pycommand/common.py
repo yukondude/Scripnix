@@ -48,6 +48,22 @@ def join_exceptions(exceptions):
     return ("\n" + " " * EXCEPTION_INDENT).join(exceptions)
 
 
+def natural_sort_key(key):
+    """ Return the given key as an (int, str) tuple with any leading integer digits as the first element, and the trailing part of the
+        string as the second. A key that does not being with a digit will be returned with -1 as the first element.
+    """
+    int_key = ""
+
+    for ch in key:
+        if ch.isdigit():
+            int_key += ch
+        else:
+            break
+
+    str_key = key[len(int_key):]
+    return -1 if len(int_key) == 0 else int(int_key), str_key
+
+
 def operating_system(translate=True):
     """ Return the operating system platform name (e.g., linux, macos, windows).
     """

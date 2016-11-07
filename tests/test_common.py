@@ -43,6 +43,21 @@ def test_join_exceptions(exceptions, expected):
     assert exceptions_copy == exceptions
 
 
+@pytest.mark.parametrize('key,expected', [
+    ("", (-1, "")),
+    ("0", (0, "")),
+    ("1", (1, "")),
+    ("foo", (-1, "foo")),
+    ("0bar", (0, "bar")),
+    ("2bar", (2, "bar")),
+    ("bat3", (-1, "bat3")),
+    ("47baz", (47, "baz")),
+    ("101.325kp", (101, ".325kp")),
+])
+def test_natural_sort_key(key, expected):
+    assert common.natural_sort_key(key) == expected
+
+
 def test_operating_system():
     this_os = platform_name()
 
