@@ -4,10 +4,12 @@
 # This file is part of Scripnix. Copyright 2016 Dave Rogers <info@yukondude.com>. Licensed under the GNU General Public License, version 3.
 # Refer to the attached LICENSE file or see <http://www.gnu.org/licenses/> for details.
 
-import click
 import re
 import sys
-from .command import common_command_and_options
+
+import click
+
+from scripnix.util.command import common_command_and_options
 
 
 COMMAND_NAME = "hyphenate"

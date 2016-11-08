@@ -5,8 +5,9 @@
 # Refer to the attached LICENSE file or see <http://www.gnu.org/licenses/> for details.
 
 import click
-from .command import common_command_and_options
-from .common import operating_system
+
+from scripnix.util.command import common_command_and_options
+from scripnix.util.common import operating_system
 
 
 COMMAND_NAME = "os-name"

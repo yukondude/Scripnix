@@ -4,15 +4,17 @@
 # This file is part of Scripnix. Copyright 2016 Dave Rogers <info@yukondude.com>. Licensed under the GNU General Public License, version 3.
 # Refer to the attached LICENSE file or see <http://www.gnu.org/licenses/> for details.
 
-import click
 import collections
 import os
 import pwd
 import re
 import stat
 import subprocess
-from .command import common_command_and_options
-from .common import check_root_user, config_values, natural_sort_key
+
+import click
+
+from scripnix.util.command import common_command_and_options
+from scripnix.util.common import check_root_user, config_values, natural_sort_key
 
 
 COMMAND_NAME = "gather-cron-jobs"

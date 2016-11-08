@@ -4,14 +4,16 @@
 # This file is part of Scripnix. Copyright 2016 Dave Rogers <info@yukondude.com>. Licensed under the GNU General Public License, version 3.
 # Refer to the attached LICENSE file or see <http://www.gnu.org/licenses/> for details.
 
-import click
-from .command import common_command_and_options
-from .common import hostname, is_root_user, operating_system, USER_CONFIG_DIR, ROOT_CONFIG_DIR
 import grp
 import os
 import pwd
 import stat
+
+import click
+
 from scripnix import __version__
+from scripnix.util.command import common_command_and_options
+from scripnix.util.common import hostname, is_root_user, operating_system, USER_CONFIG_DIR, ROOT_CONFIG_DIR
 
 
 COMMAND_NAME = "install-scripnix"

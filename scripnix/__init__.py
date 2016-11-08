@@ -17,6 +17,6 @@ __version__ = "0.1.9"
 
 # Files that do not correspond to commands in one of the scripnix sub-packages.
 NON_COMMANDS = {
-    'pycommand': ("__init__.py", "command.py", "common.py"),
-    'shcommand': (),
+    'pycommand': ("__init__.py",),
+    'shcommand': ("__init__.py",),
 }

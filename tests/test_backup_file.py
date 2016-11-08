@@ -4,15 +4,18 @@
 # This file is part of Scripnix. Copyright 2016 Dave Rogers <info@yukondude.com>. Licensed under the GNU General Public License, version 3.
 # Refer to the attached LICENSE file or see <http://www.gnu.org/licenses/> for details.
 
-from click import ClickException
-from click.testing import CliRunner
 import datetime
 import os
-# noinspection PyPackageRequirements
-import pytest
 import re
 import time
+
+from click import ClickException
+from click.testing import CliRunner
+# noinspection PyPackageRequirements
+import pytest
+
 from scripnix.pycommand.backup_file import assemble_dry_run_message, Backup, collect_backups, COMMAND_NAME, execute_backups, main
+
 from .command import common_help_option, common_version_option
 
 

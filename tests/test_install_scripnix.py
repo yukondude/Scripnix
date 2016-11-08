@@ -4,12 +4,15 @@
 # This file is part of Scripnix. Copyright 2016 Dave Rogers <info@yukondude.com>. Licensed under the GNU General Public License, version 3.
 # Refer to the attached LICENSE file or see <http://www.gnu.org/licenses/> for details.
 
-from click.testing import CliRunner
 import os
 import re
+
+from click.testing import CliRunner
+
 from scripnix import __version__
-from scripnix.pycommand.common import hostname, operating_system
 from scripnix.pycommand.install_scripnix import COMMAND_NAME, install_global, install_per_user, main
+from scripnix.util.common import hostname, operating_system
+
 from .command import common_help_option, common_version_option
 
 

@@ -4,11 +4,14 @@
 # This file is part of Scripnix. Copyright 2016 Dave Rogers <info@yukondude.com>. Licensed under the GNU General Public License, version 3.
 # Refer to the attached LICENSE file or see <http://www.gnu.org/licenses/> for details.
 
-from click import ClickException
 import platform
+
+from click import ClickException
 # noinspection PyPackageRequirements
 import pytest
-from scripnix.pycommand import common
+
+from scripnix.util import common
+
 from .common import platform_name
 
 

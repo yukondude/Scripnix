@@ -5,7 +5,9 @@
 # Refer to the attached LICENSE file or see <http://www.gnu.org/licenses/> for details.
 
 from click.testing import CliRunner
+
 from scripnix.pycommand.os_name import COMMAND_NAME, main
+
 from .common import platform_name
 from .command import common_help_option, common_version_option
 

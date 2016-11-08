@@ -4,12 +4,15 @@
 # This file is part of Scripnix. Copyright 2016 Dave Rogers <info@yukondude.com>. Licensed under the GNU General Public License, version 3.
 # Refer to the attached LICENSE file or see <http://www.gnu.org/licenses/> for details.
 
-from click.testing import CliRunner
 import os
+
+from click.testing import CliRunner
 # noinspection PyPackageRequirements
 import pytest
-from scripnix.pycommand.gather_cron_jobs import COMMAND_NAME, CronJob, format_cron_jobs_table, gather_system_cron_jobs, main,\
-    parse_cron_job, parse_crontab
+
+from scripnix.pycommand.gather_cron_jobs import COMMAND_NAME, CronJob, format_cron_jobs_table, gather_system_cron_jobs, main
+from scripnix.pycommand.gather_cron_jobs import parse_cron_job, parse_crontab
+
 from .command import common_help_option, common_version_option
 
 

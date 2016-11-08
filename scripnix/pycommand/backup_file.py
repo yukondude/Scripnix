@@ -4,14 +4,16 @@
 # This file is part of Scripnix. Copyright 2016 Dave Rogers <info@yukondude.com>. Licensed under the GNU General Public License, version 3.
 # Refer to the attached LICENSE file or see <http://www.gnu.org/licenses/> for details.
 
-import click
 from collections import namedtuple
 from datetime import datetime
 import os
 import shutil
 import stat
-from .command import common_command_and_options
-from .common import join_exceptions
+
+import click
+
+from scripnix.util.command import common_command_and_options
+from scripnix.util.common import join_exceptions
 
 
 COMMAND_NAME = "backup-file"

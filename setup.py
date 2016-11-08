@@ -9,6 +9,7 @@ import os
 from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
 import sys
+
 import scripnix
 
 
