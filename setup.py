@@ -112,6 +112,7 @@ setup(
     name="scripnix",
     packages=find_packages(),
     platforms=["MacOS", "Linux"],
+    scripts=["scripnix/shcommand/show-cron-jobs"],
     tests_require=gather_requirements("requirements-test.txt"),
     url="https://yukondude.github.io/Scripnix/",
     version=scripnix.__version__
