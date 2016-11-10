@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Gather all of the system and user crontab scheduled jobs and display them in a consolidated table, sorted approximately by the scheduled
-# time.
+# Gather all of the system and user crontab scheduled jobs and display them
+# in a consolidated table, sorted approximately by the scheduled time.
 
 # This file is part of Scripnix. Copyright 2016 Dave Rogers <info@yukondude.com>. Licensed under the GNU General Public License, version 3.
 # Refer to the attached LICENSE file or see <http://www.gnu.org/licenses/> for details.

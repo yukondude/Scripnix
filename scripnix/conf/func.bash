@@ -15,24 +15,24 @@ function check_arg_count() {
     max_count=${4}
     usage=${5}
     first=${6}
-    is_err=0
 
     if [[ ${max_count} -lt 0 ]] ; then
         max_count=9999 # infinity!
     fi
 
     if [[ -n ${first} ]] ; then
-        if [[ ${first} == '-h' || ${first} == '--help' || ${first} == '?' || ${first} == '-?' ]] ; then
-            is_err=1
+        if [[ ${first} == '-h' || ${first} == '--help' ]] ; then
+            echo "Usage:" $(basename ${command}) "${usage}"
+            echo
+            gsed --quiet --regexp-extended --expression '3,/^$/p' "${command}" |
+                gsed 's/^# /  /'
+            echo "  The $(basename ${command}) command is part of Scripnix."
+            exit 0
         fi
     fi
 
-    if [[ ${arg_count} -lt ${min_count} || ${arg_count} -gt ${max_count} || ${is_err} -ne 0 ]] ; then
+    if [[ ${arg_count} -lt ${min_count} || ${arg_count} -gt ${max_count} ]] ; then
         echo_err "Usage:" $(basename ${command}) "${usage}"
-        echo >&2
-        sed --quiet --regexp-extended --expression '/^#$/,/^#$/p' "${command}" |
-            sed '/^#$/d' |
-            cut -c3- >&2
         exit 1
     fi
 }

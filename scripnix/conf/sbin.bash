@@ -7,8 +7,6 @@ scriproot=$(whereis-scripnix)
 source "${scriproot}/conf/bin.bash"
 source "${scriproot}/conf/salias.bash"
 
-require_root
-
 # Set configuration variables, overriding as necessary.
 sconf_file='sconf.bash'
 source "${scriproot}/conf/${sconf_file}"
