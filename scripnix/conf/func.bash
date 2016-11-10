@@ -64,7 +64,7 @@ function escape_slashes() {
 # Exit with error if not the root user.
 function require_root() {
     if [ $(id -u) -ne 0 ] ; then
-        echo_err "You must be root to execute this command. Try running it as: sudo " $(basename ${0})
+        echo_err "You must be root to execute this command. Try running it as: sudo" $(basename ${0})
         exit 2
     fi
 }
