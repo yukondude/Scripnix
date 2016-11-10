@@ -11,7 +11,7 @@
       <excludeFolder url="file://$MODULE_DIR$/.cache" />
       <excludeFolder url="file://$MODULE_DIR$/.eggs" />
       <excludeFolder url="file://$MODULE_DIR$/.idea" />
-      <excludeFolder url="file://$MODULE_DIR$/Scripnix.egg-info" />
+      <excludeFolder url="file://$MODULE_DIR$/scripnix.egg-info" />
       <excludeFolder url="file://$MODULE_DIR$/build" />
       <excludeFolder url="file://$MODULE_DIR$/dist" />
     </content>
