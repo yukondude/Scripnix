@@ -29,12 +29,14 @@ else
 fi
 
 alias ltt='last -a | tac | tail -n20'
-alias nst='netstat --all --tcp --udp --numeric'
 
-alias ift='sudo iftop -nNPB'
-alias ipt='sudo iptables -nvL'
+[[ $(os-name) == 'macos' ]] || alias nst='netstat --all --numeric --tcp --udp'
+[[ $(os-name) == 'macos' ]] && alias nst='netstat -anv -finet'
 
-alias pe='ps -eFlT'
+hash iftop >/dev/null 2>&1 && alias ift='sudo iftop -nNPB'
+hash iptables >/dev/null 2>&1 && alias ipt='sudo iptables -nvL'
+
+[[ $(os-name) == 'macos' ]] || alias pe='ps -eFlT'
 alias px='ps aux'
 
 # Necessary to enable aliases in shell scripts.
