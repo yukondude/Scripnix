@@ -165,6 +165,16 @@ Options:
   -h, --help          Show this message and exit.
 ```
 
+### `show-cron-jobs`
+```
+Usage: show-cron-jobs 
+
+  Gather all of the system and user crontab scheduled jobs and display them
+  in a consolidated table, sorted approximately by the scheduled time.
+
+  The show-cron-jobs command is part of Scripnix.
+```
+
 ### `whereis-scripnix`
 ```
 Usage: whereis-scripnix [OPTIONS]
