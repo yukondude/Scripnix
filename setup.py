@@ -116,5 +116,6 @@ setup(
     scripts=["scripnix/shcommand/show-cron-jobs"],
     tests_require=gather_requirements("requirements-test.txt"),
     url="https://yukondude.github.io/Scripnix/",
-    version=scripnix.__version__
+    version=scripnix.__version__,
+    zip_safe=False
 )
