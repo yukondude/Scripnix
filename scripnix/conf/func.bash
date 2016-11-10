@@ -24,8 +24,8 @@ function check_arg_count() {
         if [[ ${first} == '-h' || ${first} == '--help' ]] ; then
             echo "Usage:" $(basename ${command}) "${usage}"
             echo
-            gsed --quiet --regexp-extended --expression '3,/^$/p' "${command}" |
-                gsed 's/^# /  /'
+            $(gnu_equivalent 'sed') --quiet --regexp-extended --expression '3,/^$/p' "${command}" |
+                $(gnu_equivalent 'sed') 's/^# /  /'
             echo "  The $(basename ${command}) command is part of Scripnix."
             exit 0
         fi
@@ -58,6 +58,21 @@ function echo_err() {
 # Echo backslash-escaped forward-slashes.
 function escape_slashes() {
     echo "$*" | sed 's/\//\\\//g'
+}
+
+
+# Return the gnu-equivalent command for MacOS, if it exists.
+function gnu_equivalent() {
+    command=${1}
+    gnu_command="g${command}"
+
+    if [[ $(os-name) == 'macos' ]] ; then
+        if hash "${gnu_command}" >/dev/null 2>&1 ; then
+            command="${gnu_command}"
+        fi
+    fi
+
+    echo "${command}"
 }
 
 

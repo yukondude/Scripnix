@@ -7,28 +7,17 @@ alias cp='cp -i'
 alias mv='mv -i'
 alias rm='rm -i'
 
-# TODO: automate substitution of GNU commands on MacOS
-if [[ $(os-name) == 'macos' ]]; then
-    alias l='gls -v --color=tty'
-    alias ls='gls -v --color=tty'
-    alias ll='gls -lv --color=tty --time-style=long-iso'
-    alias la='gls -lv --almost-all --color=tty --time-style=long-iso'
-    alias lh='gls -lv --human-readable --color=tty --time-style=long-iso'
-    alias lm='gls -lv --block-size=1024K --color=tty --time-style=long-iso'
-    alias lt='gls -lt --color=tty --time-style=long-iso'
-    alias lrt='gls -lrt --color=tty --time-style=long-iso'
-else
-    alias l='ls -v --color=tty'
-    alias ls='ls -v --color=tty'
-    alias ll='ls -lv --color=tty --time-style=long-iso'
-    alias la='ls -lv --almost-all --color=tty --time-style=long-iso'
-    alias lh='ls -lv --human-readable --color=tty --time-style=long-iso'
-    alias lm='ls -lv --block-size=1024K --color=tty --time-style=long-iso'
-    alias lt='ls -lt --color=tty --time-style=long-iso'
-    alias lrt='ls -lrt --color=tty --time-style=long-iso'
-fi
+alias l="$(gnu_equivalent 'ls') -v --color=tty"
+alias ls="$(gnu_equivalent 'ls') -v --color=tty"
+alias ll="$(gnu_equivalent 'ls') -lv --color=tty --time-style=long-iso"
+alias la="$(gnu_equivalent 'ls') -lv --almost-all --color=tty --time-style=long-iso"
+alias lh="$(gnu_equivalent 'ls') -lv --human-readable --color=tty --time-style=long-iso"
+alias lm="$(gnu_equivalent 'ls') -lv --block-size=1024K --color=tty --time-style=long-iso"
+alias lt="$(gnu_equivalent 'ls') -lt --color=tty --time-style=long-iso"
+alias lrt="$(gnu_equivalent 'ls') -lrt --color=tty --time-style=long-iso"
 
-alias ltt='last -a | tac | tail -n20'
+[[ $(os-name) == 'macos' ]] || alias ltt="last -a | $(gnu_equivalent 'tac') | tail -n20"
+[[ $(os-name) == 'macos' ]] && alias ltt="last | $(gnu_equivalent 'tac') | tail -n20"
 
 [[ $(os-name) == 'macos' ]] || alias nst='netstat --all --numeric --tcp --udp'
 [[ $(os-name) == 'macos' ]] && alias nst='netstat -anv -finet'
