@@ -3,11 +3,8 @@
 # This file is part of Scripnix. Copyright 2016 Dave Rogers <info@yukondude.com>. Licensed under the GNU General Public License, version 3.
 # Refer to the attached LICENSE file or see <http://www.gnu.org/licenses/> for details.
 
-scriproot="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-
-# Pull in all of the non-root-user definitions as well.
+scriproot=$(whereis-scripnix)
 source "${scriproot}/conf/bin.bash"
-
 source "${scriproot}/conf/salias.bash"
 
 require_root
