@@ -28,5 +28,7 @@ hash iptables >/dev/null 2>&1 && alias ipt='sudo iptables -nvL'
 [[ $(os-name) == 'macos' ]] || alias pe='ps -eFlT'
 alias px='ps aux'
 
+alias sudo='sudo '
+
 # Necessary to enable aliases in shell scripts.
 shopt -s expand_aliases
