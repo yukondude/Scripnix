@@ -28,22 +28,23 @@ def format_command_help_text(command, help_text):
     return "\n".join(["### `{}`".format(command), "```", help_text.rstrip("\n"), "```"])
 
 
-def format_commands(path, exclusions):
+def format_commands(paths_exclusions):
     """ Return the help text output of all commands in the given path formatted as GitHub-flavoured Markdown. The commands are sorted by
         name and exclude any from the given list of file names.
     """
-    commands = gather_commands(path, exclusions)
+    commands = gather_commands(paths_exclusions)
     command_help_texts = {command: collect_help_text(command) for command in commands}
     return "\n\n".join([format_command_help_text(c, command_help_texts[c]) for c in sorted(command_help_texts.keys())])
 
 
-def gather_commands(path, exclusions):
+def gather_commands(paths_exclusions):
     """ Return the list of the commands found in the given directory path, excluding any from the given list of file names.
     """
     commands = []
 
-    for file_name in [f for f in os.listdir(path) if f not in exclusions and os.path.isfile(os.path.join(path, f))]:
-        commands.append(os.path.splitext(file_name)[0].replace('_', '-'))
+    for path, exclusions in paths_exclusions:
+        for file_name in [f for f in os.listdir(path) if f not in exclusions and os.path.isfile(os.path.join(path, f))]:
+            commands.append(os.path.splitext(file_name)[0].replace('_', '-'))
 
     return commands
 
@@ -55,5 +56,7 @@ def main():
 
         The describe-scripnix command is part of Scripnix.
     """
-    here = os.path.abspath(os.path.dirname(__file__))
-    click.echo(format_commands(path=here, exclusions=scripnix.NON_COMMANDS['pybin']))
+    pybin_path = os.path.abspath(os.path.dirname(__file__))
+    shbin_path = os.path.abspath(os.path.join(pybin_path, "../shbin"))
+    paths_exclusions = ((pybin_path, scripnix.NON_COMMANDS['pybin']), (shbin_path, scripnix.NON_COMMANDS['shbin']))
+    click.echo(format_commands(paths_exclusions))
