@@ -56,4 +56,4 @@ def main():
         The describe-scripnix command is part of Scripnix.
     """
     here = os.path.abspath(os.path.dirname(__file__))
-    click.echo(format_commands(path=here, exclusions=scripnix.NON_COMMANDS['pycommand']))
+    click.echo(format_commands(path=here, exclusions=scripnix.NON_COMMANDS['pybin']))

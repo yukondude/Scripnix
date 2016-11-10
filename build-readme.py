@@ -9,7 +9,7 @@ from click.testing import CliRunner
 import datetime
 import os
 import scripnix
-from scripnix.pycommand.describe_scripnix import main
+from scripnix.pybin.describe_scripnix import main
 
 
 if __name__ == '__main__':

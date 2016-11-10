@@ -29,12 +29,12 @@ def gather_console_scripts():
     """ Return the list of the project's console script entry points.
     """
     console_scripts = []
-    command_path = "scripnix/pycommand"
+    command_path = "scripnix/pybin"
     full_command_path = os.path.join(HERE, command_path)
     package_path = command_path.replace("/", ".")
 
     for file_name in [fn for fn in os.listdir(full_command_path) if os.path.isfile(os.path.join(full_command_path, fn))]:
-        if file_name in scripnix.NON_COMMANDS['pycommand']:
+        if file_name in scripnix.NON_COMMANDS['pybin']:
             continue
 
         command_module = os.path.splitext(file_name)[0]
@@ -52,7 +52,7 @@ def gather_requirements(requirements_file_name):
 
 # noinspection PyAttributeOutsideInit
 class PyTest(TestCommand):
-    test_args = ["--cov=scripnix/pycommand", "--cov=tests", "--cov-report=term-missing", "--cov-fail-under=80", "--flake8"]
+    test_args = ["--cov=scripnix/pybin", "--cov=tests", "--cov-report=term-missing", "--cov-fail-under=80", "--flake8"]
     test_suite = True
 
     def finalize_options(self):
@@ -68,7 +68,7 @@ class PyTest(TestCommand):
 class PyCleanTest(PyTest):
     """ Same as PyTest, but clear the cache first.
     """
-    test_args = ["--verbose", "--cache-clear", "--cov=scripnix/pycommand", "--cov=tests", "--cov-report=term-missing",
+    test_args = ["--verbose", "--cache-clear", "--cov=scripnix/pybin", "--cov=tests", "--cov-report=term-missing",
                  "--cov-fail-under=80", "--flake8"]
 
 
@@ -113,7 +113,7 @@ setup(
     name="scripnix",
     packages=find_packages(),
     platforms=["MacOS", "Linux"],
-    scripts=["scripnix/shcommand/show-cron-jobs"],
+    scripts=["scripnix/shbin/show-cron-jobs"],
     tests_require=gather_requirements("requirements-test.txt"),
     url="https://yukondude.github.io/Scripnix/",
     version=scripnix.__version__,

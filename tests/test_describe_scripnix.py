@@ -10,7 +10,7 @@ import re
 from click.testing import CliRunner
 
 import scripnix
-from scripnix.pycommand.describe_scripnix import COMMAND_NAME, main
+from scripnix.pybin.describe_scripnix import COMMAND_NAME, main
 
 from .command import common_help_option, common_version_option
 
@@ -25,8 +25,8 @@ def test_main():
     assert len(help_text) > 0
 
     here = os.path.abspath(os.path.dirname(__file__))
-    path = os.path.abspath(os.path.join(here, "../scripnix/pycommand"))
-    command_files = [f for f in os.listdir(path) if f not in scripnix.NON_COMMANDS['pycommand'] and os.path.isfile(os.path.join(path, f))]
+    path = os.path.abspath(os.path.join(here, "../scripnix/pybin"))
+    command_files = [f for f in os.listdir(path) if f not in scripnix.NON_COMMANDS['pybin'] and os.path.isfile(os.path.join(path, f))]
     commands = [os.path.splitext(f)[0].replace('_', '-') for f in command_files]
 
     for command in commands:

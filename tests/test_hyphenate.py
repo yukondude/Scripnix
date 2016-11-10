@@ -8,7 +8,7 @@ from click.testing import CliRunner
 # noinspection PyPackageRequirements
 import pytest
 
-from scripnix.pycommand.hyphenate import COMMAND_NAME, hyphenate, main
+from scripnix.pybin.hyphenate import COMMAND_NAME, hyphenate, main
 
 from .command import common_help_option, common_version_option
 

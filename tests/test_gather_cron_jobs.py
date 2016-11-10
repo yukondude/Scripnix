@@ -10,8 +10,8 @@ from click.testing import CliRunner
 # noinspection PyPackageRequirements
 import pytest
 
-from scripnix.pycommand.gather_cron_jobs import COMMAND_NAME, CronJob, format_cron_jobs_table, gather_system_cron_jobs, main
-from scripnix.pycommand.gather_cron_jobs import parse_cron_job, parse_crontab
+from scripnix.pybin.gather_cron_jobs import COMMAND_NAME, CronJob, format_cron_jobs_table, gather_system_cron_jobs, main
+from scripnix.pybin.gather_cron_jobs import parse_cron_job, parse_crontab
 
 from .command import common_help_option, common_version_option
 

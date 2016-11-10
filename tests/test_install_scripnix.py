@@ -10,7 +10,7 @@ import re
 from click.testing import CliRunner
 
 from scripnix import __version__
-from scripnix.pycommand.install_scripnix import COMMAND_NAME, install_global, install_per_user, main
+from scripnix.pybin.install_scripnix import COMMAND_NAME, install_global, install_per_user, main
 from scripnix.util.common import hostname, operating_system
 
 from .command import common_help_option, common_version_option
