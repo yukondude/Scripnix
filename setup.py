@@ -8,6 +8,7 @@
 import os
 from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
+import stat
 import sys
 
 import scripnix
@@ -48,6 +49,26 @@ def gather_requirements(requirements_file_name):
     """ Return the list of required packages and versions from requirements.txt.
     """
     return [pkg.strip() for pkg in open(os.path.join(HERE, requirements_file_name), "r").readlines()]
+
+
+def gather_scripts():
+    """ Return the list of the project's shell scripts.
+    """
+    scripts = []
+    script_path = "scripnix/shbin"
+    full_script_path = os.path.join(HERE, script_path)
+
+    for file_name in [fn for fn in os.listdir(full_script_path) if os.path.isfile(os.path.join(full_script_path, fn))]:
+        if file_name in scripnix.NON_COMMANDS['shbin']:
+            continue
+
+        # Exclude non-executable files.
+        if not stat.S_IXUSR & os.stat(os.path.join(full_script_path, file_name))[stat.ST_MODE]:
+            continue
+
+        scripts.append(os.path.join(script_path, file_name))
+
+    return scripts
 
 
 # noinspection PyAttributeOutsideInit
@@ -113,7 +134,7 @@ setup(
     name="scripnix",
     packages=find_packages(),
     platforms=["MacOS", "Linux"],
-    scripts=["scripnix/shbin/show-cron-jobs"],
+    scripts=gather_scripts(),
     tests_require=gather_requirements("requirements-test.txt"),
     url="https://yukondude.github.io/Scripnix/",
     version=scripnix.__version__,
