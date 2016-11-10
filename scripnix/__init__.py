@@ -13,7 +13,7 @@
 #
 # Copyright 2016 Dave Rogers <info@yukondude.com>
 
-__version__ = "0.1.9"
+__version__ = "0.1.10"
 
 # Files that do not correspond to commands in one of the scripnix sub-packages.
 NON_COMMANDS = {
