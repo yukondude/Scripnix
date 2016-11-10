@@ -4,7 +4,7 @@
 # Refer to the attached LICENSE file or see <http://www.gnu.org/licenses/> for details.
 
 README.rst: README.md
-	sed '/## Commands/,$$d' README.md >README.tmp
+	sed '/## Commands/,$$d' README.md | sed '/^Useful Python3.*YMMV\.$$/d' >README.tmp
 	pandoc -f markdown -t rst -o README.rst README.tmp
 	rm -f README.tmp
 

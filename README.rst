@@ -1,9 +1,6 @@
 Scripnix
 ========
 
-Useful Python3 and bash shell scripts for macOS/BSD and \*NIX. Useful to
-me, at any rate. YMMV.
-
 |status| |buildstatus| |codecov| |pypiversion| |pyversions| |licence|
 
 Replaces the old `Scripnix0 <https://github.com/yukondude/Scripnix0>`__
