@@ -5,7 +5,6 @@
 
 scriproot=$(whereis-scripnix)
 source "${scriproot}/conf/func.bash"
-source "${scriproot}/conf/alias.bash"
 
 # Set configuration variables, overriding as necessary.
 conf_file='conf.bash'

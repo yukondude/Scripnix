@@ -5,7 +5,6 @@
 
 scriproot=$(whereis-scripnix)
 source "${scriproot}/conf/bin.bash"
-source "${scriproot}/conf/salias.bash"
 
 # Set configuration variables, overriding as necessary.
 sconf_file='sconf.bash'

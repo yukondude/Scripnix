@@ -5,9 +5,11 @@
 
 scriproot=$(whereis-scripnix)
 source "${scriproot}/conf/bin.bash"
+source "${scriproot}/conf/alias.bash"
 
 if [[ $(id -u) -eq 0 ]] ; then
     source "${scriproot}/conf/sbin.bash"
+    source "${scriproot}/conf/salias.bash"
 fi
 
 # Don't logout after Ctrl+D.
