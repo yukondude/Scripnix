@@ -52,7 +52,7 @@ def test_valid_command_name():
     assert "python" in command or "py.test" in command
 
     command = command_name(1)
-    assert command == ("launchd" if operating_system() == "macos" else "init")
+    assert command in (["launchd"] if operating_system() == "macos" else ["init", "systemd"])
 
 
 def test_version_option():
