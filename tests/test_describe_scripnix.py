@@ -32,7 +32,6 @@ def test_main():
     for command in commands:
         assert re.search("^### `{}`$".format(command), help_text, re.MULTILINE) is not None
         assert re.search("^Usage: {}".format(command), help_text, re.MULTILINE) is not None
-        assert re.search("^  The {} command is part of Scripnix.$".format(command), help_text, re.MULTILINE) is not None
 
 
 def test_version_option():
