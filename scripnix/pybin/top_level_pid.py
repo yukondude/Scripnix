@@ -34,7 +34,11 @@ def penultimate_pid(pid):
     if ppid == 1 or pid == ppid:
         return pid
     else:
-        return penultimate_pid(ppid)
+        try:
+            return penultimate_pid(ppid)
+        except RuntimeError:
+            # Recursion depth reached: give up and return the last parent PID found.
+            return ppid
 
 
 @common_command_and_options(command_name=COMMAND_NAME)
