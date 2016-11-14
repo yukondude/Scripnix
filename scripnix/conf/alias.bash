@@ -20,7 +20,7 @@ alias lrt="${ls_equivalent} -lrt --color=tty --time-style=long-iso"
 is_macos="false"
 [[ $(os-name) == 'macos' ]] && is_macos="true"
 
-tac_equivalent=$(gnu_equivalent 'ls')
+tac_equivalent=$(gnu_equivalent 'tac')
 ${is_macos} || alias ltt="last -a | ${tac_equivalent} | tail -n20"
 ${is_macos} && alias ltt="last | ${tac_equivalent} | tail -n20"
 
@@ -32,6 +32,9 @@ hash iptables >/dev/null 2>&1 && alias ipt='sudo iptables -nvL'
 
 ${is_macos} || alias pe='ps -eFlT'
 alias px='ps aux'
+
+hash git >/dev/null 2>&1 && alias gl='git log -40 --all --decorate --graph --oneline'
+hash git >/dev/null 2>&1 && alias gs='git status'
 
 alias sudo='sudo '
 
