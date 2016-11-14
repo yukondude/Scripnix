@@ -41,15 +41,15 @@ def test_main():
     assert result.exit_code == 0
     command = result.output.strip()
     assert len(command) > 0
-    assert "python" in command
+    assert "python" in command or "py.test" in command
 
 
 def test_valid_command_name():
     command = command_name(0)
-    assert "python" in command
+    assert "python" in command or "py.test" in command
 
     command = command_name(os.getpid())
-    assert "python" in command
+    assert "python" in command or "py.test" in command
 
     command = command_name(1)
     assert command == ("launchd" if operating_system() == "macos" else "init")
