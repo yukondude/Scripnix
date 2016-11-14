@@ -106,6 +106,7 @@ setup(
         "Operating System :: MacOS",
         "Operating System :: POSIX",
         "Operating System :: POSIX :: Linux",
+        "Programming Language :: Python",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.3",
         "Programming Language :: Python :: 3.4",
