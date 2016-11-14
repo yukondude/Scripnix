@@ -31,7 +31,7 @@ def penultimate_pid(pid):
     except psutil.NoSuchProcess:
         raise click.ClickException("Process ID '{}' does not exist.".format(pid))
 
-    if ppid == 1:
+    if ppid == 1 or pid == ppid:
         return pid
     else:
         return penultimate_pid(ppid)
