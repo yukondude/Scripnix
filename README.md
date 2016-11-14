@@ -67,8 +67,6 @@ Usage: backup-file [OPTIONS] [FILE]...
   already exists. Remove any SUID or executable permissions from the backup
   file.
 
-  The backup-file command is part of Scripnix.
-
 Options:
   -D, --dry-run  Show what would happen without actually doing it.
   -V, --version  Show version and exit.
@@ -82,8 +80,6 @@ Usage: command-for-pid [OPTIONS] [PID]
   Return the command name for the given Process ID (PID). If a PID is not
   specified, use the current process.
 
-  The command-for-pid command is part of Scripnix.
-
 Options:
   -V, --version  Show version and exit.
   -h, --help     Show this message and exit.
@@ -95,8 +91,6 @@ Usage: describe-scripnix [OPTIONS]
 
   Generate descriptions of all of the Scripnix commands in Markdown format,
   suitable for appending to the Scripnix project's README.md file.
-
-  The describe-scripnix command is part of Scripnix.
 
 Options:
   -V, --version  Show version and exit.
@@ -115,8 +109,6 @@ Usage: gather-cron-jobs [OPTIONS]
 
   Must be run as the root user.
 
-  The gather-cron-jobs command is part of Scripnix.
-
 Options:
   -d, --delimiter TEXT  Column delimiter character(s).  [default: tab]
   -H, --no-header       Don't display the table header row.
@@ -133,8 +125,6 @@ Usage: hyphenate [OPTIONS] [TEXT]...
 
   Translate the given text argument(s) (or use the input lines from STDIN)
   into the equivalent, filesystem-safe, hyphenated versions.
-
-  The hyphenate command is part of Scripnix.
 
 Options:
   -d, --delimiter TEXT  Word delimiter character(s).  [default: -]
@@ -154,8 +144,6 @@ Usage: install-scripnix [OPTIONS]
   configuration settings (however file and directory permissions will be
   reset).
 
-  The install-scripnix command is part of Scripnix.
-
 Options:
   --yes          Confirm the action without prompting.
   -v, --verbose  Display the commands as they are being executed.
@@ -170,8 +158,6 @@ Usage: is-remote-cnx
 
   Detects whether this terminal is a remote SSH connection. Exit code will be
   zero if it is.
-
-  The is-remote-cnx command is part of Scripnix.
 ```
 
 ### `os-name`
@@ -179,8 +165,6 @@ Usage: is-remote-cnx
 Usage: os-name [OPTIONS]
 
   Return the operating system platform name.
-
-  The os-name command is part of Scripnix.
 
 Options:
   -T, --no-translate  Do not translate the original operating system string to
@@ -195,8 +179,6 @@ Usage: show-cron-jobs
 
   Gather all of the system and user crontab scheduled jobs and display them
   in a consolidated table, sorted approximately by the scheduled time.
-
-  The show-cron-jobs command is part of Scripnix.
 ```
 
 ### `top-level-pid`
@@ -206,8 +188,6 @@ Usage: top-level-pid [OPTIONS] [PID]
   Return the top-level parent (below the init or launchd process) Process ID
   (PID) for the given PID. If a PID is not specified, use the current
   process.
-
-  The top-level-pid command is part of Scripnix.
 
 Options:
   -V, --version  Show version and exit.
@@ -219,8 +199,6 @@ Options:
 Usage: whereis-scripnix [OPTIONS]
 
   Return the full, absolute path to the Scripnix package.
-
-  The whereis-scripnix command is part of Scripnix.
 
 Options:
   -V, --version  Show version and exit.

@@ -5,6 +5,7 @@
 # Refer to the attached LICENSE file or see <http://www.gnu.org/licenses/> for details.
 
 import os
+import re
 import subprocess
 
 import click
@@ -15,11 +16,14 @@ from scripnix.util.command import common_command_and_options
 
 COMMAND_NAME = "describe-scripnix"
 
+PART_OF_SCRIPNIX_REGEX = re.compile(r"\s*The .+ command is part of Scripnix.")
+
 
 def collect_help_text(command):
     """ Return the output from the given command executed with the --help option switch.
     """
-    return subprocess.check_output([command, "--help"]).decode("utf-8")
+    help_text = subprocess.check_output([command, "--help"]).decode("utf-8")
+    return PART_OF_SCRIPNIX_REGEX.sub("", help_text)
 
 
 def format_command_help_text(command, help_text):
