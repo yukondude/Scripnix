@@ -40,17 +40,17 @@ def test_main():
     result = runner.invoke(main)
     assert result.exit_code == 0
     pid = int(result.output.strip())
-    assert psutil.Process(pid).ppid() == 1
+    assert psutil.Process(pid).ppid() in (0, 1)
 
 
 def test_valid_penultimate_pid():
     pid = penultimate_pid(0)
-    assert psutil.Process(pid).ppid() == 1
+    assert psutil.Process(pid).ppid() in (0, 1)
 
     pid = penultimate_pid(os.getpid())
-    assert psutil.Process(pid).ppid() == 1
+    assert psutil.Process(pid).ppid() in (0, 1)
 
-    assert penultimate_pid(1) == 1
+    assert penultimate_pid(1) in (0, 1)
 
 
 def test_version_option():
