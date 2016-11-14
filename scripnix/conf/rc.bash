@@ -16,6 +16,9 @@ fi
 set -o ignoreeof
 
 # Colourful prompt.
+base_colour='\[\033[00m\]'
+alt_colour='\[\033[01;34m\]'
+
 if [[ $(id -u) -eq 0 ]] ; then
     user_colour='\[\033[01;31m\]'
     user_prompt='#'
@@ -24,10 +27,8 @@ else
     user_prompt='\$'
 fi
 
+remote_colour='\[\033[01;33m\]'
 host_name=$(hostname -s | tr '[:upper:]' '[:lower:]')
-is-remote-cnx && host_name=$(hostname -s | tr '[:lower:]' '[:upper:]')
-
-base_colour='\[\033[00m\]'
-alt_colour='\[\033[01;34m\]'
+is-remote-cnx && host_name=${remote_colour}$(hostname -s | tr '[:lower:]' '[:upper:]')
 
 export PS1="${user_colour}\u${alt_colour}@${host_name} ${user_colour}\D{%H:%M:%S} ${alt_colour}\w ${user_colour}${user_prompt}${base_colour} "
