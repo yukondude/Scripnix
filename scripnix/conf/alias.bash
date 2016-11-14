@@ -7,25 +7,30 @@ alias cp='cp -i'
 alias mv='mv -i'
 alias rm='rm -i'
 
-alias l="$(gnu_equivalent 'ls') -v --color=tty"
-alias ls="$(gnu_equivalent 'ls') -v --color=tty"
-alias ll="$(gnu_equivalent 'ls') -lv --color=tty --time-style=long-iso"
-alias la="$(gnu_equivalent 'ls') -lv --almost-all --color=tty --time-style=long-iso"
-alias lh="$(gnu_equivalent 'ls') -lv --human-readable --color=tty --time-style=long-iso"
-alias lm="$(gnu_equivalent 'ls') -lv --block-size=1024K --color=tty --time-style=long-iso"
-alias lt="$(gnu_equivalent 'ls') -lt --color=tty --time-style=long-iso"
-alias lrt="$(gnu_equivalent 'ls') -lrt --color=tty --time-style=long-iso"
+ls_equivalent=$(gnu_equivalent 'ls')
+alias l="${ls_equivalent} -v --color=tty"
+alias ls="${ls_equivalent} -v --color=tty"
+alias ll="${ls_equivalent} -lv --color=tty --time-style=long-iso"
+alias la="${ls_equivalent} -lv --almost-all --color=tty --time-style=long-iso"
+alias lh="${ls_equivalent} -lv --human-readable --color=tty --time-style=long-iso"
+alias lm="${ls_equivalent} -lv --block-size=1024K --color=tty --time-style=long-iso"
+alias lt="${ls_equivalent} -lt --color=tty --time-style=long-iso"
+alias lrt="${ls_equivalent} -lrt --color=tty --time-style=long-iso"
 
-[[ $(os-name) == 'macos' ]] || alias ltt="last -a | $(gnu_equivalent 'tac') | tail -n20"
-[[ $(os-name) == 'macos' ]] && alias ltt="last | $(gnu_equivalent 'tac') | tail -n20"
+is_macos="false"
+[[ $(os-name) == 'macos' ]] && is_macos="true"
 
-[[ $(os-name) == 'macos' ]] || alias nst='netstat --all --numeric --tcp --udp'
-[[ $(os-name) == 'macos' ]] && alias nst='netstat -anv -finet'
+tac_equivalent=$(gnu_equivalent 'ls')
+${is_macos} || alias ltt="last -a | ${tac_equivalent} | tail -n20"
+${is_macos} && alias ltt="last | ${tac_equivalent} | tail -n20"
+
+${is_macos} || alias nst='netstat --all --numeric --tcp --udp'
+${is_macos} && alias nst='netstat -anv -finet'
 
 hash iftop >/dev/null 2>&1 && alias ift='sudo iftop -nNPB'
 hash iptables >/dev/null 2>&1 && alias ipt='sudo iptables -nvL'
 
-[[ $(os-name) == 'macos' ]] || alias pe='ps -eFlT'
+${is_macos} || alias pe='ps -eFlT'
 alias px='ps aux'
 
 alias sudo='sudo '

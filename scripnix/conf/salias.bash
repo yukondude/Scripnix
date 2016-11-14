@@ -8,8 +8,11 @@ hash iftop >/dev/null 2>&1 && alias ift='iftop -nNPB'
 
 hash iptables >/dev/null 2>&1 && alias ipt='iptables -nvL'
 
-[[ $(os-name) == 'macos' ]] || alias nst='netstat --all --numeric --program --tcp --udp'
-[[ $(os-name) == 'macos' ]] && alias nst='netstat -an -finet -v'
+is_macos="false"
+[[ $(os-name) == 'macos' ]] && is_macos="true"
+
+${is_macos} || alias nst='netstat --all --numeric --program --tcp --udp'
+${is_macos} && alias nst='netstat -an -finet -v'
 
 # Necessary to enable aliases in shell scripts.
 shopt -s expand_aliases
