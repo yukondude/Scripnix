@@ -9,6 +9,7 @@ import os
 import click
 from click.testing import CliRunner
 import psutil
+# noinspection PyPackageRequirements
 import pytest
 
 from scripnix.pybin.top_level_pid import COMMAND_NAME, main, penultimate_pid
