@@ -75,6 +75,20 @@ Options:
   -h, --help     Show this message and exit.
 ```
 
+### `command-for-pid`
+```
+Usage: command-for-pid [OPTIONS] [PID]
+
+  Return the command name for the given Process ID (PID). If a PID is not
+  specified, use the current process.
+
+  The command-for-pid command is part of Scripnix.
+
+Options:
+  -V, --version  Show version and exit.
+  -h, --help     Show this message and exit.
+```
+
 ### `describe-scripnix`
 ```
 Usage: describe-scripnix [OPTIONS]
@@ -177,18 +191,17 @@ Usage: show-cron-jobs
 
 ### `top-level-pid`
 ```
-Usage: top-level-pid [OPTIONS]
+Usage: top-level-pid [OPTIONS] [PID]
 
-  Return the top-level parent Process ID (PID) for the given PID (below the
-  init or launchd process). If a PID is not specified, use the current
+  Return the top-level parent (below the init or launchd process) Process ID
+  (PID) for the given PID. If a PID is not specified, use the current
   process.
 
   The top-level-pid command is part of Scripnix.
 
 Options:
-  -p, --pid INTEGER  Process ID (PID) to look up.
-  -V, --version      Show version and exit.
-  -h, --help         Show this message and exit.
+  -V, --version  Show version and exit.
+  -h, --help     Show this message and exit.
 ```
 
 ### `whereis-scripnix`
