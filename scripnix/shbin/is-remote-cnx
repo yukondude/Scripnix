@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Detects whether this terminal is a remote SSH connection. Exit code will be
+# zero if it is.
+
+# This file is part of Scripnix. Copyright 2016 Dave Rogers <info@yukondude.com>. Licensed under the GNU General Public License, version 3.
+# Refer to the attached LICENSE file or see <http://www.gnu.org/licenses/> for details.
+
+scriproot=$(whereis-scripnix)
+source "${scriproot}/conf/sbin.bash"
+check_arg_count ${0} ${#} 0 0 '' ${1}
+
+# This is a remote connection if the top-level parent process is the SSH daemon.
+parent=$(command-for-pid $(top-level-pid))
+match=$(echo "${parent}" | egrep sshd)
+test -n "${match}"
