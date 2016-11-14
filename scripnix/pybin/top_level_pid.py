@@ -27,7 +27,7 @@ def penultimate_pid(pid):
     try:
         ppid = psutil.Process(pid).ppid()
     except ValueError:
-        raise click.ClickException("Process ID '{}' must be a positive integer".format(pid))
+        raise click.ClickException("Process ID '{}' must be a positive integer.".format(pid))
     except psutil.NoSuchProcess:
         raise click.ClickException("Process ID '{}' does not exist.".format(pid))
 
