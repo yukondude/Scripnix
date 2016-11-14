@@ -38,9 +38,9 @@ def penultimate_pid(pid):
 
 
 @common_command_and_options(command_name=COMMAND_NAME)
-@click.option('--pid', '-p', default=0, help="Process ID (PID) to look up.")
+@click.argument('pid', default=0)
 def main(pid):
-    """ Return the top-level parent Process ID (PID) for the given PID (below the init or launchd process). If a PID is not specified, use
+    """ Return the top-level parent (below the init or launchd process) Process ID (PID) for the given PID. If a PID is not specified, use
         the current process.
 
         The top-level-pid command is part of Scripnix.
