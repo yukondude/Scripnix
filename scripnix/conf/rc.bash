@@ -25,11 +25,7 @@ else
 fi
 
 host_name=$(hostname -s | tr '[:upper:]' '[:lower:]')
-
-# TODO: Capitalize the host name for remote connections.
-#if [[ is-remote-cnx ]]; then
-#    host_name=$(hostname -s | tr '[:lower:]' '[:upper:]')
-#fi
+is-remote-cnx && host_name=$(hostname -s | tr '[:lower:]' '[:upper:]')
 
 base_colour='\[\033[00m\]'
 alt_colour='\[\033[01;34m\]'
