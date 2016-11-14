@@ -16,6 +16,8 @@ clean:
 	rm -fr build/
 
 build: clean README.rst
+	./build-readme.py
+	@$(MAKE)
 	./setup.py sdist >/dev/null
 	./setup.py bdist_wheel >/dev/null
 

@@ -164,6 +164,16 @@ Options:
   -h, --help     Show this message and exit.
 ```
 
+### `is-remote-cnx`
+```
+Usage: is-remote-cnx 
+
+  Detects whether this terminal is a remote SSH connection. Exit code will be
+  zero if it is.
+
+  The is-remote-cnx command is part of Scripnix.
+```
+
 ### `os-name`
 ```
 Usage: os-name [OPTIONS]
