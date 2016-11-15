@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Run the unit tests for the one given command.
+
+# This file is part of Scripnix. Copyright 2016 Dave Rogers <info@yukondude.com>. Licensed under the GNU General Public License, version 3.
+# Refer to the attached LICENSE file or see <http://www.gnu.org/licenses/> for details.
+
+command=${1%.py}
+module=${command//-/_}
+echo $module
+
+py.test --cov=tests/test_${module}.py --cov=scripnix/pybin/${module}.py --cov-report=term-missing --flake8 --verbose tests/test_${module}.py
