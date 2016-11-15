@@ -11,23 +11,31 @@ from scripnix.util.command import common_command_and_options
 
 COMMAND_NAME = "common-netmask"
 
+IP_ADDRESS_BIT_WIDTH = 32
+
 
 def bits_from_quads(quads):
-    return "".join(["{:08b}".format(q) for q in quads])
+    """ Return a string of 32 1/0 bits from the given 4-tuple of integer quads.
+    """
+    assert len(quads) == 4
+    return "".join("{:08b}".format(q) for q in quads)
 
 
 def find_common_netmask_and_length(ip_addresses):
-    ips = [quads_from_dotted_ip(i) for i in ip_addresses]
+    """ Return a tuple of the 4-tuple netmask and mask length that most completely matches the given list of dotted-quad IPv4 address
+        strings.
+    """
+    quad_addresses = [quads_from_dotted_ip(ia) for ia in ip_addresses]
+    quad_address_count = len(quad_addresses)
 
+    bit_addresses = [bits_from_quads(qa) for qa in quad_addresses]
     netmask_bits = []
-    ip_count = len(ips)
 
-    bin_ips = [bits_from_quads(ip) for ip in ips]
+    for bit in range(IP_ADDRESS_BIT_WIDTH):
 
-    for bit in range(32):
-        bits = [b[bit] for b in bin_ips]
+        bits = [ba[bit] for ba in bit_addresses]
 
-        if bits.count(bits[0]) == ip_count:
+        if bits.count(bits[0]) == quad_address_count:
             netmask_bits.append(bits[0])
         else:
             break
@@ -36,12 +44,21 @@ def find_common_netmask_and_length(ip_addresses):
     return quads_from_bits(netmask), len(netmask_bits)
 
 
+def format_netmask_and_length(netmask, length):
+    """ Return a string of the form a.b.c.d/e for the given 4-tuple netmask (a,b,c,d) and mask length (e).
+    """
+    return "{}/{}".format(".".join(str(n) for n in netmask), length)
+
+
 def quads_from_bits(bits):
-    return [int(bits[:8], 2), int(bits[8:16], 2), int(bits[16:24], 2), int(bits[24:], 2)]
+    """ Return a 4-tuple of integer quads from the given string of 32 1/0 bits.
+    """
+    assert len(bits) == IP_ADDRESS_BIT_WIDTH
+    return int(bits[:8], 2), int(bits[8:16], 2), int(bits[16:24], 2), int(bits[24:], 2)
 
 
 def quads_from_dotted_ip(ip_address):
-    """ Return a 4-tuple of integer quads from a dotted-quad IP address string.
+    """ Return a 4-tuple of integer quads from the given dotted-quad IPv4 address string.
     """
     try:
         quads = [int(q) for q in ip_address.strip().rstrip('.').split('.')]
@@ -56,9 +73,7 @@ def quads_from_dotted_ip(ip_address):
             raise click.ClickException("Invalid quad value '{}' in IP address '{}'. Must be in the range 0 - 255.".format(quad, ip_address))
 
     # Pad incomplete dotted quads with .255[.255]...
-    quads = (quads + [255] * 4)[:4]
-
-    return tuple(quads)
+    return tuple((quads + [255] * 4)[:4])
 
 
 @common_command_and_options(command_name=COMMAND_NAME)
@@ -70,4 +85,4 @@ def main(ipaddr):
         The common-netmask command is part of Scripnix.
     """
     if ipaddr:
-        click.echo(find_common_netmask_and_length(ip_addresses=ipaddr))
+        click.echo(format_netmask_and_length(*find_common_netmask_and_length(ip_addresses=ipaddr)))
