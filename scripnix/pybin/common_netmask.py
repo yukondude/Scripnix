@@ -26,21 +26,19 @@ def find_common_netmask_and_length(ip_addresses):
         strings.
     """
     quad_addresses = [quads_from_dotted_ip(ia) for ia in ip_addresses]
-    quad_address_count = len(quad_addresses)
-
     bit_addresses = [bits_from_quads(qa) for qa in quad_addresses]
     netmask_bits = []
 
-    for bit in range(IP_ADDRESS_BIT_WIDTH):
+    for bit_posn in range(IP_ADDRESS_BIT_WIDTH):
+        bit_set = {ba[bit_posn] for ba in bit_addresses}
 
-        bits = [ba[bit] for ba in bit_addresses]
-
-        if bits.count(bits[0]) == quad_address_count:
-            netmask_bits.append(bits[0])
+        if len(bit_set) == 1:
+            # All of the bits at position bit_posn are identical, so add that bit to the netmask.
+            netmask_bits.append(bit_set.pop())
         else:
             break
 
-    netmask = "".join(netmask_bits).ljust(32, "0")
+    netmask = "".join(netmask_bits).ljust(IP_ADDRESS_BIT_WIDTH, "0")
     return quads_from_bits(netmask), len(netmask_bits)
 
 
