@@ -8,6 +8,7 @@ import grp
 import os
 import pwd
 import stat
+import subprocess
 
 import click
 
@@ -17,6 +18,9 @@ from scripnix.util.common import hostname, is_root_user, operating_system, USER_
 
 
 COMMAND_NAME = "install-scripnix"
+
+RC_PATH_CHOICES = ("~/.bashrc", "~/.bash_profile", "~/.profile") if operating_system() == "macos" else ("~/.profile", "~/.bashrc")
+RC_PATHS = list(map(os.path.expanduser, RC_PATH_CHOICES))
 
 
 def install_global(execute, config_path, os_name):
@@ -142,6 +146,31 @@ def install_per_user(execute, config_path):
 
     execute_chown(readme_path)
     execute(os.chmod, readme_path, stat.S_IRUSR | stat.S_IRGRP, echo="chmod ug=r,o= {}".format(readme_path))
+
+    # Display manual post-installation instructions.
+    rc_paths = [p for p in RC_PATHS if os.path.isfile(p)]
+    rc_exists = rc_paths != []
+    rc_path = rc_paths[0] if rc_exists else RC_PATHS[0]
+
+    click.echo("\nTo complete the Scripnix installation, perform the following steps.")
+    step_no = 1
+
+    if not rc_exists:
+        click.echo("{}. Create {}".format(step_no, rc_path))
+        step_no += 1
+
+    click.echo("\n{}. Append these two lines to the end of of '{}':".format(step_no, rc_path))
+    step_no += 1
+
+    bin_path = os.path.dirname(subprocess.check_output(["which", COMMAND_NAME]).decode("utf-8").strip())
+    click.echo("   PATH=\"{}:${{PATH}}\"".format(bin_path))
+
+    scripnix_config_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "conf", "rc.bash"))
+    click.echo("   source {}".format(scripnix_config_path))
+
+    click.echo("\n{}. (Optional) Use visudo to insert the following path at the end of the".format(step_no))
+    click.echo("   `Defaults secure_path` setting (if it exists):")
+    click.echo("   {}".format(bin_path))
 
 
 @common_command_and_options(command_name=COMMAND_NAME, add_dry_run=True)
