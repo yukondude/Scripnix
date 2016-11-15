@@ -42,7 +42,7 @@ system-wide configuration.
 Any other users that also wish to use Scripnix should also run that command.
 
 The `install-scripnix` command will also suggest changes to your `~/.bashrc` or `~/.profile` files to persist Scripnix in your environment.
-It will also suggest changes to the `/etc/sudoers` file (vi `visudo`) to preserve your `$PATH` whenever executing commands via `sudo`.
+It will also suggest changes to the `/etc/sudoers` file (vi `visudo`) so that the Scripnix commands can be run via `sudo` when necessary.
 
 ### Homebrew (macOS)
 
