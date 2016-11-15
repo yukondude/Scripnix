@@ -6,6 +6,23 @@ Scripnix
 Replaces the old `Scripnix0 <https://github.com/yukondude/Scripnix0>`__
 project which had grown crufty and was not macOS-friendly.
 
+Motivation
+----------
+
+Scripnix was born during my Linux server admin days when I wanted all of
+my aliases and scriplets to follow me from machine to machine. Packaging
+everything together made installing and keeping up-to-date that much
+easier. Writing it was also a bash scripting learning exercise, although
+I soon grew to loathe space-containing-filenames and all of the quoting
+that implied.
+
+As I moved more to MacOS, the BSD version of most commands clashed with
+the GNU/Linux versions that Scripnix assumed. Still wanting those handy
+aliases and scriplets on MacOS, I resurrected Scripnix, but with many
+more of the commands written in Python, and with Homebrew-supplied GNU
+versions of my favourite utilities. The Python rewrite sidestepped much
+of the silly bash quoting and syntax, and made testing practical.
+
 Licence
 -------
 
@@ -31,6 +48,12 @@ Following installation using one of the methods below, you may also want
 to run the ``install-scripnix`` command as the root user to setup the
 system-wide configuration. Any other users that also wish to use
 Scripnix should also run that command.
+
+The ``install-scripnix`` command will also suggest changes to your
+``~/.bashrc`` or ``~/.profile`` files to persist Scripnix in your
+environment. It will also suggest changes to the ``/etc/sudoers`` file
+(vi ``visudo``) to preserve your ``$PATH`` whenever executing commands
+via ``sudo``.
 
 Homebrew (macOS)
 ~~~~~~~~~~~~~~~~
@@ -60,8 +83,10 @@ Development Setup
 
 1. Install Scripnix, as above, so that all of its dependencies are
    available.
-2. Create a Python 3 virtualenv for Scripnix.
-3. Clone the Scripnix repo.
+2. Create a Python 3 virtualenv for Scripnix:
+   ``mkvirtualenv --python=$(which python3) Scripnix``
+3. Clone the Scripnix repo:
+   ``git clone https://github.com/yukondude/Scripnix.git``
 4. Install dependencies:
    ``pip install -r requirements.txt -r requirements-dev.txt -r requirements-test.txt``
 5. Install the project in development mode: ``./setup.py develop``

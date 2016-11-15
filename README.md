@@ -10,6 +10,18 @@ Useful Python3 and bash shell scripts for macOS/BSD and \*NIX. Useful to me, at 
 
 Replaces the old [Scripnix0](https://github.com/yukondude/Scripnix0) project which had grown crufty and was not macOS-friendly.
 
+## Motivation
+
+Scripnix was born during my Linux server admin days when I wanted all of my aliases and scriplets to follow me from machine to machine.
+Packaging everything together made installing and keeping up-to-date that much easier.
+Writing it was also a bash scripting learning exercise, although I soon grew to loathe space-containing-filenames and all of the quoting that
+implied.
+
+As I moved more to MacOS, the BSD version of most commands clashed with the GNU/Linux versions that Scripnix assumed.
+Still wanting those handy aliases and scriplets on MacOS, I resurrected Scripnix, but with many more of the commands written in Python, and
+with Homebrew-supplied GNU versions of my favourite utilities.
+The Python rewrite sidestepped much of the silly bash quoting and syntax, and made testing practical.
+
 ## Licence
 
 Licensed under the [GNU General Public License, version 3](https://www.gnu.org/licenses/gpl-3.0.en.html).
@@ -29,6 +41,9 @@ Following installation using one of the methods below, you may also want to run 
 system-wide configuration.
 Any other users that also wish to use Scripnix should also run that command.
 
+The `install-scripnix` command will also suggest changes to your `~/.bashrc` or `~/.profile` files to persist Scripnix in your environment.
+It will also suggest changes to the `/etc/sudoers` file (vi `visudo`) to preserve your `$PATH` whenever executing commands via `sudo`.
+
 ### Homebrew (macOS)
 
 On macOS, Homebrew will take care of installing any dependencies, including Python 3.
@@ -47,8 +62,8 @@ On *NIX, you will first need to install Python 3.3 (or higher) using your prefer
 ## Development Setup
 
  1. Install Scripnix, as above, so that all of its dependencies are available.
- 1. Create a Python 3 virtualenv for Scripnix.
- 1. Clone the Scripnix repo.
+ 1. Create a Python 3 virtualenv for Scripnix: `mkvirtualenv --python=$(which python3) Scripnix`
+ 1. Clone the Scripnix repo: `git clone https://github.com/yukondude/Scripnix.git`
  1. Install dependencies: `pip install -r requirements.txt -r requirements-dev.txt -r requirements-test.txt`
  1. Install the project in development mode: `./setup.py develop`
  1. Run the unit tests to make sure everything is copacetic: `./setup.py test`
