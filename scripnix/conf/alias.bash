@@ -17,6 +17,8 @@ alias lm="${ls_equivalent} -lv --block-size=1024K --color=tty --time-style=long-
 alias lt="${ls_equivalent} -lt --color=tty --time-style=long-iso"
 alias lrt="${ls_equivalent} -lrt --color=tty --time-style=long-iso"
 
+alias dim="echo $(tput cols)x$(tput lines)"
+
 is_macos="false"
 [[ $(os-name) == 'macos' ]] && is_macos="true"
 
