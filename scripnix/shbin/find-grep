@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+# Search through the file contents in the specified directory (or the current
+# directory if not given), and below, for lines that match the given regular
+# expression.
+
+# This file is part of Scripnix. Copyright 2016 Dave Rogers <info@yukondude.com>. Licensed under the GNU General Public License, version 3.
+# Refer to the attached LICENSE file or see <http://www.gnu.org/licenses/> for details.
+
+scriproot=$(whereis-scripnix)
+source "${scriproot}/conf/bin.bash"
+check_arg_count ${0} ${#} 1 2 '[<directory>] <regexp>' ${1}
+
+if [ ${#} -eq 2 ] ; then
+    directory="${1}"
+    regexp="${2}"
+else
+    directory="."
+    regexp="${1}"
+fi
+
+find_equivalent=$(gnu_equivalent 'find')
+sort_equivalent=$(gnu_equivalent 'sort')
+xargs_equivalent=$(gnu_equivalent 'xargs')
+sed_equivalent=$(gnu_equivalent 'sed')
+
+# Jump through hoops to find the regexp in all files, excluding RCS gunk. Use null-terminated lines throughout to avoid problems with
+# filenames containing quotes. Trim any leading whitespace from the matching line.
+$find_equivalent "${directory}" ${FIND_PATH_EXCLUDE} -or -type f -print0 | \
+    $sort_equivalent --zero-terminated | \
+    $xargs_equivalent -I{} --null egrep --ignore-case --line-number --with-filename "${regexp}" {} | \
+    $sed_equivalent --regexp-extended 's/:[[:space:]]+/:/'
