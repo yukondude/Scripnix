@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Gather all of the system and user crontab scheduled jobs and display them
 # in a consolidated table, sorted approximately by the scheduled time.

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Detects whether this terminal is a remote SSH connection. Exit code will be
 # zero if it is.
