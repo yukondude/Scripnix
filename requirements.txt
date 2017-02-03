@@ -1,2 +1,2 @@
-click>=6.6
-psutil>=5.0.0
+click>=6.7
+psutil>=5.1.1

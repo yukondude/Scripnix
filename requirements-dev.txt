@@ -1,2 +1,2 @@
 twine>=1.8.1
-docutils>=0.12
+docutils>=0.13.1
