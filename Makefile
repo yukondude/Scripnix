@@ -28,6 +28,7 @@ bump:
 	ls dist/*.whl | xargs -I{} twine register {}
 	ls dist/*.whl | xargs -I{} twine upload {}
 	ls dist/*.tar.gz | xargs -I{} twine upload {}
-	@echo "Run git tag -a... with the bumped version."
-	@echo "Push to GitHub with git push --followtags"
+	@echo "Commit the changes: git add . ; git commit -m<comment>"
+	@echo "Tag the version: git tag -a<bumpedversion> -m<comment>"
+	@echo "Push to GitHub: git push --follow-tags"
 	@echo "Update homebrew formula version number and SHA."
