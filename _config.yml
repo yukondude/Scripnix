@@ -2,7 +2,7 @@ title: Scripnix
 description: Useful Python3 and bash shell scripts for macOS/BSD and \*NIX. Useful to me, at any rate. YMMV.
 google_analytics: 
 show_downloads: true
-theme: jekyll-theme-slate
+theme: jekyll-theme-tactile
 
 gems:
   - jekyll-mentions
