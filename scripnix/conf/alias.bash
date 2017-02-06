@@ -39,6 +39,3 @@ hash git >/dev/null 2>&1 && alias gl='git log -40 --all --decorate --graph --one
 hash git >/dev/null 2>&1 && alias gs='git status'
 
 alias sudo='sudo '
-
-# Necessary to enable aliases in shell scripts.
-shopt -s expand_aliases

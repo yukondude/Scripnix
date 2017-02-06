@@ -13,6 +13,3 @@ is_macos="false"
 
 ${is_macos} || alias nst='netstat --all --numeric --program --tcp --udp'
 ${is_macos} && alias nst='netstat -an -finet -v'
-
-# Necessary to enable aliases in shell scripts.
-shopt -s expand_aliases
