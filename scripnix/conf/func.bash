@@ -7,7 +7,7 @@
 # Exit with error message if the count of command arguments does not fall into
 # the expected range. Use -1 to indicate no minimum/maximum.
 # Example call: check_arg_count ${0} ${#} 2 2 '<arg1> <arg2>' ${1}
-function check_arg_count() {
+check_arg_count() {
     # Parameters:
     command=${1}
     arg_count=${2}
@@ -40,7 +40,7 @@ function check_arg_count() {
 
 # Collect switches from a file and return as a single space-delimited string
 # (with redundant spaces stripped).
-function collect_switches() {
+collect_switches() {
     switch_file="${1}"
     if [[ ! -f "${switch_file}" ]] ; then exit 0 ; fi
     cat "${switch_file}" |
@@ -50,19 +50,19 @@ function collect_switches() {
 
 
 # Echo to standard error.
-function echo_err() {
+echo_err() {
     echo "$*" >&2
 }
 
 
 # Echo backslash-escaped forward-slashes.
-function escape_slashes() {
+escape_slashes() {
     echo "$*" | sed 's/\//\\\//g'
 }
 
 
 # Return the gnu-equivalent command for MacOS, if it exists.
-function gnu_equivalent() {
+gnu_equivalent() {
     command=${1}
     gnu_command="g${command}"
 
@@ -77,7 +77,7 @@ function gnu_equivalent() {
 
 
 # Exit with error if not the root user.
-function require_root() {
+require_root() {
     if [ $(id -u) -ne 0 ] ; then
         echo_err "You must be root to execute this command. Try running it as: sudo" $(basename ${0})
         exit 2
