@@ -196,7 +196,7 @@ def main(delimiter, no_header, run_parts, sort):
 
     system_cron_tab, system_cron_dir = config_values('SYSTEM_CRONTAB', 'SYSTEM_CRON_DIR')
     consolidated_cron_jobs = gather_system_cron_jobs(crontab_path=system_cron_tab, cron_dir_path=system_cron_dir, do_unpack=run_parts)
-    consolidated_cron_jobs.extend(gather_user_cron_jobs(users=[p.pw_name for p in pwd.getpwall()], do_unpack=run_parts))
+    consolidated_cron_jobs.extend(gather_user_cron_jobs(users={p.pw_name for p in pwd.getpwall()}, do_unpack=run_parts))
     click.echo(format_cron_jobs_table(consolidated_cron_jobs, not no_header, "\t" if not delimiter else delimiter, sort))
 
 
