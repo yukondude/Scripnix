@@ -19,14 +19,14 @@ else
     regexp="${1}"
 fi
 
-find_equivalent=$(gnu_equivalent 'find')
-sort_equivalent=$(gnu_equivalent 'sort')
-xargs_equivalent=$(gnu_equivalent 'xargs')
-sed_equivalent=$(gnu_equivalent 'sed')
+gfind=$(gnu_equivalent 'find')
+gsort=$(gnu_equivalent 'sort')
+gxargs=$(gnu_equivalent 'xargs')
+gsed=$(gnu_equivalent 'sed')
 
 # Jump through hoops to find the regexp in all files, excluding RCS gunk. Use null-terminated lines throughout to avoid problems with
 # filenames containing quotes. Trim any leading whitespace from the matching line.
-$find_equivalent "${directory}" ${FIND_PATH_EXCLUDE} -or -type f -print0 | \
-    $sort_equivalent --zero-terminated | \
-    $xargs_equivalent -I{} --null egrep --ignore-case --line-number --with-filename "${regexp}" {} | \
-    $sed_equivalent --regexp-extended 's/:[[:space:]]+/:/'
+$gfind "${directory}" ${FIND_PATH_EXCLUDE} -or -type f -print0 | \
+    $gsort --zero-terminated | \
+    $gxargs -I{} --null egrep --ignore-case --line-number --with-filename "${regexp}" {} | \
+    $gsed --regexp-extended 's/:[[:space:]]+/:/'

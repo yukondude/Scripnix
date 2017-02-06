@@ -7,24 +7,24 @@ alias cp='cp -i'
 alias mv='mv -i'
 alias rm='rm -i'
 
-ls_equivalent=$(gnu_equivalent 'ls')
-alias l="${ls_equivalent} -v --color=tty"
-alias ls="${ls_equivalent} -v --color=tty"
-alias ll="${ls_equivalent} -lv --color=tty --time-style=long-iso"
-alias la="${ls_equivalent} -lv --almost-all --color=tty --time-style=long-iso"
-alias lh="${ls_equivalent} -lv --human-readable --color=tty --time-style=long-iso"
-alias lm="${ls_equivalent} -lv --block-size=1024K --color=tty --time-style=long-iso"
-alias lt="${ls_equivalent} -lt --color=tty --time-style=long-iso"
-alias lrt="${ls_equivalent} -lrt --color=tty --time-style=long-iso"
+gls=$(gnu_equivalent 'ls')
+alias l="${gls} -v --color=tty"
+alias ls="${gls} -v --color=tty"
+alias ll="${gls} -lv --color=tty --time-style=long-iso"
+alias la="${gls} -lv --almost-all --color=tty --time-style=long-iso"
+alias lh="${gls} -lv --human-readable --color=tty --time-style=long-iso"
+alias lm="${gls} -lv --block-size=1024K --color=tty --time-style=long-iso"
+alias lt="${gls} -lt --color=tty --time-style=long-iso"
+alias lrt="${gls} -lrt --color=tty --time-style=long-iso"
 
 alias dim="echo $(tput cols)x$(tput lines)"
 
 is_macos="false"
 [[ $(os-name) == 'macos' ]] && is_macos="true"
 
-tac_equivalent=$(gnu_equivalent 'tac')
-${is_macos} || alias ltt="last -a | ${tac_equivalent} | tail -n20"
-${is_macos} && alias ltt="last | ${tac_equivalent} | tail -n20"
+gtac=$(gnu_equivalent 'tac')
+${is_macos} || alias ltt="last -a | ${gtac} | tail -n20"
+${is_macos} && alias ltt="last | ${gtac} | tail -n20"
 
 ${is_macos} || alias nst='netstat --all --numeric --tcp --udp'
 ${is_macos} && alias nst='netstat -anv -finet'

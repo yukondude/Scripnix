@@ -20,12 +20,13 @@ check_arg_count() {
         max_count=9999 # infinity!
     fi
 
+    gsed=$(gnu_equivalent 'sed')
+
     if [[ -n ${first} ]] ; then
         if [[ ${first} == '-h' || ${first} == '--help' ]] ; then
             echo "Usage:" $(basename ${command}) "${usage}"
             echo
-            $(gnu_equivalent 'sed') --quiet --regexp-extended --expression '3,/^$/p' "${command}" |
-                $(gnu_equivalent 'sed') 's/^# /  /'
+            $gsed --quiet --regexp-extended --expression '3,/^$/p' "${command}" | $gsed 's/^# /  /'
             echo "  The $(basename ${command}) command is part of Scripnix."
             exit 0
         fi
