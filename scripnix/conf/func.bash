@@ -61,6 +61,12 @@ escape_slashes() {
 }
 
 
+# Exclude common version control subdirectories.
+exclude-vc() {
+    egrep --invert-match '(\.hg|\.git|\.svn)\/'
+}
+
+
 # Return the gnu-equivalent command for MacOS, if it exists.
 gnu_equivalent() {
     command=${1}
