@@ -1,2 +1,3 @@
-twine>=1.8.1
 docutils>=0.13.1
+homebrew-pypi-poet>=0.8.1
+twine>=1.8.1
