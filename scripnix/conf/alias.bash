@@ -19,6 +19,9 @@ alias lrt="${ls_equivalent} -lrt --color=tty --time-style=long-iso"
 
 alias dim="echo $(tput cols)x$(tput lines)"
 
+alias degrep='egrep --invert-match'
+alias degrep-rcs="degrep '\/(\.hg|\.git|\.svn)'"
+
 is_macos="false"
 [[ $(os-name) == 'macos' ]] && is_macos="true"
 
