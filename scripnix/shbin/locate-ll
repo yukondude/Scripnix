@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+# Locate files matching the given regular expression and display matches in a
+# a long list format. (Requires that [g]updatedb be run periodically to build
+# the database.)
+
+# This file is part of Scripnix. Copyright 2017 Dave Rogers <info@yukondude.com>. Licensed under the GNU General Public License, version 3.
+# Refer to the attached LICENSE file or see <http://www.gnu.org/licenses/> for details.
+
+scriproot=$(whereis-scripnix)
+source "${scriproot}/conf/bin.bash"
+check_arg_count ${0} ${#} 1 1 '<regexp>' ${1}
+
+glocate=$(gnu_equivalent 'locate')
+gxargs=$(gnu_equivalent 'xargs')
+gls=$(gnu_equivalent 'ls')
+
+# Ignore source control droppings.
+$glocate -r ${1} |
+    exclude-vc |
+    $gxargs -I{} $gls -l --directory --time-style=long-iso {} 2>/dev/null |
+    column -t
