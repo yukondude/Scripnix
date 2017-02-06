@@ -7,9 +7,13 @@
 import os
 import subprocess
 
+# noinspection PyPackageRequirements
+import pytest
+
 from scripnix.pybin.whereis_scripnix import PACKAGE_PATH
 
 
+@pytest.mark.skipif(os.environ.get('TRAVIS') is not None, reason="not practical to test on Travis CI")
 def test_locate_ll():
     # Pretty brain-dead test, but there aren't many things about a locate database that can be assumed between Linux and macOS.
     shbin_path = os.path.join(PACKAGE_PATH, "shbin/locate-ll")
