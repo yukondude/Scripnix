@@ -238,7 +238,18 @@ Options:
   -V, --version  Show version and exit.
   -h, --help     Show this message and exit.
 ```
+### `trunc`
+```
+Usage: trunc
 
+  Truncates input to the width of the terminal.  This is useful for viewing
+  output with very long lines that would wrap annoyingly.
+  
+  eg:  mount | trunc
+       dmesg | trunc
+       trunc < my_app.log
+       etc...
+```
 ### `whereis-scripnix`
 ```
 Usage: whereis-scripnix [OPTIONS]

@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+while read -r line
+do
+  echo "$line" | cut -b 1-`tput cols`
+done
